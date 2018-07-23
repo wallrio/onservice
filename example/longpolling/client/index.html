@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html data-vizoo-theme="blue">
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+	<title>LongPolling - OnService</title>
+
+
+	<script type="text/javascript" src="js/onservice.js"></script>
+	<script type="text/javascript" src="js/onservice-essentials.js"></script>
+	<script type="text/javascript" src="js/onservice-longpolling.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="theme.css">
+	<link rel="stylesheet" type="text/css" href="grid.css">
+	
+	<style type="text/css">
+
+		h1 {
+			padding: 15px 15px 25px;
+		}
+		h1 small{
+			display: table;
+			font-weight: normal;
+			font-size: 14px;
+		}h1 big{
+			font-size: 22px;
+		    line-height: 23px;
+		    display: block;
+		}
+		[data-vizoo-grid-header]{
+			background-color: #eee;
+		}[data-vizoo-grid-main] {
+			
+		}[data-vizoo-grid-footer]{
+			background-color: #333 !important;
+		}[data-vizoo-grid-footer] span,[data-vizoo-grid-footer] label{
+			padding: 10px;
+			display: block;
+			color: #111  ;
+		}
+
+		.online{
+			color:#11F111 !important;
+		}
+
+		.colLeft{	
+		}
+		.colRight{
+			overflow-y: scroll;
+			background-color: #444;
+			height: 150px !important;
+		}.colRight ul {
+		}.colRight ul li{
+			list-style: none;
+			background-color: #444;
+			border-bottom: 1px solid #333;
+			color:#fff;
+			padding: 10px;
+			cursor: pointer;
+		}.colRight ul li:hover{
+			background-color: #333;
+		}
+
+		.areaText{
+			background-color: #fff;
+			padding: 10px;
+			position: relative;
+			min-height: 300px !important;
+			overflow-y: auto;
+			overflow-x: hidden;
+		}.areaInput{
+			background-color: #eee;
+		}.areaControl{
+			background-color: #ccc;
+		}
+
+		#listUsers{
+			position: absolute;
+		    display: table;
+		    width: 100%;
+		}
+
+		#areaText{
+			position: absolute;
+			width: 100%;
+
+		}
+	</style>
+
+</head>
+<body>
+
+
+	<div data-vizoo-grid-wrapper >
+		<div data-vizoo-grid-header>
+			<h1> <small>OnService</small><big>LongPolling </big> </h1>
+		</div>
+		<div data-vizoo-grid-main>
+			
+			<div data-vizoo-grid-line class="desktop-line12" >
+				<div data-vizoo-grid-column class="col9 colLeft" >
+					
+					<div class="areaControl">
+
+						<div data-vizoo-grid-line>
+							<div data-vizoo-grid-column class="col4">
+								<button id="btDesconnect">Desconectar</button>
+								<button id="btConnect">Conectar</button>
+							</div>
+							<div data-vizoo-grid-column class="col6">
+								<input type="text" name="txtUrl" placeholder="URL do servidor (arquivo .php)" value="http://192.168.15.7/onservice/dev/example/longpolling/server.php">
+							</div>
+							<div data-vizoo-grid-column class="col3">
+								<input type="text" name="txtName" placeholder="Nome do usuário" value="">
+							</div>
+						</div>
+
+					</div>
+					<div class="desktop-line9 areaText" >
+						<div id="areaText">
+							
+							<h2>Example CHAT</h2>
+							<h3>Para testar siga os seguintes passos</h3>
+							<ol>
+								 <li>Insira a URL do seu servidor (arquivo .php)</li>
+								<li>Insira o nome de usuário</li>
+								<li>Clique em conectar</li>
+								<li>Se conectar com sucesso, na barra de status abaixo ira mostrar a palavra "Conectado"</li>
+								<li>Abra esta mesma página em outro computador e repita os passos</li>
+								<li>Após os passos anteriores você já pode trocar mensagens</li>
+							</ol>
+						</div>
+					</div>
+					<div class="desktop-line1 areaInput">
+						<div data-vizoo-grid-line>
+							<div data-vizoo-grid-column class="col11">
+								<input type="text" name="txtSend" placeholder="Selecione um usuário" disabled>
+							
+							</div>
+							<div data-vizoo-grid-column class="">
+								<button id="btSend" class="highlight" disabled>Enviar</button>
+							</div>
+						</div>
+					</div>
+
+
+				</div>
+				<div data-vizoo-grid-column class="colRight ">
+					<div id="listUsers"></div>
+				</div>
+			</div>
+
+
+		</div>
+		<div data-vizoo-grid-footer>
+			<div data-vizoo-grid-line>
+				<div data-vizoo-grid-column >
+					<label id="statusCon">Desconectado</label>
+				</div>
+		
+			</div>
+		</div>
+	</div>
+
+	
+
+	<script type="text/javascript">
+		
+		var con1 = new OnService.longpolling();
+		
+		
+
+		document.querySelector('#btConnect').onclick = function(){
+
+			var urlServer = document.querySelector('[name="txtUrl"]').value;
+			var name = document.querySelector('[name="txtName"]').value;
+			var id = name;
+			id = id.replace(/ /g,'-');
+
+			if(name.replace(/ /g,'') == ''){
+				alert('Insira o nome de usuário, é obrigatório.');
+				return false;
+			}
+
+			con1.config({
+				url:urlServer,
+				id:id,
+				options:{name:name},
+
+				error:function(response){
+					document.querySelector('#areaText').innerHTML  = '';
+					document.querySelector('#listUsers').innerHTML  = '';
+					document.querySelector('#statusCon').innerHTML = 'Desconectado';
+					document.querySelector('#statusCon').classList.remove('online');
+					document.querySelector('#btSend').setAttribute('disabled','disabled');
+					document.querySelector('[name="txtSend"]').setAttribute('disabled','disabled');
+				},
+				sended:function(response){},
+
+				connect:function(response){
+					
+					
+					document.querySelector('#areaText').innerHTML  = '';
+					document.querySelector('#statusCon').innerHTML = 'Conectado';
+					document.querySelector('#statusCon').classList.add('online');
+					
+
+				document.querySelector('#areaText').innerHTML  = '<br><br><hr><br><strong>'+response.message+'</strong>';
+
+					con1.send(null,{				
+						signal:"users"
+					});
+
+				},
+
+				disconnect:function(response){
+					document.querySelector('#areaText').innerHTML  = '';
+					document.querySelector('#listUsers').innerHTML  = '';
+					document.querySelector('#statusCon').innerHTML = 'Desconectado';
+					document.querySelector('#statusCon').classList.remove('online');
+					document.querySelector('#btSend').setAttribute('disabled','disabled');
+					document.querySelector('[name="txtSend"]').setAttribute('disabled','disabled');
+				},
+				
+				keep:function(response){
+				
+					con1.send(null,{				
+						signal:"users"
+					});			
+				},
+					
+				received:function(response){
+
+			
+					var list = response.data;
+
+					for(key in list){
+
+						var sender = list[key].sender;
+						var message = list[key].message;
+						message = JSON.parse(message);
+						
+						if( message.command == 'listusers' ){
+							listusers = message.data;
+							
+					
+							var ListHTML = '<ul>';
+							for(key in listusers){
+								var userStatus = listusers[key].status;
+								var name = JSON.parse(listusers[key].options).name || '['+listusers[key].id+']';
+
+								if(name != undefined && userStatus !== 'offline'){
+									ListHTML += '<li data-id="'+listusers[key].id+'" data-name="'+name+'"><a>'+name+'</a></li>';
+								}
+							}
+							ListHTML += '</ul>';
+
+							document.querySelector('#listUsers').innerHTML = ListHTML;
+
+							var liAll = document.querySelectorAll('#listUsers li');
+							for (var i = 0; i < liAll.length; i++) {
+								liAll[i].onclick = function(){
+									var id = this.getAttribute('data-id');
+									var name = this.getAttribute('data-name');
+									document.querySelector('#btSend').removeAttribute('disabled');
+									document.querySelector('[name="txtSend"]').removeAttribute('disabled');
+									document.querySelector('[name="txtSend"]').placeholder = 'Mensagem para: '+name;
+									toUser = id;
+								}
+							}
+							
+						}else{
+							
+							var areaText = document.querySelector('#areaText').innerHTML ;
+							document.querySelector('#areaText').innerHTML  = '<strong>'+sender+':</strong> '+message.message+'<br>'+areaText;
+						}
+					}
+
+				}
+
+
+
+			});
+
+			con1.connect();
+		};
+
+
+
+		// tecla enter na caixa do input de texto
+		document.querySelector('[name="txtSend"]').onkeyup = function(e){	
+			if(e.key == 'Enter'){					
+				document.querySelector('#btSend').click();
+			}
+			return false;
+		}
+
+		// botão para enviar mensagem
+		document.querySelector('#btSend').onclick = function(){
+			
+			var textSend = document.querySelector('[name="txtSend"]').value;
+			var name = document.querySelector('[name="txtName"]').value;
+			var message = document.querySelector('[name="txtSend"]').value;
+			
+			if(toUser != name){
+
+				var areaText = document.querySelector('#areaText').innerHTML ;
+				document.querySelector('#areaText').innerHTML  = '<strong>'+name+':</strong> '+message+'<br>'+areaText;
+			}
+
+			
+			con1.send(toUser,{				
+				message: textSend
+			});
+
+			document.querySelector('[name="txtSend"]').value = '';
+		};
+
+		// botão para desconectar
+		document.querySelector('#btDesconnect').onclick = function(){
+			con1.disconnect();
+		};
+
+
+
+	</script>
+	
+
+</body>
+</html>
