@@ -4,6 +4,7 @@ namespace onservice\services;
 
 class LongPolling{
 
+	public $server = null;
 	private $updatetime = null;
 	private $startinfo = null;
 	private $persistenceDriver = null;

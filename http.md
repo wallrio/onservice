@@ -101,3 +101,19 @@ $server->http->resource('/city/*}',function($urlPar,$requestPar){
 });
 ```
  
+## htaccess
+For the correct operation of this service, it is necessary to configure url rewriting.
+If you use Apache as the server, here's an example of a configuration, which should be inserted into the file .htaccess
+
+```
+	
+	<IfModule mod_rewrite.c>
+		RewriteEngine on	
+		RewriteCond %{REQUEST_FILENAME} !-d
+		RewriteCond %{REQUEST_FILENAME} !-f
+		RewriteCond %{REQUEST_FILENAME} !-l								
+		RewriteRule ^(.+)$ index.php [L]					
+	</IfModule>
+
+```
+

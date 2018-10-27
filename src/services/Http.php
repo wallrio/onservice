@@ -4,6 +4,7 @@ namespace onservice\services;
 
 class Http{
 	
+	public $server = null;
 	public $namespace = 'http';
 
 	public function __construct(){}

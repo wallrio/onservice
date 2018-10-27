@@ -82,6 +82,7 @@ $server = new CreateServer( new Process(), new Http(),... );
 - use onservice\services\LongPolling as LongPolling; 
 - use onservice\services\Process as Process; 
 - use onservice\services\Database as Database; 
+- use onservice\services\Stream as Stream; 
 
 ### more details
 
@@ -89,6 +90,7 @@ $server = new CreateServer( new Process(), new Http(),... );
 - [LongPolling](longpolling.md)
 - [Process](process.md)
 - [Database](database.md)
+- [Stream](stream.md)
 
 
 ## License

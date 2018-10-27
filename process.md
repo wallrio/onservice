@@ -13,7 +13,7 @@ service for create process parallel
 ##### Example:
 ```php
 	$server->process->fork(array(
-		'run'=>function(&$parameters){
+		'run'=>function(&$parameters,$memory,$server){
 			// $parameters = array('name'=>'fulano')
 
 			// your code
@@ -25,5 +25,20 @@ service for create process parallel
 ###### run:
 must contain the code to be executed in the process
 	
+- $parameters =	information passed by the index parameters
+- $memory = compartilhamento de informações entre processos
+- $server = reference to server class
+
+###### $memory
+
+- save data
+$memory->save(string,optional index);
+$server->process->save(string,optional index);
+
+- load data
+$memory->save(optional index);
+$server->process->load(optional index);
+
+
 ###### parameters:
 option to pass values to the process

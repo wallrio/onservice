@@ -1,18 +1,12 @@
 <?php
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-require "../../vendor/autoload.php";
+require "../../../../../vendor/autoload.php";
 
 use onservice\CreateServer as CreateServer;
 use onservice\services\Http as Http;
-use wallrio\services\LongPolling as LongPolling;
 
 // create the server
 $server = new CreateServer(	new Http() );
-
 
 
 $server->http->resource('/{country}/*',function($urlPar,$requestPar){
@@ -21,8 +15,6 @@ $server->http->resource('/{country}/*',function($urlPar,$requestPar){
 		$html .= '<hr>';
 		$html .= '<a href="second">next to second</a><br>';
 		$html .= '<a href="image">next to image</a>';
-
-		print_r($urlPar);
 
 		return array(
 			'body'=>$html,

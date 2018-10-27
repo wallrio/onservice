@@ -4,6 +4,8 @@ namespace onservice\services;
 use onservice\services\Database\InterfaceDatabase as InterfaceDatabase;
 
 class Database{
+
+	public $server = null;
 	public $namespace = 'database';
 
 	public function __construct(InterfaceDatabase $driver){

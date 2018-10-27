@@ -8,14 +8,17 @@ use onservice\services\Process as Process;
 // create the server
 $server = new CreateServer(	new Process() );
 
+// clear memory
+$server->process->memory->clear();
+
 $server->process->fork(array(
 	'run'=>function(&$parameters,$memory,$server){
-		$index=0;
-		while($index<5){
-			echo 'first fork - '.$index."\n";
-			sleep(1);
-			$index++;
-		}
+
+		echo "\n";
+		echo "First process initialized";
+		echo "\n\n";
+
+		$memory->save('information from first process');
 	},
 	'parameters'=>array('index'=>0)
 ));
@@ -23,14 +26,14 @@ $server->process->fork(array(
 
 $server->process->fork(array(
 	'run'=>function(&$parameters,$memory,$server){
-		$index = $parameters['index'] ;
-		$parameters['index'] = intval($index) + 1;
-		$index=0;
-		while($index<5){
-			echo 'second fork - '.$index."\n";
-			sleep(1);
-			$index++;
-		}
+		
+		echo "Second process: ".$memory->load();
+		echo "\n\n";
+		
 	}, 
 	'parameters'=>array('index'=>0)
 ));
+
+
+// to Get Out of Process Memory Information:
+// echo $server->process->memory->load();
