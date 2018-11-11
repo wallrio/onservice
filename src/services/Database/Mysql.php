@@ -2,7 +2,7 @@
 
 namespace onservice\services\Database;
 
-class Mysql implements InterfaceDatabase{
+class Mysql{
 
 
 	public function __construct($host = null,$username = null,$password = null,$basename = null){
@@ -67,9 +67,16 @@ class Mysql implements InterfaceDatabase{
 
 	}
 
+	public function base($name){
+		$this->basename = $name;
+
+		$this->config['basename'] = $name;
+
+		$this->connect();	
+	}
+
 	private $tasks = Array();
 
-	// $server->database->createBase('commit');
 	public function createBase($base){
 		$sql = 'CREATE DATABASE IF NOT EXISTS '.$base.';';
 		
@@ -131,7 +138,7 @@ class Mysql implements InterfaceDatabase{
 
 	}
 
-	public function select($table, $where){	
+	public function select($table, $where = ''){	
 
 		$sql = 'SELECT * FROM '.$table.' ' .(($where != '')?' WHERE '.$where:'');
 
@@ -164,11 +171,10 @@ class Mysql implements InterfaceDatabase{
 
 	public function flush($sql,$array = null){
 		
-
 			$sth = $this->db->prepare($sql);
 			$sth->execute($array);
 			$count = $sth->rowCount();
-			$result = $sth->fetchAll(\PDO::FETCH_ASSOC);
+			$result = $sth->fetchAll(\PDO::FETCH_OBJ);
 			return $result;
 		
 	}

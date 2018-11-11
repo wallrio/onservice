@@ -6,8 +6,97 @@ class Http{
 	
 	public $server = null;
 	public $namespace = 'http';
+	private $routesPath = null;
 
 	public function __construct(){}
+
+	public function routesDir($dir){
+		$this->routesPath = $dir;
+	}
+
+	public function routes(array $contanerContent,$dir = null){
+
+		if($dir == null) $dir = $this->routesPath;
+			
+		if( in_array('index',$contanerContent)){
+			unset($contanerContent[array_search('index', $contanerContent)]);
+			$contanerContent = array_values($contanerContent);
+			array_push($contanerContent, 'Index');
+		} 
+
+		if( in_array('Index',$contanerContent) ){
+			unset($contanerContent[array_search('Index', $contanerContent)]);
+			$contanerContent = array_values($contanerContent);
+			array_push($contanerContent, 'Index');
+		}	
+
+		foreach ($contanerContent as $key => $value) {
+			
+			$classFound = true;
+			$routeFound = false;
+			if(!file_exists($dir.DIRECTORY_SEPARATOR.ucfirst($value).'.php')) continue;
+
+			require $dir.DIRECTORY_SEPARATOR.ucfirst($value).'.php';
+
+			eval('$route = new \onservice\http\routes\\'.ucfirst($value).'();');
+			$class_methods = get_class_methods($route);
+			foreach ($class_methods as $key2 => $value2) {
+				
+				$routeCurrent = $route->$value2();
+				
+				if( gettype($routeCurrent) == 'object' ){
+					$arrayRoutes = array(array('method'=>$routeCurrent));
+				}else if( gettype($routeCurrent) == 'array' ){
+					$arrayRoutes = $routeCurrent;
+				}else{
+					$arrayRoutes = array(array('method'=>$routeCurrent));
+				}
+
+				if($value == 'Index'){
+					if($value2 == 'index') 
+						$routeRef = '/';
+					else
+						$routeRef = '/'.strtolower($value2);
+				}else{
+					$routeRef = '/'.strtolower($value).'/'.strtolower($value2);
+				}
+
+				
+	
+				foreach ($arrayRoutes as $key3 => $value3) {
+					$routeFinish = $value3;
+					
+					if(gettype($routeFinish) == 'array'){					
+						
+						$routeRef = $routeRef.'/'. (isset($routeFinish['route'])?$routeFinish['route']:'');
+						$methodRef = isset($routeFinish['method'])?$routeFinish['method']:null;
+
+					}else{
+						$methodRef = $routeFinish;
+					}
+					
+					$routeRef = preg_replace('#//#si', '/', $routeRef); 
+					$routeRef = preg_replace('#//#si', '/', $routeRef); 
+				
+					if($routeRef == null || $methodRef == null) continue;
+		
+					$routeFound = $this->server->http->resource($routeRef,$methodRef);
+				}
+
+			}
+			
+			if(method_exists($route, '__error')){
+
+				$routeCurrent = $route->__error();			
+				$methodRef = $routeCurrent;				
+				$routeRef = '*';
+	
+				$this->server->http->resource($routeRef,$methodRef);
+			}
+		
+			
+		}
+	}
 
 	public function checkRequest($route,&$args,&$requestPath){
 		
@@ -30,6 +119,8 @@ class Http{
 		if(count($routeArray)<1) $routeArray = array('/');
 		if(count($requestPathArray)<1) $requestPathArray = array('/');
 
+
+		$showerAll = false;
 		$shower = true;
 		$index = 0;
 		$parameters = array();
@@ -49,12 +140,33 @@ class Http{
 				$requestPathArrayFiltred = isset($requestPathArray[$key])?$requestPathArray[$key]:null;
 			}
 
-		
-			if (  $valueFiltred != $requestPathArrayFiltred  && $value != '*' ) {
-					$shower = false;				
+
+			if (  $valueFiltred != $requestPathArrayFiltred  && $value != '.' ) {
+					if($value !== '*')
+					$shower = false;	
+
+					if($value === '*')
+					$showerAll = false;	
+
+				
+			}else if (  $valueFiltred != $requestPathArrayFiltred  && $value != '*' ) {
+					if($value === '.')
+					$showerAll = true;		
+						
+			}else{
+				if($value !== ''){					
+					$shower = true;	
+					$showerAll = true;		
+				}
 			}
 			
 
+		}
+
+		if($showerAll === true){
+			$args = $parameters;
+			if(count($requestPathArray) < count($routeArray) || count($requestPathArray) > count($routeArray))
+				return false;
 		}
 
 		if($shower === true){

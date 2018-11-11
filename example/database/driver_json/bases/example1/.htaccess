@@ -1,0 +1,7 @@
+# Block directory list view
+Options -Indexes
+# Block the visualization of document JSON
+<Files "*_jdoc.json">
+Order Allow,Deny
+Deny from all
+</Files>

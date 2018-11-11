@@ -8,49 +8,15 @@ class Database{
 	public $server = null;
 	public $namespace = 'database';
 
-	public function __construct(InterfaceDatabase $driver){
+	public function __construct($driver){
 		$this->driver = $driver;		
 	}
 
-	public function test(){
-		echo 'abc';
+	public function __call($method,$arguments){		
+		if( method_exists($this->driver, $method) )
+			return call_user_func_array(array($this->driver,$method), $arguments);
+		else{
+			throw new \Exception("Method Not Exist: ".$method, 1);	
+		}
 	}
-
-	public function config(array $parameters = null){
-		return $this->driver->config($parameters);
-	}
-
-
-	public function flush(){
-		return $this->driver->flush();
-	}
-
-	public function query($sql,$useFlush = false){
-		return $this->driver->query($sql,$useFlush);
-	}
-
-	public function createBase($base){
-		return $this->driver->createBase($base);
-	}
-	public function createTable($table,array $fields){
-		return $this->driver->createTable($table,$fields);
-	}
-
-	public function insert($table,array $fields){
-		return $this->driver->insert($table,$fields);
-	}
-
-	public function update($table,array $fields,$where = ''){
-		return $this->driver->update($table,$fields,$where);
-	}
-
-	public function delete($table,$where = ''){
-		return $this->driver->delete($table,$where);
-	}
-
-	public function select($table,$where = ''){
-		return $this->driver->select($table,$where);
-	}
-
-	
 }
