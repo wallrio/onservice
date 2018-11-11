@@ -3,7 +3,7 @@
 
 require "../../../../../../vendor/autoload.php";
 
-use onservice\Debug as Debug;  (new Debug());
+use onservice\Debug as Debug; (new Debug);
 use onservice\CreateServer as CreateServer;
 use onservice\services\Database as Database;
 use onservice\services\Database\Mysql as Mysql;

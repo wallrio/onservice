@@ -49,7 +49,7 @@ class JSON {
 	public function base($base){
 		$this->basename = $base;
 
-		return new Base($this->dir,$this->basename);
+		return new Collection($this->dir,$this->basename);
 	}
 
 
