@@ -159,7 +159,7 @@ The example above Find "Wallace"
 - Example with *
 ```php
 $result = $collection->document->select(array(
-	'username' => 'alla'
+	'username' => '*alla'
 ));
 ```
 
