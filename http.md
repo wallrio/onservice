@@ -183,7 +183,7 @@ $server->http->routes(__DIR__.DIRECTORY_SEPARATOR.'http'.DIRECTORY_SEPARATOR.'ro
 - Structure of Directory/Files (Classes)
 
 
-![screenshot from 2017-11-25 21-47-41](https://rawgit.com/wallrio/onservice/help/http/master/structure-dir.png)
+![screenshot from 2017-11-25 21-47-41](https://raw.githubusercontent.com/wallrio/onservice/master/help/http/structure-dir.png)
 
 
 - Existing routes confirm structure above
