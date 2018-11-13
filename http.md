@@ -182,27 +182,8 @@ $server->http->routes(__DIR__.DIRECTORY_SEPARATOR.'http'.DIRECTORY_SEPARATOR.'ro
 
 - Structure of Directory/Files (Classes)
 
-```
-----app
-	 |
-	 +--- http
-	 |		|
-	 |		+---routes
-	 |		      |
-	 |		      +---Index.php
-	 |			  |
-	 |		      |---Users
-	 |			  |		|
-	 |			  |		+---Index.php
-	 |			  |		|
-	 |			  |		+---Logon.pgp
-	 |			  |
-	 |		      +---Companies
-	 |			  		|
-	 |					+---List.php
-	 |
-	 +---index.php
-```
+
+![screenshot from 2017-11-25 21-47-41](https://rawgit.com/wallrio/onservice/help/http/master/structure-dir.png)
 
 
 - Existing routes confirm structure above
