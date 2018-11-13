@@ -299,7 +299,9 @@ class Logon {
 
 > the class route above will be "/logon/user/ID_OF_USER"
 
-##### Important
+##### Notes on the routes
+
 - The directory name is the first level of the route
 - The class name is the second level of the route
 - To create more levels use the parameter 'route' inside of class
+- For each class is implicit the "namespace onservice\http\routes\ROUTE_CURRENT"
