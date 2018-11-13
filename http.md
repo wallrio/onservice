@@ -151,23 +151,21 @@ If you use Apache as the server, here's an example of a configuration, which sho
 Use your routes in separate files, grouping them into distinct classes.
 This method is useful for use when there are a large number of routes.
 
-- First:  Set up a directory to contain the routes
+
+#### Set up a directory to contain the routes
+
 
 ```php
-$server->http->routesDir(DIRECTORY_PATH);
-```
-
-
-- Second:  define in an array the classes that will define the routes
-
-```php
-$server->http->routes(ARRAY_OF_ROUTES);
+$server->http->routes(DIRECTORY_OF_ROUTES);
 ```
 
 - Example
+
 ```php
-$server->http->routes(array('Users','Companies'));
+$server->http->routes(__DIR__.DIRECTORY_SEPARATOR.'http'.DIRECTORY_SEPARATOR.'routes');
 ```
+
+
 
 #### Example complete
 
@@ -179,162 +177,148 @@ use onservice\services\Http as Http;
 
 $server = new CreateServer(	new Http() );
 
-$server->http->routesDir(__DIR__.DIRECTORY_SEPARATOR.'routes');
-$server->http->routes(array('Index','Users','Companies'));
+$server->http->routes(__DIR__.DIRECTORY_SEPARATOR.'http'.DIRECTORY_SEPARATOR.'routes');
 ```
 
-- Directory/Files (Classes)
+- Structure of Directory/Files (Classes)
 
 ```
 ----app
 	 |
-	 |---routes
-	 |     |
-	 |     |---Index.php
-	 |     |---Users.php
-	 |     |---Companies.php
+	 +--- http
+	 |		|
+	 |		+---routes
+	 |		      |
+	 |		      +---Index.php
+	 |			  |
+	 |		      |---Users
+	 |			  |		|
+	 |			  |		+---Index.php
+	 |			  |		|
+	 |			  |		+---Logon.pgp
+	 |			  |
+	 |		      +---Companies
+	 |			  		|
+	 |					+---List.php
 	 |
-	 |
-	 |---index.php
+	 +---index.php
 ```
 
 
--- Index Class (optional)
-The "Index" class is optional, if you want to create a route in the root it will be necessary to use it.
-To use, it is mandatory for the class name to be "Index" and to have a method with the name "index"
+- Existing routes confirm structure above
+
+	- /users/
+		- is broken exists because there is class /users/Index.php
+
+	- /users/logon
+		- is broken exists because there is class /users/Logon.php
+
+	- /companies/list
+		- is broken exists because there is class /companies/List.php
 
 
+- File: /users/Index.php
 
 ```php
-namespace onservice\http\routes;
 
 class Index {
 	
-	// url: /
-	public function index(){
-		return function($urlPar,$requestPar){
-
-			return array(
-				'body' 		=> 'First page',
-				'code'		=> 200,
-				'message'	=> 'Ok',
-				'type'		=> 'text/html'
-			);	
-
-		};
-	}
-
-	public function __error(){
-		return function($urlPar,$requestPar){	
-			return array(
-				'body' 		=> 'Error 404',
-				'code'		=> 404,
-				'message'	=> 'Not Found',
-				'type'		=> 'application/json'
-			);
-		};
-	}
-
-}
-```
-
-- To set an error response for non-existent routes, use the "__error", similar to the above example.
-
-
--- Code on Classe Users.php
-
-```php
-
-namespace onservice\http\routes;
-
-class Users // part of route: /users/
-{
-	function __construct(){}
-
-	// end of route: /user/logon
-	public function logon(){
-
-		return function($urlPar,$requestPar){	
-			$response = json_encode(array('status'=>'success'));
-			return array(
-				'body' 		=> $response,
-				'code'		=> 200,
-				'message'	=> 'Ok',
-				'type'		=> 'application/json'
-			);
-		};
+	
+	public function index($urlPar,$requestPar){		
 		
+		return array(
+			'body' 		=> 'route: /',
+			'code'		=> 200,
+			'message'	=> 'Ok',
+			'type'		=> 'application/json'
+		);	
 	}
 
-	// custom route: /user/get/ID_OF_USER/email
-	public function get(){
+	public function error($urlPar,$requestPa){
+		
 		return array(
-			'route'=>'{id}/email',
-			'method' => function($urlPar,$requestPar){
-				
-				$userid = $urlPar['id'];							
-				
-				$response = json_encode(array('email'=>$mail));
-
-				return array(
-					'body' 		=> $response,
-					'code'		=> 200,
-					'message'	=> 'Ok',
-					'type'		=> 'application/json'
-				);
-			}
+			'body' 		=> 'Error 404',
+			'code'		=> 404,
+			'message'	=> 'Not Found',
+			'type'		=> 'application/json'
 		);
 	}
-}
 
+}
 ```
 
-#### Example the method with multiples routes
+- To set an error response for non-existent routes, use the method "error", similar to the above example.
+
+- the response of the routes will always be executed in the "index" method of the class.
+
+- File: /users/Logon.php
 
 ```php
 
-public function register(){
+class Logon {
+	
+	
+	public function index($urlPar,$requestPar){		
+		
 		return array(
-			// custom route: /register
-			array(							
-				'method' => function($urlPar,$requestPar){
-
-					$response = json_encode(array('status'=>'missing id of register'));
-
-					return array(
-						'body' 		=> $response,
-						'code'		=> 403,
-						'message'	=> 'Ok',
-						'type'		=> 'application/json'
-					);	
-				}
-			),
-			
-			// custom route: /register/ID
-			array(			
-				'route'=>'/{id}',
-				'method' => function($urlPar,$requestPar){
-
-					$deviceId = $urlPar['id'];
-
-					$response = json_encode(array('status'=>'success'));
-
-					return array(
-						'body' 		=> $response,
-						'code'		=> 200,
-						'message'	=> 'Ok',
-						'type'		=> 'application/json'
-					);	
-				}
-			)
-		);
+			'body' 		=> 'route: /users/logon',
+			'code'		=> 200,
+			'message'	=> 'Ok',
+			'type'		=> 'application/json'
+		);	
 	}
 
+}
 ```
 
+- File: /companies/Logon.php
+
+```php
+
+class Logon {
+	
+	
+	public function index($urlPar,$requestPar){		
+		
+		return array(
+			'body' 		=> 'route: /companies/List',
+			'code'		=> 200,
+			'message'	=> 'Ok',
+			'type'		=> 'application/json'
+		);	
+	}
+
+}
+```
+
+
+#### Custom routes 
+Create a property named "route" within the class for the desired route, its value enter the remainder of the custom route.
+
+##### Example
+
+```php
+
+class Logon {
+	
+	public $route = 'user/{iduser}';
+	
+	public function index($urlPar,$requestPar){		
+		
+		return array(
+			'body' 		=> 'route: /companies/List',
+			'code'		=> 200,
+			'message'	=> 'Ok',
+			'type'		=> 'application/json'
+		);	
+	}
+
+}
+```
+
+> the class route above will be "/logon/user/ID_OF_USER"
 
 ##### Important
-- It is mandatory to use the 'namespace' with the name 'onservice\http\routes'
-- The class name is the first level of the route
-- The method name is the second level of the route
-- To create more levels use the parameter 'route'
+- The directory name is the first level of the route
+- The class name is the second level of the route
+- To create more levels use the parameter 'route' inside of class

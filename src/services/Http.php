@@ -10,92 +10,138 @@ class Http{
 
 	public function __construct(){}
 
-	public function routesDir($dir){
-		$this->routesPath = $dir;
+
+
+	// busca as rotas no diretório recursivamente 
+	public function findRecursive($dir,$parent = ''){
+		$dirArray = scandir($dir);
+		$newArray = [];
+		
+		foreach ($dirArray as $key => $value) {
+			if($value == '.' || $value == '..') unset($dirArray[$key]);
+		}
+		foreach ($dirArray as $key => $value) {
+			if(is_dir($dir.DIRECTORY_SEPARATOR.$value)){
+				if(substr($value, 0,1)=='_')continue;
+				$newArray2 = $this->findRecursive($dir.DIRECTORY_SEPARATOR.$value,$parent.'/'.$value);
+				$newArray = array_merge($newArray,$newArray2);		
+			}else{
+				if(substr($value, 0,1)=='_')continue;
+				$valueName = $value;			
+				$valueName = $parent.'/'.$value;
+
+				$valueName = strtolower($valueName);
+				$valueName = str_replace('.php', '', $valueName);
+				$newArray[$valueName] = $parent.'/'.$value;
+			}
+		}
+		return $newArray;
 	}
 
-	public function routes(array $contanerContent,$dir = null){
+	// cria as rotas
+	public function routes($dir = null){
 
-		if($dir == null) $dir = $this->routesPath;
-			
-		if( in_array('index',$contanerContent)){
-			unset($contanerContent[array_search('index', $contanerContent)]);
-			$contanerContent = array_values($contanerContent);
-			array_push($contanerContent, 'Index');
-		} 
+		$this->routesPath = $dir;	
 
-		if( in_array('Index',$contanerContent) ){
-			unset($contanerContent[array_search('Index', $contanerContent)]);
-			$contanerContent = array_values($contanerContent);
-			array_push($contanerContent, 'Index');
-		}	
+		$dirs = $this->findRecursive($dir);
 
-		foreach ($contanerContent as $key => $value) {
-			
-			$classFound = true;
-			$routeFound = false;
-			if(!file_exists($dir.DIRECTORY_SEPARATOR.ucfirst($value).'.php')) continue;
+		foreach ($dirs as $key => $value) {
 
-			require $dir.DIRECTORY_SEPARATOR.ucfirst($value).'.php';
-
-			eval('$route = new \onservice\http\routes\\'.ucfirst($value).'();');
-			$class_methods = get_class_methods($route);
-			foreach ($class_methods as $key2 => $value2) {
-				
-				$routeCurrent = $route->$value2();
-				
-				if( gettype($routeCurrent) == 'object' ){
-					$arrayRoutes = array(array('method'=>$routeCurrent));
-				}else if( gettype($routeCurrent) == 'array' ){
-					$arrayRoutes = $routeCurrent;
-				}else{
-					$arrayRoutes = array(array('method'=>$routeCurrent));
-				}
-
-				if($value == 'Index'){
-					if($value2 == 'index') 
-						$routeRef = '/';
-					else
-						$routeRef = '/'.strtolower($value2);
-				}else{
-					$routeRef = '/'.strtolower($value).'/'.strtolower($value2);
-				}
-
-				
-	
-				foreach ($arrayRoutes as $key3 => $value3) {
-					$routeFinish = $value3;
-					
-					if(gettype($routeFinish) == 'array'){					
-						
-						$routeRef = $routeRef.'/'. (isset($routeFinish['route'])?$routeFinish['route']:'');
-						$methodRef = isset($routeFinish['method'])?$routeFinish['method']:null;
-
-					}else{
-						$methodRef = $routeFinish;
-					}
-					
-					$routeRef = preg_replace('#//#si', '/', $routeRef); 
-					$routeRef = preg_replace('#//#si', '/', $routeRef); 
-				
-					if($routeRef == null || $methodRef == null) continue;
-		
-					$routeFound = $this->server->http->resource($routeRef,$methodRef);
-				}
-
+			$isIndex = false;
+			$routeRef = $key;
+			$routeRef = explode('/', $routeRef);
+			if( strtolower(end($routeRef)) == 'index'){
+				unset($routeRef[count($routeRef)-1]);
+				$isIndex = true;
 			}
-			
-			if(method_exists($route, '__error')){
+			$routeRef = implode('/', $routeRef);
 
-				$routeCurrent = $route->__error();			
-				$methodRef = $routeCurrent;				
-				$routeRef = '*';
-	
-				$this->server->http->resource($routeRef,$methodRef);
-			}
-		
 			
+			$dirEnd = $dir.ucfirst($value);
+			$dirEnd = str_replace('//', '/', $dirEnd);
+			$content = file_get_contents($dirEnd);
+			$content = str_replace('<?php', '', $content);
+			$content = str_replace('?>', '', $content);
+
+			
+			$className = explode('/', $key);
+			$className = end($className);
+			$keyNamespace = dirname($key);
+			$keyNamespace = str_replace('/', '\\', $keyNamespace);
+			
+			if($keyNamespace == '\\')$keyNamespace = "";
+
+			$namespace = 'onservice\http\routes'.$keyNamespace.'';
+			ob_start();
+			echo 'namespace '.$namespace.';';
+			echo $content;
+			$content2 = ob_get_contents();
+			ob_get_clean();
+			eval( $content2);		
+			eval('$route = new \\'.$namespace.'\\'.ucfirst($className).';');
+			
+			// custom route in class
+			if(isset($route->route)) $routeRef = $routeRef.'/'.$route->route;
+			
+			if($routeRef == '')$routeRef='/';
+			$routeFound = $this->server->http->resource($routeRef,$route,'index');			
 		}
+		
+
+		// realinha para o final caso exista classe Index
+		$listDirs = [];
+		foreach ($dirs as $key => $value) {
+			$routeRef = explode('/', $key);
+
+			if( strtolower(end($routeRef)) == 'index'){				
+				$listDirs[$key] = $dirs[$key];
+				unset($dirs[$key]);
+			}
+		}
+		arsort($listDirs);
+		foreach ($listDirs as $key => $value) $dirs[$key] = $value;
+
+		// cria rota de erro quando existir o methdo de erro (error)
+		foreach ($dirs as $key => $value) {
+			$isIndex = false;
+			$routeRef = $key; 
+			$routeRef = explode('/', $routeRef);
+			if( strtolower(end($routeRef)) == 'index'){
+				unset($routeRef[count($routeRef)-1]);
+				$isIndex = true;
+			}
+			$routeRef = implode('/', $routeRef);
+
+			
+			$dirEnd = $dir.ucfirst($value);
+			$dirEnd = str_replace('//', '/', $dirEnd);
+			$content = file_get_contents($dirEnd);
+			$content = str_replace('<?php', '', $content);
+			$content = str_replace('?>', '', $content);
+
+			
+			$className = explode('/', $key);
+			$className = end($className);
+			$keyNamespace = dirname($key);
+			$keyNamespace = str_replace('/', '\\', $keyNamespace);
+			
+			if($keyNamespace == '\\')$keyNamespace = "";
+
+			$namespace = 'onservice\http\routes'.$keyNamespace.'';
+			
+			eval('$route = new \\'.$namespace.'\\'.ucfirst($className).';');
+			
+			// custom route in class
+			if(isset($route->route)) $routeRef = $routeRef.'/'.$route->route;
+			
+			if($routeRef == '')$routeRef='/';
+
+			if (method_exists($route, 'error')) {		
+				$routeFound = $this->server->http->resource($routeRef.'/*',$route,'error');
+			}
+
+		}
+		
 	}
 
 	public function checkRequest($route,&$args,&$requestPath){
@@ -194,14 +240,21 @@ class Http{
 
 	}
 
-	public function resource($route,$callback){
+	public function resource($route,$callback,$methodMode = false){
 		
+		
+
 		if($this->checkRequest($route,$parameters,$requestPath)){
 
 			$requestPar = $this->getRequest();
 			$requestPar['url'] = $requestPath;
 
-			$response = $callback($parameters,$requestPar,$this->server);
+			if( $methodMode !== false ){
+				if(method_exists($callback, $methodMode))
+				$response = $callback->$methodMode($parameters,$requestPar,$this->server);
+			}else{
+				$response = $callback($parameters,$requestPar,$this->server);
+			}
 
 			$body = isset($response['body'])?$response['body']:null;
 			$code = isset($response['code'])?$response['code']:200;

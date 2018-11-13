@@ -14,6 +14,4 @@ use onservice\services\Http as Http;
 
 $server = new CreateServer(	new Http() );
 
-$server->http->routesDir(__DIR__.DIRECTORY_SEPARATOR.'routes');
-
-$server->http->routes(array('Index','Users','Companies'));
+$server->http->routes(__DIR__.DIRECTORY_SEPARATOR.'http'.DIRECTORY_SEPARATOR.'routes');
