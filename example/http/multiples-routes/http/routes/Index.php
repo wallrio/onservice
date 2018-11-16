@@ -2,12 +2,6 @@
 
 class Index{		
  
-	// public $route = '*';
-
-	function __construct(){		
-			
-		
-	}
 
 	public function index($urlPar,$requestPar){		
 		
@@ -15,7 +9,18 @@ class Index{
 			'body' 		=> 'route: /',
 			'code'		=> 200,
 			'message'	=> 'Ok',
-			'type'		=> 'application/json'
+			'type'		=> 'text/plain'
+		);	
+	}
+
+	/** @route: /test **/
+	public function test($urlPar,$requestPar){		
+		
+		return array(
+			'body' 		=> 'route: /test',
+			'code'		=> 200,
+			'message'	=> 'Ok',
+			'type'		=> 'text/plain'
 		);	
 	}
 	
@@ -25,7 +30,7 @@ class Index{
 			'body' 		=> 'Error 404',
 			'code'		=> 404,
 			'message'	=> 'Not Found',
-			'type'		=> 'application/json'
+			'type'		=> 'text/plain'
 		);
 	}
 	

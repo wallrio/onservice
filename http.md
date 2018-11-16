@@ -156,8 +156,10 @@ This method is useful for use when there are a large number of routes.
 
 
 ```php
-$server->http->routes(DIRECTORY_OF_ROUTES);
+$server->http->routes('DIRECTORY_OF_ROUTES');
 ```
+
+> DIRECTORY_OF_ROUTES = directories where the classes of the routes will be hosted, if omitted will be defined "http/routes/"
 
 - Example
 
@@ -211,7 +213,7 @@ class Index {
 			'body' 		=> 'route: /',
 			'code'		=> 200,
 			'message'	=> 'Ok',
-			'type'		=> 'application/json'
+			'type'		=> 'text/plain'
 		);	
 	}
 
@@ -221,7 +223,7 @@ class Index {
 			'body' 		=> 'Error 404',
 			'code'		=> 404,
 			'message'	=> 'Not Found',
-			'type'		=> 'application/json'
+			'type'		=> 'text/plain'
 		);
 	}
 
@@ -230,7 +232,7 @@ class Index {
 
 - To set an error response for non-existent routes, use the method "error", similar to the above example.
 
-- the response of the routes will always be executed in the "index" method of the class.
+- The response of the routes will always be executed in the "index" method of the class.
 
 - File: /users/Logon.php
 
@@ -245,7 +247,7 @@ class Logon {
 			'body' 		=> 'route: /users/logon',
 			'code'		=> 200,
 			'message'	=> 'Ok',
-			'type'		=> 'application/json'
+			'type'		=> 'text/plain'
 		);	
 	}
 
@@ -262,10 +264,10 @@ class Logon {
 	public function index($urlPar,$requestPar){		
 		
 		return array(
-			'body' 		=> 'route: /companies/List',
+			'body' 		=> 'route: /companies/logon',
 			'code'		=> 200,
 			'message'	=> 'Ok',
-			'type'		=> 'application/json'
+			'type'		=> 'text/plain'
 		);	
 	}
 
@@ -274,7 +276,10 @@ class Logon {
 
 
 #### Custom routes 
-Create a property named "route" within the class for the desired route, its value enter the remainder of the custom route.
+It is possible to create custom routes within your classes, all classes accept custom routes:
+
+- create methods with a name of your choice, except for the name "index".
+- set the method route in annotations (comments)
 
 ##### Example
 
@@ -282,26 +287,81 @@ Create a property named "route" within the class for the desired route, its valu
 
 class Logon {
 	
-	public $route = 'user/{iduser}';
-	
-	public function index($urlPar,$requestPar){		
+	/** @route: /user/wallrio **/
+	public function getUserDataFromWallrio($urlPar,$requestPar){		
 		
 		return array(
-			'body' 		=> 'route: /companies/List',
+			'body' 		=> 'route: /logon/user/wallrio',
 			'code'		=> 200,
 			'message'	=> 'Ok',
-			'type'		=> 'application/json'
+			'type'		=> 'text/plain'
 		);	
 	}
 
 }
 ```
 
-> the class route above will be "/logon/user/ID_OF_USER"
+> the class route above will be "/logon/user/wallrio"
+
+##### Dynamic routes - Example
+
+```php
+
+class Logon {
+	
+	/** @route: /user/{iduser} **/
+	public function getUserDataFromID($urlPar,$requestPar){		
+		
+		return array(
+			'body' 		=> 'route: /logon/user/ID_OF_USER',
+			'code'		=> 200,
+			'message'	=> 'Ok',
+			'type'		=> 'text/plain'
+		);	
+	}
+
+}
+```
+
+##### Dynamic routes with fixed routes - Example
+It is possible to create dynamic routes, and set some exceptions with other destinations.
+To do this create the dynamic route, and above them create the fixed route.
+
+> Fixed routes should always be above the dynamics
+
+```php
+
+class Logon {
+	
+	/** @route: /user/wallrio **/
+	public function getUserDataFromWallrio($urlPar,$requestPar){		
+		
+		return array(
+			'body' 		=> 'route: /logon/user/wallrio',
+			'code'		=> 200,
+			'message'	=> 'Ok',
+			'type'		=> 'text/plain'
+		);	
+	}
+
+	/** @route: /user/{iduser} **/
+	public function getUserDataFromID($urlPar,$requestPar){		
+		
+		return array(
+			'body' 		=> 'route: /logon/user/ID_OF_USER',
+			'code'		=> 200,
+			'message'	=> 'Ok',
+			'type'		=> 'text/plain'
+		);	
+	}
+
+}
+```
+
 
 ##### Notes on the routes
 
 - The directory name is the first level of the route
 - The class name is the second level of the route
-- To create more levels use the parameter 'route' inside of class
+- To create more levels use annotattions of methods
 - For each class is implicit the "namespace onservice\http\routes\ROUTE_CURRENT"
