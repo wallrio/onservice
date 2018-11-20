@@ -85,7 +85,7 @@ use onservice\services\Http as Http;
 // create the server
 $server = new CreateServer(	new Http() );
 
-$server->http->resource('/city/*',function($urlPar,$requestPar){
+$server->http->resource('/city/+',function($urlPar,$requestPar){
 
 	// $urlPar = Array ( [country] => brasil )
 	// $requestPar = Array ( [method] => get [url] => /city/brasil/sao-paulo )
@@ -107,9 +107,9 @@ $server->http->resource('/city/*',function($urlPar,$requestPar){
 #### special characters:
 | Key | Value |
 |--|--|
-| . | includes all sub-levels (DOT) |
+| . | Includes all on the next level (DOT) |
 |   | only the current level (Empty) |
-| * | includes the current level and all sub-levels (ASTERISK)|
+| + | includes the current level and all sub-levels (ASTERISK)|
 
 - DOT (.)
 ```
@@ -118,7 +118,7 @@ $server->http->resource('/city/.',FUNCTION);
 
 - ASTERISK (*)
 ```
-$server->http->resource('/city/*',FUNCTION);
+$server->http->resource('/city/+',FUNCTION);
 ```
 
 - EMPTY 
@@ -202,6 +202,7 @@ $server->http->routes(__DIR__.DIRECTORY_SEPARATOR.'http'.DIRECTORY_SEPARATOR.'ro
 
 - File: /users/Index.php
 
+
 ```php
 
 class Index {
@@ -224,6 +225,7 @@ class Index {
 			'code'		=> 404,
 			'message'	=> 'Not Found',
 			'type'		=> 'text/plain'
+
 		);
 	}
 
@@ -233,6 +235,7 @@ class Index {
 - To set an error response for non-existent routes, use the method "error", similar to the above example.
 
 - The response of the routes will always be executed in the "index" method of the class.
+
 
 - File: /users/Logon.php
 
@@ -248,6 +251,7 @@ class Logon {
 			'code'		=> 200,
 			'message'	=> 'Ok',
 			'type'		=> 'text/plain'
+
 		);	
 	}
 
@@ -329,10 +333,11 @@ To do this create the dynamic route, and above them create the fixed route.
 
 > Fixed routes should always be above the dynamics
 
+
 ```php
 
 class Logon {
-	
+
 	/** @route: /user/wallrio **/
 	public function getUserDataFromWallrio($urlPar,$requestPar){		
 		
@@ -358,10 +363,12 @@ class Logon {
 }
 ```
 
+> the class route above will be "/logon/user/ID_OF_USER"
 
 ##### Notes on the routes
 
 - The directory name is the first level of the route
 - The class name is the second level of the route
 - To create more levels use annotattions of methods
+
 - For each class is implicit the "namespace onservice\http\routes\ROUTE_CURRENT"

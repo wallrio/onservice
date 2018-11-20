@@ -10,6 +10,9 @@ class Http{
 
 	public function __construct(){}
 
+
+
+
 	public function findRecursive($dir,$parent = '',$nivel = 0){
 		$dirArray = scandir($dir);
 		$newArray = [];
@@ -35,7 +38,8 @@ class Http{
 		return $newArray;
 	}
 
-	
+
+	// cria as rotas
 	public function routes($dir = null){
 
 		if($dir === null){
@@ -48,6 +52,7 @@ class Http{
 
 		$dirs = $this->findRecursive($dir);
 
+
 		foreach ($dirs as $key => $value) {
 
 			$isIndex = false;
@@ -59,12 +64,17 @@ class Http{
 			}
 			$routeRef = implode('/', $routeRef);
 
+			
 			$dirEnd = $dir.ucfirst($value);
 			$dirEnd = str_replace('//', '/', $dirEnd);
+
+			
+
 
 			$content = file_get_contents($dirEnd);
 			$content = str_replace('<?php', '', $content);
 			$content = str_replace('?>', '', $content);
+
 
 			$className = explode('/', $key);
 			$className = end($className);
@@ -72,6 +82,7 @@ class Http{
 			$keyNamespace = str_replace('/', '\\', $keyNamespace);
 			
 			if($keyNamespace == '\\')$keyNamespace = "";
+
 
 			$namespace = 'onservice\http\routes'.$keyNamespace.'';
 			ob_start();
@@ -96,8 +107,7 @@ class Http{
 				$method = $value;						
 				$r = new \ReflectionClass( $namespace.'\\'.ucfirst($className) );
 				$doc = $r->getMethod($method)->getDocComment();
-				
-				preg_match_all('#@(.*?)[\*|\n]#s', $doc, $annotations);
+				preg_match_all('#@(.*?)(\*\*\/|\n)#s', $doc, $annotations);
 				$annoArray = $annotations[1];
 
 				$annoArrayNew = [];				
@@ -110,7 +120,7 @@ class Http{
 
 				if($customRoute !== false){
 					$customRoute = trim($customRoute);
-					$routeRef_end = $routeRef.''.$customRoute;	
+					$routeRef_end = $routeRef.''.$customRoute;				
 					$routeFound = $this->server->http->resource($routeRef_end,$route,$method);
 				}
 
@@ -159,12 +169,13 @@ class Http{
 			
 			eval('$route = new \\'.$namespace.'\\'.ucfirst($className).';');
 		
+
 			if(isset($route->route)) $routeRef = $routeRef.'/'.$route->route;
 			
 			if($routeRef == '')$routeRef='/';
 
 			if (method_exists($route, 'error')) {		
-				$routeFound = $this->server->http->resource($routeRef.'/*',$route,'error');
+				$routeFound = $this->server->http->resource($routeRef.'/+',$route,'error');
 			}
 
 		}
@@ -173,6 +184,7 @@ class Http{
 
 	public function checkRequest($route,&$args,&$requestPath){
 		
+		$route = str_replace('//', '/', $route);
 		$REQUEST_SCHEME = isset($_SERVER['REQUEST_SCHEME'])?$_SERVER['REQUEST_SCHEME']:null;
 		$HTTP_HOST = isset($_SERVER['HTTP_HOST'])?$_SERVER['HTTP_HOST']:null;
 		$REQUEST_URI = isset($_SERVER['REQUEST_URI'])?$_SERVER['REQUEST_URI']:null;
@@ -183,6 +195,7 @@ class Http{
 
 		$requestPath = str_replace(dirname($SCRIPT_NAME), '', $REQUEST_URI);
 		$routeArray = explode('/', $route);
+		
 		$requestPathArray = explode('/', $requestPath);
 		$routeArray = array_filter($routeArray);
 		$routeArray = array_values($routeArray);
@@ -192,59 +205,58 @@ class Http{
 		if(count($routeArray)<1) $routeArray = array('/');
 		if(count($requestPathArray)<1) $requestPathArray = array('/');
 
+		
+		
 		$showerAll = false;
 		$shower = true;
 		$index = 0;
 		$parameters = array();
-		foreach ($routeArray as $key => $value) {
-			$index++;
-			
-			preg_match_all('/{(.*)}/m', $value , $matches);
 
-			if( isset($requestPathArray[$key]) && count($matches[1]) > 0){
-				$valueFiltred = str_replace('{'.$matches[1][0].'}', '', $value);
-				$requestPathArrayFiltred = substr($requestPathArray[$key], 0,strlen($valueFiltred));
-				$requestPathArrayFiltred2 = str_replace($requestPathArrayFiltred, '', $requestPathArray[$key]);
-				$parameters[ $matches[1][0] ] = isset($requestPathArrayFiltred2)?$requestPathArrayFiltred2:null;
-			}else{
-				$valueFiltred = $value;
-				$requestPathArrayFiltred = isset($requestPathArray[$key])?$requestPathArray[$key]:null;
+
+		$found = false;
+		$countFound = 0;
+		$asteriskFound = false;
+		foreach ($routeArray as $key => $value) {
+
+			preg_match_all('/{(.*)}/m', $value , $matches);
+		
+			if( isset($requestPathArray[$key])){				
+				if($value == $requestPathArray[$key]){
+					$countFound++;
+				}else{
+					if($value == '+'){
+						$countFound++;
+						$asteriskFound = true;
+					}else if($value == '.'){
+						$countFound++;
+					}
+				}
+
 			}
 
-			
-			if (  $valueFiltred != $requestPathArrayFiltred  && $value != '.' ) {
-					if($value !== '*')
-					$shower = false;	
+			if( count($matches[1]) > 0){
+				$countFound++;
 
-					if($value === '*')
-					$showerAll = false;	
-
-			}else if (  $valueFiltred != $requestPathArrayFiltred  && $value != '*' ) {
-					if($value === '.')
-					$showerAll = true;		
-						
-			}else{
-				if($value !== ''){					
-					$shower = true;	
-					$showerAll = true;		
+				$valueFiltred = str_replace('{'.$matches[1][0].'}', '', $value);
+				if( isset($requestPathArray[$key]) ){
+					$requestPathArrayFiltred = substr($requestPathArray[$key], 0,strlen($valueFiltred));				
+					$requestPathArrayFiltred2 = str_replace($requestPathArrayFiltred, '', $requestPathArray[$key]);
+					$parameters[ $matches[1][0] ] = isset($requestPathArrayFiltred2)?$requestPathArrayFiltred2:null;
+				}else{
+					
 				}
 			}
-			
+
+	
 		}
 
-		if($showerAll === true){
+	
+		if( $countFound === count($routeArray) &&  ( count($routeArray) === count($requestPathArray)) || $asteriskFound == true ){
 			$args = $parameters;
-			if(count($requestPathArray) < count($routeArray) || count($requestPathArray) > count($routeArray))
-				return false;
-		}
-
-		if($shower === true){
-			$args = $parameters;
-
 			return true;
 		}
 		
-		return false;
+		return false;	
 	}
 
 	public function getRequest(){
@@ -264,6 +276,8 @@ class Http{
 
 	public function resource($route,$callback,$methodMode = false){
 		
+		
+
 		if($this->checkRequest($route,$parameters,$requestPath)){
 
 			$requestPar = $this->getRequest();

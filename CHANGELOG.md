@@ -12,3 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 ### Removed
+
+## [1.0.4] - 2018-11-19
+### Changed
+- Fixed problem with route
+
