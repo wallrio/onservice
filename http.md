@@ -109,14 +109,14 @@ $server->http->resource('/city/+',function($urlPar,$requestPar){
 |--|--|
 | . | Includes all on the next level (DOT) |
 |   | only the current level (Empty) |
-| + | includes the current level and all sub-levels (ASTERISK)|
+| + | includes the current level and all sub-levels (PLUS)|
 
 - DOT (.)
 ```
 $server->http->resource('/city/.',FUNCTION);
 ```
 
-- ASTERISK (*)
+- PLUS (+)
 ```
 $server->http->resource('/city/+',FUNCTION);
 ```
