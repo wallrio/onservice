@@ -91,6 +91,7 @@ $server = new CreateServer( new Process(), new Http(),... );
 - [Process](process.md)
 - [Database](database.md)
 - [Stream](stream.md)
+- [Authentication](authentication.md)
 
 
 ## License
