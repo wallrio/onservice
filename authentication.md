@@ -12,7 +12,6 @@ $this->authentication = new CreateServer( new Authentication(DRIVER,DRIVER...) )
 
 ```
 
-> DRIVER is the method of authenticate
 
 # Drivers available
 
