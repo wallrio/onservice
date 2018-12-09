@@ -165,6 +165,23 @@ $result = $collection->document->select(array(
 
 The example above Find "Wallace"
 
+- Using Operators
+
+| Key | Value |
+|--|--|
+| & | operator AND |
+
+- Example with & (AND)
+```php
+$result = $collection->document->select(array(
+	'username' => 'Wallacy',
+	'&.password' => '123'
+));
+```
+
+the above example looks for username 'Wallacy' and password '123'
+
+
 ##### Example - creating a document 
 > $result  =  $collection->document->create( FIELDS );
 
