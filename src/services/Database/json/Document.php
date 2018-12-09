@@ -103,8 +103,16 @@ class Document{
 			if($where == null){
 				$found = true;
 			}else{
+				$andOperator = false;
 				foreach ($where as $key2 => $value2) {
 					
+					if( substr($key2, 0,2) == '&.'){
+						$key2 = str_replace('&.', '', $key2) ;
+						$andOperator = true;						
+					}
+
+
+
 					if($contentObj->fields->$key2 == $value2) $found = true;
 
 					if( substr($value2, 0,1) == '~')
@@ -112,6 +120,13 @@ class Document{
 
 					if( substr($value2, 0,1) == '*')
 					if( strpos($contentObj->fields->$key2, substr($value2, 1) ) !== false ) $found = true;
+				
+					if( $andOperator === true){									
+						if($contentObj->fields->$key2 == $value2) 
+							$found = true;
+						else
+							$found = false;
+					}
 
 				}
 			}
