@@ -83,6 +83,7 @@ $server = new CreateServer( new Process(), new Http(),... );
 - use onservice\services\Process as Process; 
 - use onservice\services\Database as Database; 
 - use onservice\services\Stream as Stream; 
+- use onservice\services\Authentication as Authentication; 
 
 ### more details
 
