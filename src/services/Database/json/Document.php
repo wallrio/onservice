@@ -59,7 +59,7 @@ class Document{
 				$filename = $collectionDir . $value.$this->suffix.'.json';
 			else if( gettype($value) == 'object' )
 				$filename = $collectionDir . $key.$this->suffix.'.json';
-
+			
 			if(file_exists($filename)){				
 				$content = file_get_contents($filename);
 				$contentObj = json_decode($content);
@@ -75,6 +75,22 @@ class Document{
 		return true;
 	}
 
+	public function scanAllDir($dir) {
+	  $result = [];
+	  foreach(scandir($dir) as $filename) {
+	    if ($filename[0] === '.') continue;
+	    $filePath = $dir . '/' . $filename;
+	    if (is_dir($filePath)) {
+	      foreach ($this->scanAllDir($filePath) as $childFilename) {
+	        $result[] = $filename . '/' . $childFilename;
+	      }
+	    } else {
+	      $result[] = $filename;
+	    }
+	  }
+	  return $result;
+	}
+
 	public function select(array $where = null){
 		$collectionDir = $this->collection.DIRECTORY_SEPARATOR;
 		$collectionDir = str_replace('//', '/', $collectionDir);
@@ -85,7 +101,8 @@ class Document{
 			return false;
 		}
 
-		$resultArray = scandir($collectionDir);
+		// $resultArray = scandir($collectionDir);
+		$resultArray = $this->scanAllDir($collectionDir);
 		
 		foreach ($resultArray as $key => $value)
 			if($value == '.'  || $value == '..') unset($resultArray[$key]);
@@ -103,17 +120,20 @@ class Document{
 			if($where == null){
 				$found = true;
 			}else{
-				$andOperator = false;
+				$andOperator = true;
+				$index2 = 0;
 				foreach ($where as $key2 => $value2) {
 					
-					if( substr($key2, 0,2) == '&.'){
-						$key2 = str_replace('&.', '', $key2) ;
-						$andOperator = true;						
+					if( substr($key2, 0,3) == '||.'){
+						$key2 = str_replace('||.', '', $key2) ;
+						$andOperator = false;	
+
+					}else{
+						if( isset($contentObj->remove) && $contentObj->remove == true ) continue;					
 					}
 
 
-
-					if($contentObj->fields->$key2 == $value2) $found = true;
+					if( isset($contentObj->fields->$key2) && $contentObj->fields->$key2 == $value2) $found = true;
 
 					if( substr($value2, 0,1) == '~')
 					if( soundex($contentObj->fields->$key2) == soundex(substr($value2, 1))) $found = true;
@@ -121,12 +141,20 @@ class Document{
 					if( substr($value2, 0,1) == '*')
 					if( strpos($contentObj->fields->$key2, substr($value2, 1) ) !== false ) $found = true;
 				
-					if( $andOperator === true){									
-						if($contentObj->fields->$key2 == $value2) 
+					if( $andOperator === true){	
+
+						if( ($contentObj->fields->$key2 == $value2) ) 
 							$found = true;
 						else
 							$found = false;
+						
 					}
+
+					if($found == false){
+						$contentObj->remove = true;						
+					}
+
+					$index2++;
 
 				}
 			}
@@ -144,9 +172,11 @@ class Document{
 			return false;
 	}
 
-	public function create($fields = null){
+	public function create($fields = null,$hash = null){
 
-		$hash = md5(json_encode($fields));
+		if($hash == null){
+			$hash = md5(json_encode($fields));
+		}
 		
 		$filename = $this->collection.DIRECTORY_SEPARATOR.$hash.$this->suffix.'.json';
 		$filename = str_replace('//', '/', $filename);

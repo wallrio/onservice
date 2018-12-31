@@ -327,11 +327,40 @@ class Logon {
 }
 ```
 
+
 ##### Dynamic routes with fixed routes - Example
 It is possible to create dynamic routes, and set some exceptions with other destinations.
 To do this create the dynamic route, and above them create the fixed route.
 
 > Fixed routes should always be above the dynamics
+
+
+##### Multiples routes as array - Example
+
+
+```php
+/**@route: ["/user/{iduser}","/user/all"] **/
+```
+
+- Example:
+
+```php
+
+class Logon {
+	
+	/** @route: ["/user/{iduser}","/user/all"]  **/
+	public function getUserDataFromID($urlPar,$requestPar){		
+		
+		return array(
+			'body' 		=> 'route: /logon/user/ID_OF_USER',
+			'code'		=> 200,
+			'message'	=> 'Ok',
+			'type'		=> 'text/plain'
+		);	
+	}
+
+}
+```
 
 
 ```php

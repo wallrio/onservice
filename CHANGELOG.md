@@ -17,3 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Fixed problem with route
 
+## [1.0.6] - 2018-12-31
+### Changed
+
+- Implementation of authentication
+- multiple routes in annotations
+- Fixed problem json driver
+

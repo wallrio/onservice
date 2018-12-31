@@ -12,10 +12,11 @@ $this->authentication = new CreateServer( new Authentication(DRIVER,DRIVER...) )
 
 ```
 
+> DRIVER is the method of authenticate
 
 # Drivers available
 
-- [Token - JWT](help/authentication_jwt.md)
+- [Token Generator - JWT](help/authentication_jwt.md)
 - [HTTP Basic logon](help/authentication_httpbasic.md)
 - [Authorization](help/authentication_authorization.md)
 

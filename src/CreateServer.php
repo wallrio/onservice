@@ -6,6 +6,7 @@ namespace onservice;
 class CreateServer{
 	
 	private $serverList;
+	public $version = '1.0.6';
 
 	public function __construct($server = null){
 		$numargs = func_get_args();
@@ -13,12 +14,14 @@ class CreateServer{
 		foreach ($numargs as $key => $value) {
 			$serverCurrent = $value;
 
+
 			
 
 			if( isset($serverCurrent->namespace) ){
 				$namespace = $serverCurrent->namespace;
 				$this->$namespace = $value;
 				$serverCurrent->server = $this;
+				$serverCurrent->version = $this->version;
 
 				
 

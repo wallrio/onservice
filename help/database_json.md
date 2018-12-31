@@ -30,11 +30,19 @@ $server->database->config(array(
 
 - If the "dir" parameter is not defined, then the working directory will be the system temporary directory, example: in linux system the diretory is "/tmp"
 
+
 ### Example
 
 ```php
 $server = new CreateServer( new Database( new JSON() ) );
 $base = $server->database->base('BASENAME');
+```
+
+
+### Configuration directly on instance
+
+```php
+$server = new CreateServer( new Database( new JSON(DIRECTORY_TO_SAVE_THE_DATA, BASENAME) ) );
 ```
 
 
@@ -169,17 +177,32 @@ The example above Find "Wallace"
 
 | Key | Value |
 |--|--|
-| & | operator AND |
+| || | operator OR |
+|    | operator AND |
 
-- Example with & (AND)
+- Example with empty (AND)
+
 ```php
 $result = $collection->document->select(array(
 	'username' => 'Wallacy',
-	'&.password' => '123'
+	'password' => '123'
 ));
 ```
 
-the above example looks for username 'Wallacy' and password '123'
+the above example looks for username 'Wallacy' AND password '123'
+
+- Example with || (OR)
+
+
+```php
+$result = $collection->document->select(array(
+	'username' => 'Wallacy',
+	'||.username' => 'Wallace'
+));
+
+```
+
+the above example looks for username 'Wallacy' OR username 'Wallace'
 
 
 ##### Example - creating a document 

@@ -12,15 +12,6 @@ class JSON {
 
 	public function __construct($dir = null, $basename = null){
 		
-		if($dir == null){
-			$dir = sys_get_temp_dir().DIRECTORY_SEPARATOR.'onservice'.DIRECTORY_SEPARATOR.'database'.DIRECTORY_SEPARATOR.'json'.DIRECTORY_SEPARATOR;
-			if(!file_exists($dir))
-				mkdir($dir,0777,true);
-		}
-
-		$dir = str_replace('//', '/', $dir);
-		
-
 		$this->dir = $dir;
 		$this->basename = $basename;
 
@@ -28,6 +19,20 @@ class JSON {
 			'dir'=>$dir,
 			'basename'=>$basename,
 		);	
+
+	}
+
+	public function createRepository(){
+		$dir = $this->dir;
+		if($dir == null){
+			$dir = sys_get_temp_dir().DIRECTORY_SEPARATOR.'onservice'.DIRECTORY_SEPARATOR.'database'.DIRECTORY_SEPARATOR.'json'.DIRECTORY_SEPARATOR;				
+		}
+
+		if(!file_exists($dir))
+			mkdir($dir,0777,true);		
+
+		$dir = str_replace('//', '/', $dir);
+
 
 	}
 
@@ -47,6 +52,7 @@ class JSON {
 
 
 	public function base($base){
+		$this->createRepository();
 		$this->basename = $base;
 
 		return new Collection($this->dir,$this->basename);
@@ -54,6 +60,8 @@ class JSON {
 
 
 	public function createBase($basename){
+		$this->createRepository();
+
 		$basedir = $this->dir.DIRECTORY_SEPARATOR.$basename;
 		$basedir = str_replace('//', '/', $basedir);
 		if(!file_exists($basedir)) mkdir($basedir,0777,true);

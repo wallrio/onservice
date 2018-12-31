@@ -4,8 +4,9 @@ namespace onservice\services;
 
 class Http{
 	
-	public $server = null;
-	public $namespace = 'http';
+	public $server,
+		   $namespace = 'http';
+
 	private $routesPath = null;
 
 	public function __construct(){}
@@ -110,18 +111,51 @@ class Http{
 				preg_match_all('#@(.*?)(\*\*\/|\n)#s', $doc, $annotations);
 				$annoArray = $annotations[1];
 
+				if(is_array($annoArray) && count($annoArray)<1)
+					continue;
+
+
 				$annoArrayNew = [];				
 				foreach ($annoArray as $anKey => $anValue) {
 					$anName = substr($anValue, 0, strpos($anValue, ':'));
 					$annoArrayNew[$anName] = substr($anValue, strpos($anValue, ':')+1);
 				}
-			
+				
 				$customRoute = isset($annoArrayNew['route'])?$annoArrayNew['route']:$customRoute;
+				
+				$modearray = false;
+				$checkArray = '';
+				if($customRoute != ''){
+					if(strpos($customRoute, '[')!=false)	
+					$modearray = true;							
+				}
+					
 
-				if($customRoute !== false){
-					$customRoute = trim($customRoute);
-					$routeRef_end = $routeRef.''.$customRoute;				
-					$routeFound = $this->server->http->resource($routeRef_end,$route,$method);
+
+				if($modearray == true){
+					@eval('$checkArray = '.$customRoute.';');				
+				
+
+					foreach ($checkArray as $key2 => $value2) {
+						$customRoute = $value2;
+						if($customRoute !== false){
+							$customRoute = trim($customRoute);
+							$routeRef_end = $routeRef.''.$customRoute;				
+
+							$routeFound = $this->server->http->resource($routeRef_end,$route,$method);
+						}
+					}
+				}else{
+
+
+
+				
+					if($customRoute !== false){
+						$customRoute = trim($customRoute);
+						$routeRef_end = $routeRef.''.$customRoute;				
+						
+						$routeFound = $this->server->http->resource($routeRef_end,$route,$method);
+					}
 				}
 
 			}
@@ -169,6 +203,7 @@ class Http{
 			
 			eval('$route = new \\'.$namespace.'\\'.ucfirst($className).';');
 		
+			
 
 			if(isset($route->route)) $routeRef = $routeRef.'/'.$route->route;
 			
@@ -215,8 +250,8 @@ class Http{
 
 		$found = false;
 		$countFound = 0;
-		$asteriskFound = false;
 		foreach ($routeArray as $key => $value) {
+		$asteriskFound = false;
 
 			preg_match_all('/{(.*)}/m', $value , $matches);
 		
@@ -250,8 +285,8 @@ class Http{
 	
 		}
 
-	
-		if( $countFound === count($routeArray) &&  ( count($routeArray) === count($requestPathArray)) || $asteriskFound == true ){
+
+		if( $countFound === count($routeArray) &&  ( count($routeArray) === count($requestPathArray)) || ( $asteriskFound == true && ($countFound >= count($routeArray))) ){
 			$args = $parameters;
 			return true;
 		}
@@ -265,24 +300,39 @@ class Http{
 		$codeStatus = isset($_SERVER['REDIRECT_STATUS'])?$_SERVER['REDIRECT_STATUS']:null;
 		$QUERY_STRING = isset($_SERVER['QUERY_STRING'])?$_SERVER['QUERY_STRING']:null;
 
-		parse_str($QUERY_STRING, $objectQueryString);
-
 		$return['method'] = strtolower($method);
-		if(count($objectQueryString)>0)
-			$return['data'] = $objectQueryString;
-		
+	
+		if(isset($_GET) && count($_GET)>0)
+		$return['data']['get'] = $_GET;
+		if(isset($_POST) && count($_POST)>0)
+		$return['data']['post'] = $_POST;
+
 		return $return;
 	}
 
 	public function resource($route,$callback,$methodMode = false){
 		
-		
+	
 
 		if($this->checkRequest($route,$parameters,$requestPath)){
 
 			$requestPar = $this->getRequest();
 
+			
+			$routeGet = $route;
+				
+			foreach ($parameters as $key => $value) {
+				$routeGet = str_replace('{'.$key.'}', $value, $routeGet);
+			}
+			
+
+			$routeGet = str_replace('/+', '', $routeGet);			
+			$routeGet = str_replace('/.', '', $routeGet);			
+			$routeTarget = str_replace($routeGet, '', $requestPath);
+
 			$requestPar['url'] = $requestPath;
+			$requestPar['endpoint'] = $routeTarget;
+
 
 			if( $methodMode !== false ){				
 				if(method_exists($callback, $methodMode))
@@ -297,7 +347,7 @@ class Http{
 			$contentype = isset($response['type'])?$response['type']:'text/html';
 
 			header('HTTP/1.1 '.$code.' '.$message);
-			header('Server: onService/0.0.1');
+			header('Server: onService/'.$this->version);
 			header('Content-Length: '.strlen($body));
 			header('Content-Type:'.$contentype);
 
