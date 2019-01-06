@@ -131,6 +131,26 @@ $server->http->resource('/city',FUNCTION);
 $server->http->resource('/city/',FUNCTION);
 ```
 
+#### Verb HTTP OPTIONS:
+to work around problems with requests between domain it is possible to use the parameter "ignoreVerbsOptions" to ignore the OPTIONS request of the browser.
+
+```php
+$server->http->ignoreVerbsOptions = true;
+```
+
+> use this parameter before the request methods
+
+##### Verb HTTP OPTIONS on routes class
+use também o parametro "ignoreVerbsOptions" nas anotações dos metodos como "@ignoreVerbsOptions: true"
+
+```php
+	/** @route: /url/route/
+		@ignoreVerbsOptions: true
+	**/ 	
+	public function methodRoute($urlPar,$requestPar){	
+
+	}
+```
 
 #### htaccess example:
 For the correct operation of this service, it is necessary to configure url rewriting.

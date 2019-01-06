@@ -5,7 +5,8 @@ namespace onservice\services;
 class Http{
 	
 	public $server,
-		   $namespace = 'http';
+		   $namespace = 'http',
+		   $ignoreVerbsOptions = false;
 
 	private $routesPath = null;
 
@@ -46,6 +47,8 @@ class Http{
 		if($dir === null){
 			$dir = getcwd().DIRECTORY_SEPARATOR.'http'.DIRECTORY_SEPARATOR.'routes';
 		}
+
+		$annoArrayNew = array();
 
 		$this->routesPath = $dir;	
 
@@ -142,7 +145,7 @@ class Http{
 							$customRoute = trim($customRoute);
 							$routeRef_end = $routeRef.''.$customRoute;				
 
-							$routeFound = $this->server->http->resource($routeRef_end,$route,$method);
+							$routeFound = $this->server->http->resource($routeRef_end,$route,$method,$annoArrayNew);
 						}
 					}
 				}else{
@@ -154,7 +157,7 @@ class Http{
 						$customRoute = trim($customRoute);
 						$routeRef_end = $routeRef.''.$customRoute;				
 						
-						$routeFound = $this->server->http->resource($routeRef_end,$route,$method);
+						$routeFound = $this->server->http->resource($routeRef_end,$route,$method,$annoArrayNew);
 					}
 				}
 
@@ -210,7 +213,7 @@ class Http{
 			if($routeRef == '')$routeRef='/';
 
 			if (method_exists($route, 'error')) {		
-				$routeFound = $this->server->http->resource($routeRef.'/+',$route,'error');
+				$routeFound = $this->server->http->resource($routeRef.'/+',$route,'error',$annoArrayNew);
 			}
 
 		}
@@ -299,18 +302,23 @@ class Http{
 		$method = isset($_SERVER['REQUEST_METHOD'])?$_SERVER['REQUEST_METHOD']:null;
 		$codeStatus = isset($_SERVER['REDIRECT_STATUS'])?$_SERVER['REDIRECT_STATUS']:null;
 		$QUERY_STRING = isset($_SERVER['QUERY_STRING'])?$_SERVER['QUERY_STRING']:null;
+		$CONTENT_TYPE = isset($_SERVER['CONTENT_TYPE'])?$_SERVER['CONTENT_TYPE']:null;
 
 		$return['method'] = strtolower($method);
 	
 		if(isset($_GET) && count($_GET)>0)
 		$return['data']['get'] = $_GET;
-		if(isset($_POST) && count($_POST)>0)
-		$return['data']['post'] = $_POST;
+		if(isset($_POST) && count($_POST)>0){
+			$return['data']['post'] = $_POST;
+		}else{
+			$INPUT = json_decode(file_get_contents("php://input"), true) ?: [];
+			$return['data'][ 'post' ] = $INPUT;
+		}
 
 		return $return;
 	}
 
-	public function resource($route,$callback,$methodMode = false){
+	public function resource($route,$callback,$methodMode = false,$annoArrayNew = array() ){
 		
 	
 
@@ -318,7 +326,20 @@ class Http{
 
 			$requestPar = $this->getRequest();
 
+
+			if( isset($annoArrayNew['ignoreVerbsOptions']) ){
+				if( filter_var($annoArrayNew['ignoreVerbsOptions'], FILTER_VALIDATE_BOOLEAN) === true )
+					if($requestPar['method']=='options') return false;	
+
+			}else{
+				if($this->ignoreVerbsOptions === true){
+					if($requestPar['method']=='options') return false;	
+				}
+			}
+
+				
 			
+
 			$routeGet = $route;
 				
 			foreach ($parameters as $key => $value) {
