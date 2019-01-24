@@ -78,20 +78,13 @@ $server = new CreateServer( new Process(), new Http(),... );
 
 # Available services
 
-- use onservice\services\Http as Http;
-- use onservice\services\LongPolling as LongPolling; 
-- use onservice\services\Process as Process; 
-- use onservice\services\Database as Database; 
-- use onservice\services\Stream as Stream; 
-
-### more details
-
 - [Http](http.md)
 - [LongPolling](longpolling.md)
 - [Process](process.md)
 - [Database](database.md)
 - [Stream](stream.md)
 - [Authentication](authentication.md)
+- [Settings](settings.md)
 
 
 ## License

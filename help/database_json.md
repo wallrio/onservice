@@ -273,6 +273,35 @@ $result = $collection->document->update(
 ```
 
 
+- update a specific level, separate the levels with a slash (/)
+```php
+$result = $collection->document->update(
+	$result,
+	array(	
+		"name":"Fulano",
+		"contact/email/work" => "email@work.com"
+	)
+);
+```
+
+> result of the above command
+
+```json
+
+{	
+	"name":"Fulano",
+	"contact":{
+		"email":{
+			"work" : "email@work.com"
+		}
+	}
+}
+
+
+```
+
+
+
 ##### Example - deleting a document 
 > $result  =  $collection->document->delete( ID );
 > 

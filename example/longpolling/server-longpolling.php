@@ -15,7 +15,7 @@ $MysqlPersistence = new MysqlPersistence(array(
 	'host'=>'localhost',
 	'basename' => 'onservice',
 	'username' => 'root',
-	'password' => 'pagedown'
+	'password' => ''
 ));
 
 // create the server

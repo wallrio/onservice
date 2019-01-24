@@ -91,12 +91,22 @@ class Http{
 			$namespace = 'onservice\http\routes'.$keyNamespace.'';
 			ob_start();
 			echo 'namespace '.$namespace.';';
+
 			echo $content;
 			$content2 = ob_get_contents();
 			ob_get_clean();
+			
+			// $content2 = preg_replace('/class (.*)*?[\n\r]?{/', 'class $1 { '."\n\n\t".'public $server = 123;', $content2);
+
+			// echo( $content2);		
 			eval( $content2);		
-			eval('$route = new \\'.$namespace.'\\'.ucfirst($className).';');
-		
+			// eval('$route = new \\'.$namespace.'\\'.ucfirst($className).';');
+			eval('$route = new \\'.$namespace.'\\'.ucfirst($className).'($this->server)'.';');
+			// echo('$route = new \\'.$namespace.'\\'.ucfirst($className).';');
+			
+			// print_r($route);
+			// $route->server = 33;
+
 			if($routeRef == '')$routeRef='/';
 
 			$customRoute = false;
@@ -312,6 +322,7 @@ class Http{
 			$return['data']['post'] = $_POST;
 		}else{
 			$INPUT = json_decode(file_get_contents("php://input"), true) ?: [];
+			if(count($INPUT)>0)
 			$return['data'][ 'post' ] = $INPUT;
 		}
 

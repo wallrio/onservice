@@ -63,8 +63,31 @@ class Document{
 			if(file_exists($filename)){				
 				$content = file_get_contents($filename);
 				$contentObj = json_decode($content);
+				if(count($fields)<1) return false;
 				foreach ($fields as $key2 => $value2) {
-					$contentObj->fields->$key2 = $value2;
+					if(strpos($key2, '/')!= false ){
+						$key2Array = explode('/', $key2);
+						$join='';
+						$join2='';
+						foreach ($key2Array as $key3 => $value3) {
+							if($key3 >= count($key2Array)-1){
+								$join.=$value3.'';
+								$join2.=$value3.'';
+								eval('if(!isset($contentObj->fields->'.$join2.'))$contentObj->fields->'.$join2.'=(object) array();');
+							}
+							else{
+								$join.=$value3.'';
+								$join2.=$value3.'->';
+								eval('if(!isset($contentObj->fields->'.$join.'))$contentObj->fields->'.$join.'=(object) array();');
+							}
+
+						}
+						
+						eval('$contentObj->fields->'.$join2.' = $value2 ;');
+						
+					}else{
+						$contentObj->fields->$key2 = $value2;
+					}
 				}
 				file_put_contents($filename, json_encode($contentObj));
 			}else{
@@ -142,6 +165,11 @@ class Document{
 					if( strpos($contentObj->fields->$key2, substr($value2, 1) ) !== false ) $found = true;
 				
 					if( $andOperator === true){	
+
+						if(!isset($contentObj->fields->$key2)){
+							$found = false;
+							continue;
+						}
 
 						if( ($contentObj->fields->$key2 == $value2) ) 
 							$found = true;

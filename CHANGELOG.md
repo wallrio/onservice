@@ -24,3 +24,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - multiple routes in annotations
 - Fixed problem json driver
 
+## [1.0.8] - 2019-1-24
+
+### Changed
+- Fixed problem json driver
+
+### Added
+- Implementation of Mongo Driver to database
+- Implementation of Settings Service
