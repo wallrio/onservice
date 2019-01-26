@@ -214,8 +214,9 @@ class Http{
 
 			$namespace = 'onservice\http\routes'.$keyNamespace.'';
 			
-			eval('$route = new \\'.$namespace.'\\'.ucfirst($className).';');
-		
+			// eval('$route = new \\'.$namespace.'\\'.ucfirst($className).';');
+			eval('$route = new \\'.$namespace.'\\'.ucfirst($className).'($this->server)'.';');
+			
 			
 
 			if(isset($route->route)) $routeRef = $routeRef.'/'.$route->route;

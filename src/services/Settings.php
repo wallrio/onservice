@@ -9,39 +9,14 @@
 
 namespace onservice\services;
 
+use onservice\essentials\Http as HttpCon;
+use onservice\essentials\File as File;
+
 class Settings{
 	
 	public $server = null;
 	public $namespace = 'settings';
 
-
-	public static function curl($url){
-     
-            $curl = curl_init();
-            curl_setopt_array($curl, array(
-              CURLOPT_URL => $url,
-              CURLOPT_RETURNTRANSFER => true,
-              CURLOPT_FOLLOWLOCATION => true,
-              CURLOPT_ENCODING => "",
-              CURLOPT_TIMEOUT => 30,
-
-            ));
-   
-
-            $response = curl_exec($curl);
-            $err = curl_error($curl);
-            $http_status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-            curl_close($curl);
-
-        if ($http_status==404)return false;
-        
-        if($err) return false;
-        
-        return $response;
-        
-
-
-    }
 
 	public function __construct($dir = null){
 
@@ -52,7 +27,13 @@ class Settings{
 				
 			$file_parts = pathinfo($dir);
 			$extension = $file_parts['extension'];
-			$fileContent = $this->curl($dir);
+
+			$fileContent = HttpCon::request(array(
+				'url'=>$dir,					
+				'method'=>'get'
+			));
+			if($fileContent == false) return false;
+
 			if($extension == 'json'){
 				$fileContent = json_decode($fileContent);
 			}else if($extension == 'yml'){
@@ -73,8 +54,9 @@ class Settings{
 
 		if($dir == null) $dir = getcwd().DIRECTORY_SEPARATOR.'settings'.DIRECTORY_SEPARATOR;
 
-		$dirArray = $this->scanAllDir($dir);
+		$dirArray = File::rscan($dir);
 
+		if(is_array($dirArray) && count($dirArray)>0)
 		foreach ($dirArray as $key => $value) {
 			$filepath = $dir.$value;
 			$fileContent = file_get_contents($filepath);
@@ -146,20 +128,6 @@ class Settings{
 	}
 
 	
-	public function scanAllDir($dir) {
-	  $result = [];
-	  foreach(scandir($dir) as $filename) {
-	    if ($filename[0] === '.') continue;
-	    $filePath = $dir . '/' . $filename;
-	    if (is_dir($filePath)) {
-	      foreach ($this->scanAllDir($filePath) as $childFilename) {
-	        $result[] = $filename . '/' . $childFilename;
-	      }
-	    } else {
-	      $result[] = $filename;
-	    }
-	  }
-	  return $result;
-	}
+	
 
 }

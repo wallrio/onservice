@@ -85,6 +85,7 @@ $server = new CreateServer( new Process(), new Http(),... );
 - [Stream](stream.md)
 - [Authentication](authentication.md)
 - [Settings](settings.md)
+- [Git](git.md)
 
 
 ## License
