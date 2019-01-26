@@ -95,18 +95,10 @@ class Http{
 			echo $content;
 			$content2 = ob_get_contents();
 			ob_get_clean();
-			
-			// $content2 = preg_replace('/class (.*)*?[\n\r]?{/', 'class $1 { '."\n\n\t".'public $server = 123;', $content2);
-
-			// echo( $content2);		
+		
 			eval( $content2);		
-			// eval('$route = new \\'.$namespace.'\\'.ucfirst($className).';');
 			eval('$route = new \\'.$namespace.'\\'.ucfirst($className).'($this->server)'.';');
-			// echo('$route = new \\'.$namespace.'\\'.ucfirst($className).';');
-			
-			// print_r($route);
-			// $route->server = 33;
-
+	
 			if($routeRef == '')$routeRef='/';
 
 			$customRoute = false;
@@ -214,7 +206,7 @@ class Http{
 
 			$namespace = 'onservice\http\routes'.$keyNamespace.'';
 			
-			// eval('$route = new \\'.$namespace.'\\'.ucfirst($className).';');
+			
 			eval('$route = new \\'.$namespace.'\\'.ucfirst($className).'($this->server)'.';');
 			
 			
@@ -237,12 +229,14 @@ class Http{
 		$REQUEST_SCHEME = isset($_SERVER['REQUEST_SCHEME'])?$_SERVER['REQUEST_SCHEME']:null;
 		$HTTP_HOST = isset($_SERVER['HTTP_HOST'])?$_SERVER['HTTP_HOST']:null;
 		$REQUEST_URI = isset($_SERVER['REQUEST_URI'])?$_SERVER['REQUEST_URI']:null;
+		$REDIRECT_URL = isset($_SERVER['REDIRECT_URL'])?$_SERVER['REDIRECT_URL']:null;
 		$SCRIPT_NAME = isset($_SERVER['SCRIPT_NAME'])?$_SERVER['SCRIPT_NAME']:null;
-		
-		$REQUEST_URI = explode('?', $REQUEST_URI);
-		$REQUEST_URI = $REQUEST_URI[0];
+			
 
-		$requestPath = str_replace(dirname($SCRIPT_NAME), '', $REQUEST_URI);
+		$REDIRECT_URL = explode('?', $REDIRECT_URL);
+		$REDIRECT_URL = $REDIRECT_URL[0];
+
+		$requestPath = str_replace(dirname($SCRIPT_NAME), '', $REDIRECT_URL);
 		$routeArray = explode('/', $route);
 		
 		$requestPathArray = explode('/', $requestPath);
