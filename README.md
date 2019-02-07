@@ -86,6 +86,7 @@ $server = new CreateServer( new Process(), new Http(),... );
 - [Authentication](authentication.md)
 - [Settings](settings.md)
 - [Git](git.md)
+- [Console](console.md)
 
 
 ## License

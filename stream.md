@@ -1,44 +1,24 @@
-
 # Stream
 service for make stream applications 
 
+## Instance 
 
-## Methods
-
-### construct
-
-	new Stream(ADDRESS,PORT,PROTOCOL)
-
-- PROTOCOL
-	- tcp
-	- udp
-
-### send
-
-	$server->http->send(STRING);
-
-### listen
-
-	$server->http->listen(CALLBACK);
-
-- CALLBACK	=	($DATA_RECEIVED)	
-
-
-##### Example:
 ```php
+
 use onservice\CreateServer as CreateServer;
 use onservice\services\Stream as Stream;
+use onservice\services\Stream\TCP as TCP;
+use onservice\services\Stream\HTTPServer as HTTPServer;
+use onservice\services\Stream\HTTPClient as HTTPClient;
 
-// create the server
-$server = new CreateServer(	new Stream('127.0.0.1',8081,'tcp') );
-
-
-$server->stream->listen(function($data){
-	
-	$in = 'HTTP/1.1 200 OK '."\r\n";
-	$in .= 'Server: OnService'."\r\n\r\n ";
-	$in .= 'Response from server...';
-
-	return $in;
-});
+$server = new CreateServer(	new Stream(IP,PORT,DRIVER) );
 ```
+
+> DRIVER is the method of communication
+
+# Drivers available
+
+- [TCP](help/stream_tcp.md)
+- [HTTPServer](help/stream_httpserver.md)
+- [HTTPClient](help/stream_httpclient.md)
+

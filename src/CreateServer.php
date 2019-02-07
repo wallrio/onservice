@@ -1,13 +1,20 @@
 <?php
 
+
 namespace onservice; 
+
+define('OnServiceVersion','1.2.0');
 
 class CreateServer{
 	
 	private $serverList;
-	public $version = '1.1.0';
+	public $version = OnServiceVersion;
+
+
 
 	public function __construct($server = null){
+
+
 		$numargs = func_get_args();
 		$this->serverList = $numargs;	
 		foreach ($numargs as $key => $value) {
@@ -22,7 +29,6 @@ class CreateServer{
 		}
 	}
 	
-
 	public function __get($name) {
 
 		foreach ($this->serverList as $key => $value) {				

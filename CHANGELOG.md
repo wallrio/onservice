@@ -32,3 +32,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Implementation of Mongo Driver to database
 - Implementation of Settings Service
+
+
+## [1.2.0] - 2019-1-31
+
+### Added
+- Implementation of Console Service
+- Implementation of Stream TCP
+- Implementation of Stream Http Server
+- Implementation of Stream Http Client

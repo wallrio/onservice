@@ -1,0 +1,15 @@
+#!/usr/bin/php
+<?php
+
+spl_autoload_register(function ($class_name) {	
+	$class_nameArray = explode('\\',$class_name);
+    $class_name = $class_nameArray[count($class_nameArray)-1];
+	$dir = getcwd().DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'wallrio'.DIRECTORY_SEPARATOR.'onservice'.DIRECTORY_SEPARATOR;
+    $path = $dir.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'consolecore'.DIRECTORY_SEPARATOR.$class_name . '.php';    
+    include $path;
+});
+
+
+$console = new ConsoleCore(null);
+$console->legend = "\n ".'Usage: command [option] [arguments]';
+$console->run();

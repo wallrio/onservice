@@ -45,7 +45,7 @@ class Http{
 	public function routes($dir = null){
 
 		if($dir === null){
-			$dir = getcwd().DIRECTORY_SEPARATOR.'http'.DIRECTORY_SEPARATOR.'routes';
+			$dir = getcwd().DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'routes';
 		}
 
 		$annoArrayNew = array();

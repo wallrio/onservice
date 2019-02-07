@@ -114,7 +114,7 @@ class Document{
 	  return $result;
 	}
 
-	public function select(array $where = null){
+	public function select(array $where = null,$hashSelect = null){
 		$collectionDir = $this->collection.DIRECTORY_SEPARATOR;
 		$collectionDir = str_replace('//', '/', $collectionDir);
 
@@ -126,7 +126,10 @@ class Document{
 
 		// $resultArray = scandir($collectionDir);
 		$resultArray = $this->scanAllDir($collectionDir);
-		
+			
+		/*print_r($resultArray);
+		exit;*/
+
 		foreach ($resultArray as $key => $value)
 			if($value == '.'  || $value == '..') unset($resultArray[$key]);
 		
@@ -139,7 +142,17 @@ class Document{
 
 			$contentObj = json_decode($content);
 			
+
 			$found = false;
+
+			if($hashSelect != null ){
+				if($hashSelect.'_jdoc.json' == $value){
+					$resultFinish[$contentObj->hash] = $contentObj->fields;
+					$found = true;
+				}				
+				continue;
+			}
+
 			if($where == null){
 				$found = true;
 			}else{

@@ -1,6 +1,3 @@
-
-
-
 # Git
 Workflow Service for version control with GIT
 

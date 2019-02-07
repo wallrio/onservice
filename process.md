@@ -12,6 +12,12 @@ service for create process parallel
 
 ##### Example basic:
 ```php
+
+	use onservice\CreateServer as CreateServer;
+	use onservice\services\Process as Process;
+
+	$server = new CreateServer(	new Process() );
+
 	$server->process->fork(array(
 		'run'=>function($parameters,$memory,$server,$pid,$pidParent){
 			// $parameters = array('name'=>'fulano')
@@ -26,6 +32,8 @@ service for create process parallel
 
 ##### Example with process Parent:
 ```php
+
+
 	$server->process->fork(array(
 		'run'=>function($parameters,$memory,$server,$pid,$pidParent){
 			// $parameters = array('name'=>'fulano')
