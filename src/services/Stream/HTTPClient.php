@@ -124,7 +124,7 @@ class HTTPClient extends TCP{
 
 		$array = array();
 		$array[] = 'GET / HTTP/1.1';
-		$array[] = 'Host: '.$ip.':'.$port;				
+		$array[] = 'Host: '.$ip;				
 		$array[] = 'Connection: '.$Connection;
 		$array[] = 'User-Agent: '.$UserAgent;
 
