@@ -8,7 +8,7 @@ use onservice\CreateServer as CreateServer;
 use onservice\services\Stream as Stream;
 use onservice\services\Stream\HTTPClient as HTTPClient;
 
-$server = new CreateServer(	new Stream(IP,ADDRESS,new HTTPClient) );
+$server = new CreateServer(	new Stream(IP,PORT,new HTTPClient) );
 ```
 
 ## onReceiver

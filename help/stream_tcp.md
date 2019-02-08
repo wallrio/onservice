@@ -8,7 +8,7 @@ use onservice\CreateServer as CreateServer;
 use onservice\services\Stream as Stream;
 use onservice\services\Stream\TCP as TCP;
 
-$server = new CreateServer(	new Stream(IP,ADDRESS,new TCP) );
+$server = new CreateServer(	new Stream(IP,PORT,new TCP) );
 ```
 
 
