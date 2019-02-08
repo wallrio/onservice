@@ -16,9 +16,14 @@ class Http{
 
 
 	public function findRecursive($dir,$parent = '',$nivel = 0){
+
+		if(!file_exists($dir))return array();
+			
 		$dirArray = scandir($dir);
 		$newArray = [];
 		
+		if(count($dirArray)<1) return array();
+
 		foreach ($dirArray as $key => $value) {
 			if($value == '.' || $value == '..') unset($dirArray[$key]);			
 		}
@@ -52,11 +57,11 @@ class Http{
 
 		$this->routesPath = $dir;	
 
-		if(!file_exists($dir)) mkdir($dir);
+		if(!file_exists($dir)) @mkdir($dir);
 
 		$dirs = $this->findRecursive($dir);
 
-
+		if(count($dirs)>0)
 		foreach ($dirs as $key => $value) {
 
 			$isIndex = false;
