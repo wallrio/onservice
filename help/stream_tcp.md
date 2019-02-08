@@ -120,7 +120,7 @@ $server->stream->onReceiver(function($message,$scopeStream,$socketClient){
 	echo "Received From Client:".$message."\n";
 
 	if($message == 'echo'){
-		$stream->sendToSocket($socket,$message);		
+		$scopeStream->sendToSocket($socket,$message);		
 		return;
 	}
 	

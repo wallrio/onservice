@@ -28,7 +28,7 @@ $server->stream->includeHTML('');
 para alterar a exibição das páginas utilize o método onReceiver
 
 ```php
-$server->stream->onReceiver(function($url,$stream){
+$server->stream->onReceiver(function($url,$scopeStream){
 
 	return array(
 		'code' => 200,
