@@ -434,16 +434,15 @@ To assist in the implementation and coding of your routes, here is a brief step 
 3. directory structure example
 
 ```php
-
-	/--src
+/--src
+	|
+	|--route
 		|
-		|--route
+		|--example-route
 			|
-			|--example-route
-				|
-				|--_class
-					 |
-					 |--MyClass.php
+			|--_class
+				 |
+				 |--MyClass.php
 
 ```
 
