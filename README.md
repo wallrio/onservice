@@ -78,15 +78,15 @@ $server = new CreateServer( new Process(), new Http(),... );
 
 # Available services
 
-- [Http](http.md)
-- [LongPolling](longpolling.md)
-- [Process](process.md)
-- [Database](database.md)
-- [Stream](stream.md)
-- [Authentication](authentication.md)
-- [Settings](settings.md)
-- [Git](git.md)
-- [Console](console.md)
+- [Http](help/http.md)
+- [LongPolling](help/longpolling.md)
+- [Process](help/process.md)
+- [Database](help/database.md)
+- [Stream](help/stream.md)
+- [Authentication](help/authentication.md)
+- [Settings](help/settings.md)
+- [Git](help/git.md)
+- [Console](help/console.md)
 
 
 ## License

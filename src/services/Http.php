@@ -2,6 +2,8 @@
 
 namespace onservice\services;
 
+use onservice\essentials\File as File;
+
 class Http{
 	
 	public $server,
@@ -13,38 +15,21 @@ class Http{
 	public function __construct(){}
 
 
+	public function loadLibs($dir = null){
+		if(!file_exists($dir)) return false;
+		$dirArray = File::findRecursive($dir);	
+		$this->dirArray = $dirArray;
 
+		foreach ($this->dirArray as $key => $value) {
+			$key = substr($key, 1);
+			$array = explode('/', $key);
 
-	public function findRecursive($dir,$parent = '',$nivel = 0){
+			$pathClass = $dir.$value;
+				$pathClass = str_replace(DIRECTORY_SEPARATOR.DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR, $pathClass);
 
-		if(!file_exists($dir))return array();
-			
-		$dirArray = scandir($dir);
-		$newArray = [];
-		
-		if(count($dirArray)<1) return array();
-
-		foreach ($dirArray as $key => $value) {
-			if($value == '.' || $value == '..') unset($dirArray[$key]);			
+			require_once $pathClass;
 		}
-		foreach ($dirArray as $key => $value) {
-			if(is_dir($dir.DIRECTORY_SEPARATOR.$value)){
-				if(substr($value, 0,1)=='_')continue;
-				$newArray2 = $this->findRecursive($dir.DIRECTORY_SEPARATOR.$value,$parent.'/'.$value,$nivel+1);
-				$newArray = array_merge($newArray,$newArray2);		
-			}else{
-				if(substr($value, 0,1)=='_')continue;
-				$valueName = $value;			
-				$valueName = $parent.'/'.$value;
-
-				$valueName = strtolower($valueName);
-				$valueName = str_replace('.php', '', $valueName);
-				$newArray[$valueName] = $parent.'/'.$value;
-			}
-		}
-		return $newArray;
 	}
-
 
 	// cria as rotas
 	public function routes($dir = null){
@@ -57,11 +42,11 @@ class Http{
 
 		$this->routesPath = $dir;	
 
-		if(!file_exists($dir)) @mkdir($dir);
+		if(!file_exists($dir)) mkdir($dir);
 
-		$dirs = $this->findRecursive($dir);
+		$dirs = File::findRecursive($dir);
 
-		if(count($dirs)>0)
+
 		foreach ($dirs as $key => $value) {
 
 			$isIndex = false;
@@ -73,6 +58,8 @@ class Http{
 			}
 			$routeRef = implode('/', $routeRef);
 
+			
+			if( substr($value, 0,1) == '_' ) continue;
 			
 			$dirEnd = $dir.ucfirst($value);
 			$dirEnd = str_replace('//', '/', $dirEnd);
@@ -92,6 +79,14 @@ class Http{
 			
 			if($keyNamespace == '\\')$keyNamespace = "";
 
+			$dirArray = explode(DIRECTORY_SEPARATOR, $dirEnd);
+			unset($dirArray[count($dirArray)-1]);
+			// $route->dir = implode(DIRECTORY_SEPARATOR, $dirArray).DIRECTORY_SEPARATOR;
+			$currentDir = getcwd().DIRECTORY_SEPARATOR.implode(DIRECTORY_SEPARATOR, $dirArray).DIRECTORY_SEPARATOR;
+
+			$libs = $currentDir.'_class';
+			$this->loadLibs($libs);
+
 
 			$namespace = 'onservice\http\routes'.$keyNamespace.'';
 			ob_start();
@@ -99,11 +94,18 @@ class Http{
 
 			echo $content;
 			$content2 = ob_get_contents();
+			// $content2 = str_replace('__LOCAL__', '\''.$currentDir.'\'', $content2);
 			ob_get_clean();
 		
 			eval( $content2);		
 			eval('$route = new \\'.$namespace.'\\'.ucfirst($className).'($this->server)'.';');
-	
+			
+			
+			
+			$route->_dir = $currentDir;
+			
+
+
 			if($routeRef == '')$routeRef='/';
 
 			$customRoute = false;

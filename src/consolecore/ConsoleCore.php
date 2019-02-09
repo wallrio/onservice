@@ -8,7 +8,7 @@ class ConsoleCore {
 
 	private $commands = array();
 	public $title = 'OnService';
-	public $titleForecolor = 'blue';
+	public $titleForecolor = 'red';
 	public $titleBackcolor = '';
 	public $titleBold = true;
 
@@ -16,9 +16,9 @@ class ConsoleCore {
 	public $commandBackcolor = '';
 	public $commandBold = false;
 
-	public $commandTitleForecolor = 'purple';
+	public $commandTitleForecolor = 'blue';
 	public $commandTitleBackcolor = '';
-	public $commandTitleBold = false;
+	public $commandTitleBold = true;
 
 	public $descriptionForecolor = 'yellow';
 	public $descriptionBackcolor = '';
@@ -26,7 +26,22 @@ class ConsoleCore {
 	
 	public $legend = '';
 	
-	function __construct(){}
+	function __construct(){
+
+		$this->getVersion();		
+
+	}
+
+	public function getVersion(){
+		$filename = __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'composer.json';		
+		$contentJSON = file_get_contents($filename);
+		$content = json_decode($contentJSON);
+
+		if($content->version)
+			define('OnServiceVersion',$content->version);
+		else
+			define('OnServiceVersion','unknown');
+	}
 
 	public function getCommands($dir){
 		
@@ -163,8 +178,7 @@ class ConsoleCore {
 			foreach ($this->commands as $key => $value) {
 				
 				if($value->class != $currentClass){
-					$currentClass = $value->class;
-					
+					$currentClass = $value->class;									
 					
 					$classNameCurrent = explode('/', $currentClass);
 					$classNameCurrent = reset($classNameCurrent);
@@ -172,11 +186,19 @@ class ConsoleCore {
 					$currentDescriptionClass = $value->descriptionClass!=null?$value->descriptionClass:$classNameCurrent;
 					
 					echo "\n";
-					echo PrintConsole::write($currentDescriptionClass,array('bold'=>$this->commandTitleBold,'forecolor'=>$this->commandTitleForecolor,'backcolor'=>$this->commandTitleBackcolor));
-					echo "\n";
+					if($value->class !== 'index'){
+						
+						echo PrintConsole::write(" · ".$currentDescriptionClass,array('bold'=>$this->commandTitleBold,'forecolor'=>$this->commandTitleForecolor,'backcolor'=>$this->commandTitleBackcolor));
+						echo "\n";
+					}
 				}
 
-				echo PrintConsole::write("   ".PrintConsole::fixedStringSize($value->class.''.$value->method),array('bold'=>$this->commandBold,'forecolor'=>$this->commandForecolor,'backcolor'=>$this->commandBackcolor));
+				if($value->class == 'index')
+					$nameCommand = substr($value->method, 1);
+				else
+					$nameCommand = $value->class.''.$value->method;
+
+				echo PrintConsole::write("   ".PrintConsole::fixedStringSize($nameCommand),array('bold'=>$this->commandBold,'forecolor'=>$this->commandForecolor,'backcolor'=>$this->commandBackcolor));
 				echo PrintConsole::write(" ".$value->description,array('bold'=>$this->descriptionBold,'forecolor'=>$this->descriptionForecolor,'backcolor'=>$this->descriptionBackcolor));
 				echo "\n";
 				
@@ -185,13 +207,20 @@ class ConsoleCore {
 			return;
 		}
 
-		
+		if( !isset($this->commands[$command]) ){
+			$command = 'index:'.$command;
+		}
 
 		if(isset($this->commands[$command])){			
 
+			if(substr($command, 0,5)=='index')
+				$commandTitle = substr($command, 6);
+			else
+				$commandTitle = $command;
+
 			Layout::header(false,$this->title,$this->titleForecolor,$this->titleBackcolor,$this->titleBold);
 			echo "\n";
-			echo PrintConsole::write(" ".PrintConsole::fixedStringSize($command),array('bold'=>false,'forecolor'=>'cian'));
+			echo PrintConsole::write(" ".PrintConsole::fixedStringSize($commandTitle),array('bold'=>$this->commandBold,'forecolor'=>$this->commandForecolor,'backcolor'=>$this->commandBackcolor));
 			echo "\n\n";
 
 			$commandArray = explode(':', $command);

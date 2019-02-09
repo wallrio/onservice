@@ -211,8 +211,8 @@ class Walk {
 	public $order = 1;
 
 	/** 
-	*	@order: 0
-	*	@description: description of command 
+		@order: 0
+		@description: description of command 
 	**/
 	public function run(){		
 		return 'running...';

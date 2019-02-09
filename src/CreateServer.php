@@ -11,7 +11,6 @@ class CreateServer{
 	public $version = OnServiceVersion;
 
 
-
 	public function __construct($server = null){
 
 

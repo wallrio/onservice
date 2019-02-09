@@ -421,3 +421,58 @@ class Logon {
 - To create more levels use annotattions of methods
 
 - For each class is implicit the "namespace onservice\http\routes\ROUTE_CURRENT"
+
+
+
+#### Classes of assistance
+To assist in the implementation and coding of your routes, here is a brief step to work with custom classes.
+
+1. in the directory of your route create a subdirectory with the name '_class'
+
+2. In the '_class' directory create your classes, create subdirectories if necessary.
+
+3. directory structure example
+
+	/--src
+		|
+		|--route
+			|
+			|--example-route
+				|
+				|--_class
+					 |
+					 |--MyClass.php
+
+
+4. Name the 'namespace' of your classes from the word '_class', and follow whatever directory you are in.
+
+- Example to class '/src/route/example-route/_class/MyClass.php'
+	
+```php
+
+namespace _class;
+
+class MyClass{
+
+}
+
+```
+
+- Example to class '/src/route/example-route/_class/secondDir/secondClass.php'
+	
+```php
+
+namespace _class\secondDir;
+
+class secondClass{
+
+}
+
+```
+
+5. To use the created class, call it on your route as follows.
+
+	use _class\MyClass as MyClass;
+
+
+

@@ -10,17 +10,12 @@ class Server{
 
 	/** @description: Inicia um servidor web local (PHP) **/
 	public function run(){
-
 		$ip = '127.0.0.1';
 		$port = 8082;
 
-		PrintConsole::write(" ".PrintConsole::fixedStringSize('Running Server on '.$ip.':'.$port),array('bold'=>false,'forecolor'=>'yellow'));
-
+		echo PrintConsole::write(" ".PrintConsole::fixedStringSize('Running Server on '.$ip.':'.$port),array('bold'=>false,'forecolor'=>'yellow'));
 		
-		
-		@exec(' php -S '.$ip.':'.$port."");
-
-		
+		@exec(' php -S '.$ip.':'.$port."");		
 		return '';
 	}
 
