@@ -435,14 +435,14 @@ To assist in the implementation and coding of your routes, here is a brief step 
 
 ```php
 /--src
-	|
-	|--route
+  |
+  |--route
+     |
+	 |--example-route
 		|
-		|--example-route
+		|--_class
 			|
-			|--_class
-				 |
-				 |--MyClass.php
+			|--MyClass.php
 
 ```
 
