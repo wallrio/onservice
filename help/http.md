@@ -433,6 +433,8 @@ To assist in the implementation and coding of your routes, here is a brief step 
 
 3. directory structure example
 
+```php
+
 	/--src
 		|
 		|--route
@@ -443,31 +445,28 @@ To assist in the implementation and coding of your routes, here is a brief step 
 					 |
 					 |--MyClass.php
 
+```
 
 4. Name the 'namespace' of your classes from the word '_class', and follow whatever directory you are in.
 
 - Example to class '/src/route/example-route/_class/MyClass.php'
 	
 ```php
-
 namespace _class;
 
 class MyClass{
 
 }
-
 ```
 
 - Example to class '/src/route/example-route/_class/secondDir/secondClass.php'
 	
 ```php
-
 namespace _class\secondDir;
 
 class secondClass{
 
 }
-
 ```
 
 5. To use the created class, call it on your route as follows.
