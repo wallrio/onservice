@@ -472,7 +472,8 @@ class secondClass{
 
 5. To use the created class, call it on your route as follows.
 
+```php
 	use _class\MyClass as MyClass;
-
+```
 
 
