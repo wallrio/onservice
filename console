@@ -6,6 +6,11 @@ spl_autoload_register(function ($class_name) {
     $class_name = $class_nameArray[count($class_nameArray)-1];
 	$dir = getcwd().DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'wallrio'.DIRECTORY_SEPARATOR.'onservice'.DIRECTORY_SEPARATOR;
     $path = $dir.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'consolecore'.DIRECTORY_SEPARATOR.$class_name . '.php';    
+    $path = str_replace(DIRECTORY_SEPARATOR.DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR, $path);
+
+    if(!file_exists($path))
+    	$path = 'src'.DIRECTORY_SEPARATOR.'consolecore'.DIRECTORY_SEPARATOR.$class_name . '.php';    
+
     include $path;
 });
 

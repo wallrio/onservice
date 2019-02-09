@@ -125,9 +125,12 @@ class ConsoleCore {
 
 	public function run($dir = null){
 
-		if($dir == null && !is_array($dir) )		
-		$dir = getcwd().DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'wallrio'.DIRECTORY_SEPARATOR.'onservice'.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'consolecore'.DIRECTORY_SEPARATOR.'commands'.DIRECTORY_SEPARATOR;
+		if($dir == null && !is_array($dir) ){
 
+			$dir = getcwd().DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'wallrio'.DIRECTORY_SEPARATOR.'onservice'.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'consolecore'.DIRECTORY_SEPARATOR.'commands'.DIRECTORY_SEPARATOR;
+			if(!file_exists($dir))
+				$dir = 'src'.DIRECTORY_SEPARATOR.'consolecore'.DIRECTORY_SEPARATOR.'commands'.DIRECTORY_SEPARATOR;
+		}	
 
 		$this->getCommands($dir);
 		
