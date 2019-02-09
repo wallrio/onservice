@@ -438,11 +438,11 @@ To assist in the implementation and coding of your routes, here is a brief step 
   |
   |--route
      |
-	 |--example-route
-		|
-		|--_class
-			|
-			|--MyClass.php
+     |--example-route
+         |
+         |--_class
+             |
+             |--MyClass.php
 
 ```
 
