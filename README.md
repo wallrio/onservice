@@ -34,9 +34,9 @@ When creating the server attach the service of interest
 ```php
 
 use onservice\CreateServer as CreateServer;
-use onservice\services\Http as Http;
+use onservice\services\Router as Router;
 
-$server = new CreateServer( new Http() );
+$server = new CreateServer( new Router() );
 
 ```
 
@@ -47,7 +47,7 @@ After providing the service to the server, you can use all the features that the
 ##### Example
 
 ```ph
-$server->http->resource('/',function($urlPar,$requestPar){
+$server->router->resource('/',function($urlPar,$requestPar){
 
         $html = 'First Page';
         $html .= '<hr>';
@@ -67,10 +67,10 @@ $server->http->resource('/',function($urlPar,$requestPar){
 ```php
 
 use onservice\CreateServer as CreateServer;
-use onservice\services\Http as Http;
+use onservice\services\Router as Router;
 use onservice\services\Process as Process;
 
-$server = new CreateServer( new Process(), new Http(),... );
+$server = new CreateServer( new Process(), new Router(),... );
 
 ```
 
