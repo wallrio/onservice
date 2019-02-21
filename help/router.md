@@ -163,4 +163,8 @@ If you use Apache as the server, here's an example of a configuration, which sho
 </IfModule>
 ```
 
+## RouterClass
+Use your routes in separate files, grouping them into distinct classes.
+This method is useful for use when there are a large number of routes.
 
+- [RouterClass](sub/router_routerclass.md)
