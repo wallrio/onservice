@@ -21,6 +21,6 @@ $server = new CreateServer( new Database( DRIVER ) );
 
 # Drivers available
 
-- [Mysql](sub/database_mysql.md)
-- [JSON](sub/database_json.md)
-- [Mongo](sub/database_mongo.md)
+- [Mysql](help/database_mysql.md)
+- [JSON](help/database_json.md)
+- [Mongo](help/database_mongo.md)

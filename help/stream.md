@@ -18,7 +18,7 @@ $server = new CreateServer(	new Stream(IP,PORT,DRIVER) );
 
 # Drivers available
 
-- [TCP](sub/stream_tcp.md)
-- [HTTPServer](sub/stream_httpserver.md)
-- [HTTPClient](sub/stream_httpclient.md)
+- [TCP](help/stream_tcp.md)
+- [HTTPServer](help/stream_httpserver.md)
+- [HTTPClient](help/stream_httpclient.md)
 

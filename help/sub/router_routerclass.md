@@ -1,182 +1,17 @@
-
-
-
-# Http
-service for make API and applications RestFull
-
-
-## Methods
-
-
-### method: resource
-
-	$server->http->resource(ROUTE,CALLBACK);
-
-Used to respond to an HTTP request
-
-	CALLBACK	=	(URL_PARAMETERS,REQUEST_PARAMETERS)	
-	
-###### URL_PARAMETERS:
-contains the requested values of the route
-
-###### REQUEST_PARAMETERS:
-| Key | Value |
-|--|--|
-| method | get or post |
-| url |route URL request|
-	
-
-##### Example:
-```php
-use onservice\CreateServer as CreateServer;
-use onservice\services\Http as Http;
-
-// create the server
-$server = new CreateServer(	new Http() );
-
-$server->http->resource('/',function($urlPar,$requestPar){
-	// your code
-	return array(
-		'body' 		=> 'body response',
-		'code'		=> 200,
-		'message'	=> 'Ok',
-		'type'		=> 'text/html'
-	);
-});
-```
-
-##### Example 2:
-
-Request in browser
-	
-	URL: http://address-server-http/users/fulano/32	
-	
-```php
-use onservice\CreateServer as CreateServer;
-use onservice\services\Http as Http;
-
-// create the server
-$server = new CreateServer(	new Http() );
-
-$server->http->resource('/users/{name}/{age}}',function($urlPar,$requestPar){
-
-	// $urlPar = Array ( [name] => fulano [age] => 32 )
-	// $requestPar = Array ( [method] => get [data] => Array() [url] => /users/fulano  )
-	
-	return array(
-		'body' 		=> 'body response',
-		'code'		=> 200,
-		'message'	=> 'Ok',
-		'type'		=> 'text/html'
-	);
-});
-```
-
-##### Example 3:
-
-Request in browser
-	
-	URL: http://address-server-http/city/brasil/sao-paulo
-	
-```php
-use onservice\CreateServer as CreateServer;
-use onservice\services\Http as Http;
-
-// create the server
-$server = new CreateServer(	new Http() );
-
-$server->http->resource('/city/+',function($urlPar,$requestPar){
-
-	// $urlPar = Array ( [country] => brasil )
-	// $requestPar = Array ( [method] => get [url] => /city/brasil/sao-paulo )
-	
-	$img = 'STRING_CONTENT_BASE64';
-	$img = base64_decode($img);
-	
-	return array(
-		'body' 		=> $img,
-		'code'		=> 200,
-		'message'	=> 'Ok',
-		'type'		=> 'image/png'
-	);
-});
-```
-
-
-
-#### special characters:
-| Key | Value |
-|--|--|
-| . | Includes all on the next level (DOT) |
-|   | only the current level (Empty) |
-| + | includes the current level and all sub-levels (ASTERISK)|
-
-- DOT (.)
-```
-$server->http->resource('/city/.',FUNCTION);
-```
-
-- ASTERISK (*)
-```
-$server->http->resource('/city/+',FUNCTION);
-```
-
-- EMPTY 
-```
-$server->http->resource('/city',FUNCTION);
-```
-
-- WITH BAR (same as the EMPTY) 
-```
-$server->http->resource('/city/',FUNCTION);
-```
-
-#### Verb HTTP OPTIONS:
-to work around problems with requests between domain it is possible to use the parameter "ignoreVerbsOptions" to ignore the OPTIONS request of the browser.
-
-```php
-$server->http->ignoreVerbsOptions = true;
-```
-
-> use this parameter before the request methods
-
-##### Verb HTTP OPTIONS on routes class
-use também o parametro "ignoreVerbsOptions" nas anotações dos metodos como "@ignoreVerbsOptions: true"
-
-```php
-	/** @route: /url/route/
-		@ignoreVerbsOptions: true
-	**/ 	
-	public function methodRoute($urlPar,$requestPar){	
-
-	}
-```
-
-#### htaccess example:
-For the correct operation of this service, it is necessary to configure url rewriting.
-If you use Apache as the server, here's an example of a configuration, which should be inserted into the file .htaccess
-
-```
-<IfModule mod_rewrite.c>
-	RewriteEngine on	
-	RewriteCond %{REQUEST_FILENAME} !-d
-	RewriteCond %{REQUEST_FILENAME} !-f
-	RewriteCond %{REQUEST_FILENAME} !-l								
-	RewriteRule ^(.+)$ index.php [L]					
-</IfModule>
-```
------
-
-### method: routes 
+# RouterClass
 Use your routes in separate files, grouping them into distinct classes.
 This method is useful for use when there are a large number of routes.
 
 
-#### Set up a directory to contain the routes
-
-
+##### Example:
 ```php
-$server->http->routes('DIRECTORY_OF_ROUTES');
+use onservice\CreateServer as CreateServer;
+use onservice\services\Router\RouterClass as RouterClass;
+
+// create the server
+$server = new CreateServer(new RouterClass);
+
+$server->routerclass->start('DIRECTORY_OF_ROUTES');
 ```
 
 > DIRECTORY_OF_ROUTES = directories where the classes of the routes will be hosted, if omitted will be defined "http/routes/"
@@ -184,7 +19,7 @@ $server->http->routes('DIRECTORY_OF_ROUTES');
 - Example
 
 ```php
-$server->http->routes(__DIR__.DIRECTORY_SEPARATOR.'http'.DIRECTORY_SEPARATOR.'routes');
+$server->routerclass->start(__DIR__.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'routes');
 ```
 
 
@@ -195,11 +30,11 @@ $server->http->routes(__DIR__.DIRECTORY_SEPARATOR.'http'.DIRECTORY_SEPARATOR.'ro
 
 ```php
 use onservice\CreateServer as CreateServer;
-use onservice\services\Http as Http;
+use onservice\services\Router as Router;
 
-$server = new CreateServer(	new Http() );
+$server = new CreateServer(	new Router() );
 
-$server->http->routes(__DIR__.DIRECTORY_SEPARATOR.'http'.DIRECTORY_SEPARATOR.'routes');
+$server->routerclass->start(__DIR__.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'routes');
 ```
 
 - Structure of Directory/Files (Classes)
@@ -327,6 +162,8 @@ class Logon {
 
 > the class route above will be "/logon/user/wallrio"
 
+- Note: The valid route annotation must contain (/**) at the beginning and (**/) at the end
+
 ##### Dynamic routes - Example
 
 ```php
@@ -420,7 +257,7 @@ class Logon {
 - The class name is the second level of the route
 - To create more levels use annotattions of methods
 
-- For each class is implicit the "namespace onservice\http\routes\ROUTE_CURRENT"
+- For each class is implicit the "namespace onservice\service\Router\RouterClass\ROUTE_CURRENT"
 
 
 
@@ -474,4 +311,66 @@ class secondClass{
 use _class\MyClass as MyClass;
 ```
 
+
+## PushRoute
+Transfers a request to an external route.
+Useful for creating a Gateway API.
+
+### Example
+```php
+
+use onservice\services\Router\PushRoute as PushRoute;
+
+class Logon {
+
+	/** @route: /user **/
+	public function user($urlPar,$requestPar){				
+		return new PushRoute('http://domain.com:8081/logon/user',$requestPar);	
+	}
+}	
+```
+
+> The above example transfers the request to '/logon/user' to 'http://domain.com:8081/logon/user', and in a transparent way, the request author does not know and does not have access to the end-point 'http://domain.com:8081/logon/user'.
+
+### Example 2
+```php
+
+use onservice\services\Router\PushRoute as PushRoute;
+
+class Logon {
+
+	/** @route: /user **/
+	public function user($urlPar,$requestPar){				
+		return new PushRoute('http://domain.com:8081/logon/user');
+	}
+}	
+```
+
+### Example 3
+```php
+
+use onservice\services\Router\PushRoute as PushRoute;
+
+class Logon {
+
+	/** @route: /user **/
+	public function user($urlPar,$requestPar){				
+		return new PushRoute('http://domain.com:8081/logon/user',['post'=> ['name'=>'Fulano'] ]);
+	}
+}	
+```
+
+### Example 4
+```php
+
+use onservice\services\Router\PushRoute as PushRoute;
+
+class Logon {
+
+	/** @route: /user **/
+	public function user($urlPar,$requestPar){				
+		return new PushRoute('http://domain.com:8081/logon/user?name=Fulano');
+	}
+}	
+```
 

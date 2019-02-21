@@ -4,7 +4,6 @@ Workflow Service for version control with GIT
 ## Methods
 
 
-
 ### get
 downloads the files from the repository to the local working directory
 
@@ -12,56 +11,40 @@ downloads the files from the repository to the local working directory
 
 ##### Example basic:
 ```php
-use onservice\services\Git as Git;
-
-$server = new CreateServer( new Git() );
-
-$result = $server->git->get(array(
-	'url'=>'https://github.com/user/repository.git',
-	'workspace'=> getcwd()
-));
+	$result = $server->git->get(array(
+		'url'=>'https://github.com/user/repository.git',
+		'workspace'=> getcwd()
+	));
 ```
 
 ##### Example to directory private
 
 ```php
-use onservice\services\Git as Git;
-
-$server = new CreateServer( new Git() );
-
-$result = $server->git->get(array(
-	'url'=>'https://github.com/user/repository.git'
-	'workspace'=> getcwd(),
-	'username'=>'username',
-	'password'=>'password'
-));
+	$result = $server->git->get(array(
+		'url'=>'https://github.com/user/repository.git'
+		'workspace'=> getcwd(),
+		'username'=>'username',
+		'password'=>'password'
+	));
 ```
 
 ##### Example to download from another branch
 
 ```php
-use onservice\services\Git as Git;
-
-$server = new CreateServer( new Git() );
-
-$result = $server->git->get(array(
-	'url'=>'https://github.com/user/repository.git',
-	'branch'=>'development'
-));
+	$result = $server->git->get(array(
+		'url'=>'https://github.com/user/repository.git',
+		'branch'=>'development'
+	));
 ```
 
 ##### Exemplo para baixar de um diretório especifico na branch
 
 ```php
-use onservice\services\Git as Git;
-
-$server = new CreateServer( new Git() );
-
-$result = $server->git->get(array(
-	'url'=>'https://github.com/user/repository.git',
-	'branch'=>'development',
-	'directory'=>'src'
-));
+	$result = $server->git->get(array(
+		'url'=>'https://github.com/user/repository.git',
+		'branch'=>'development',
+		'directory'=>'src'
+	));
 ```
 
 ##### Parametros

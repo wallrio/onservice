@@ -41,3 +41,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Implementation of Stream TCP
 - Implementation of Stream Http Server
 - Implementation of Stream Http Client
+
+
+## [1.4.0] - 2019-2-20
+
+### Changed
+- Modified HTTP Service for Router
+- Separate HTTP Container for RouterClass
+- Created PushRoute
