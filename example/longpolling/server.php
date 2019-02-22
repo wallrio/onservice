@@ -12,10 +12,10 @@ use onservice\services\LongPolling\MysqlPersistence as MysqlPersistence;
 
 $FilePersistence = new FilePersistence(__DIR__.'/work');
 $MysqlPersistence = new MysqlPersistence(array(
-	'host'=>'localhost',
-	'basename' => 'onservice',
-	'username' => 'root',
-	'password' => 'pagedown'
+	'host'=>'host',
+	'basename' => 'basename',
+	'username' => 'username',
+	'password' => 'password'
 ));
 
 // create the server

@@ -87,6 +87,7 @@ $server = new CreateServer( new Process(), new Router(),... );
 - [Settings](help/settings.md)
 - [Git](help/git.md)
 - [Console](help/console.md)
+- [Pipe](help/pipe.md)
 
 
 ## License

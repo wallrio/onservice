@@ -17,7 +17,7 @@ class Settings{
 	public $server = null;
 	public $namespace = 'settings';
 
-
+	
 	public function __construct($dir = null){
 
 		if(

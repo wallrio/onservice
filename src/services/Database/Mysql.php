@@ -4,6 +4,7 @@ namespace onservice\services\Database;
 
 class Mysql{
 
+	public $status;
 
 	public function __construct($host = null,$username = null,$password = null,$basename = null){
 		
@@ -40,6 +41,20 @@ class Mysql{
 		$this->connect();
 	}
 
+
+	public function getScheme($table){
+		$q = $this->db->prepare("SHOW COLUMNS FROM ".$table."");
+	    $q->execute();
+	    $table_fields = $q->fetchAll(\PDO::FETCH_OBJ);
+
+	    $array = array();
+	    foreach ($table_fields as $key => $value) {
+	    	$name = $value->Field;
+	    	unset($value->Field);
+	    	$array[$name] = (object) $value;
+	    }
+	    return (object) $array;
+	}
 
 	public function connect(){
 
@@ -165,8 +180,12 @@ class Mysql{
 		return $this->flush($sql);
 	}
 
-	public function query($sql){	
-		return $this->flush($sql);
+	public function query($sql,$array = null){	
+		$sth = $this->db->prepare($sql);
+		$sth->execute($array);
+		$count = $sth->rowCount();
+		$result = $sth->fetch();
+		return $result;
 	}
 
 	public function flush($sql,$array = null){

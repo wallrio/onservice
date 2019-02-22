@@ -18,6 +18,8 @@ class Stream {
 	private $address = '127.0.0.1';
 	private $port = 3333;
 
+	// first call after contructor
+	public function _init($server){}
 
 	public function __construct($address = '127.0.0.1', $port = 3333, $driver = null){
 		$this->address = $address;

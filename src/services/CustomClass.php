@@ -7,8 +7,7 @@ class CustomClass{
 
 	public $server = null;
 	public $namespace = 'customclass';
-	// public $dirArray = null;
-	
+
 	public function __construct($dir = null){
 
 	
@@ -22,7 +21,6 @@ class CustomClass{
 			$pathClass = $dir.$value;
 				$pathClass = str_replace(DIRECTORY_SEPARATOR.DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR, $pathClass);
 
-			// echo $pathClass;
 			require $pathClass;
 
 
@@ -49,13 +47,7 @@ class CustomClass{
 
 				}
 
-/*
 
-				if( $key2 < count($array) -1 )
-					eval('$this->'.$join.' = (object) array();');
-				else
-					eval('$this->'.$join.' = new CustomClass\\'.$join2.';');
-*/
 			}
 
 		}
@@ -63,17 +55,5 @@ class CustomClass{
 	}	
 
 
-	public function __call($method,$arguments){		
-			// return  $method;
-		// print_r($this->dirArray);
-
-		// foreach ($this->dirArray as $key => $value) {				
-			/*if( !isset($value->namespace) ){
-				return call_user_func_array(array($value,$method), $arguments);
-			}else{
-				die('Method not exist ['.$method.']');				
-			}*/
-		// }	
-	}
 
 }

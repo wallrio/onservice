@@ -49,3 +49,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Modified HTTP Service for Router
 - Separate HTTP Container for RouterClass
 - Created PushRoute
+
+## [1.5.0] - 2019-2-22
+
+### Changed
+- changed methods on CreateServer
+- changed service Mysql
+- create ORM mapper
+- create PIPE service
