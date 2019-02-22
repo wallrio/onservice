@@ -11,7 +11,7 @@ Sequential operations
 	returns the class context CreateServer;
 
 - VALUE_INPUT: 
-	type: any
+	- type: any
 
 ### pipeAdd
 
@@ -21,7 +21,7 @@ Sequential operations
 	returns the class context CreateServer;
 
 - VALUE_INPUT: 
-	type: string|number|array
+	- type: string|number|array
 
 ### pipeService
 
@@ -31,7 +31,7 @@ Sequential operations
 	returns the class context CreateServer;
 
 - VALUE_INPUT: 
-	type: service class onservice 
+	- type: service class onservice 
 
 
 ##### Example basic:
@@ -57,7 +57,7 @@ echo $server->pipe->response();
 
 ```php	
 $server->pipe('This')->pipeAdd(' is')->pipeAdd(' a')->pipeAdd(' example');
-$server->pipe->response()
+echo $server->pipe->response();
 ```
 
 ##### Example include value 2:
