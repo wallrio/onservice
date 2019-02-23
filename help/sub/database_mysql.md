@@ -81,6 +81,13 @@ $server->database->createTable('users',array(
 $result = $server->database->select(TABLE_NAME,WHERE);
 ```
 
+- Example:
+
+```php
+$server->database->select('users','username = "fulano"');
+```
+
+
 #### INSERT register:
 ```php
 $server->database->insert(TABLE_NAME,FIELD);

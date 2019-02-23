@@ -28,6 +28,7 @@ class Document{
 			$filesArray = $id;
 		}
 
+		if(isset($filesArray) )
 		foreach ($filesArray as $key => $value) {		
 			if( gettype($value) == 'string' )
 				$filename = $collectionDir . $value.$this->suffix.'.json';
@@ -216,7 +217,7 @@ class Document{
 	public function create($fields = null,$hash = null){
 
 		if($hash == null){
-			$hash = md5(json_encode($fields));
+			$hash = md5(json_encode($fields).''.time());			
 		}
 		
 		$filename = $this->collection.DIRECTORY_SEPARATOR.$hash.$this->suffix.'.json';

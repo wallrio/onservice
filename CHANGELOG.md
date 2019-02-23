@@ -57,8 +57,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - changed service Mysql
 
 ### Added
-- create ORM mapper
-- create PIPE service
+- created ORM mapper
+- created PIPE service
 
 ## [1.5.1] - 2019-2-23
 
@@ -66,4 +66,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - changed all references from namespaces to tyne.
 
 ### Added
-- create delete register to ORM mapper
+- created delete method to ORM mapper
+
+## [1.6.0] - 2019-2-23
+
+### Changed
+- various modifications in Mongo Driver
+- various modifications in JSON Driver
+- various modifications in Mysql Driver
+
+### Added
+- created ODM mapper
+- created OJM mapper

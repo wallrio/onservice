@@ -219,7 +219,40 @@ class ORM{
 
 
 	public function find($table,$WHERE = null){
-		$result = $this->database->select($table,$WHERE);
+
+		$WHERE_String = '';
+		$index = 0;
+		foreach ($WHERE as $key => $value) {
+			$operator = "";
+			if($index > count($value)-1){
+
+				if( substr($key, 0,3) == '||.'){
+					$key = str_replace('||.', '', $key) ;
+					$operator = " OR ";
+				}else if( substr($key, 0,3) == '&&.'){
+					$key = str_replace('&&.', '', $key) ;
+					$operator = " AND ";
+				}else{
+					$operator = " AND ";			
+				
+				}
+				
+			}
+
+			if( substr($value, 0,1) == '~')
+				$WHERE_String .= $operator."soundex(".$key.')=soundex("'.$value.'")';
+			else
+				$WHERE_String .= $operator."".$key.'="'.$value.'"';
+
+
+			$index++;
+		}
+
+
+
+		$result = $this->database->select($table,$WHERE_String);
+
+		
 
 		$object = new \StdClass;
 		$columns = array();
@@ -230,8 +263,15 @@ class ORM{
 
 		$classModel = [];
 		$classString = '';
-		foreach ($result as $key => $value) {			
-			$classString .= 'namespace '.$this->config['basename'].'\index_'.$key.';'."\n";	
+		foreach ($result as $key => $value) {		
+
+			if(isset($value->id))
+				$id = $value->id;
+			else
+				$id = $key;
+
+
+			$classString .= 'namespace '.$this->config['basename'].'\_'.$id.';'."\n";	
 			$classString .= 'class '.$table.' {';	
 
 			if(!isset($GLOBALS['onservice'])) $GLOBALS['onservice'] = array();
@@ -274,6 +314,9 @@ class ORM{
 				
 				$tableName = get_class($class);
 				$tableName = explode("\\\", $tableName);
+				$id = $tableName[1];
+				$id = substr($id, 1);
+
 				$tableName = end($tableName);
 
 				$parameters = $GLOBALS["onservice"]["Database"]["mapper"];
@@ -286,7 +329,8 @@ class ORM{
 				
 				$database = new \onservice\services\Database( new \onservice\services\Database\Mysql($host,$username,$password,$basename ) );
 				
-				$id = $class->$fieldCompare;	
+				
+				// $id = $class->$fieldCompare;	
 				
 				$class = (array) $class;
 
@@ -297,16 +341,26 @@ class ORM{
 
 			}';
 
-			$classString .= '}; $classModel[] = new '.$table.';';
+			$classString .= '};';
+			$classString .= '$classModel[] = new '.$table.';';
 		}
 
 		eval($classString);
+
+
 		
 		foreach ($result as $key => $value) {
+
+			if(isset($value->id))
+				$id = $value->id;
+			else
+				$id = $key;
+
 			foreach ($value as $key2 => $value2) {
 				$classModel[$key]->$key2 = $value2;
 			}
 		}
+
 	
 		return $classModel;
 	}
@@ -395,6 +449,7 @@ class ORM{
 
 	public function create($table){
 		$result = $this->database->getScheme($table);
+		$basename = $this->config['basename'];
 
 		$object = new \StdClass;
 		$columns = array();
@@ -403,7 +458,7 @@ class ORM{
 			array_push($columns, $key);
 		}
 
-		$classString = 'namespace '.$this->config['basename'].';'."\n";	
+		$classString = 'namespace '.$basename.';'."\n";	
 
 		$classString .= 'class '.$table.' {';		
 
@@ -432,7 +487,7 @@ class ORM{
 			$username = isset($parameters["username"])?$parameters["username"]:null;
 			$password = isset($parameters["password"])?$parameters["password"]:null;
 			$basename = isset($parameters["basename"])?$parameters["basename"]:null;
-			
+
 			$database = new \onservice\services\Database( new \onservice\services\Database\Mysql($host,$username,$password,$basename ) );
 			
 			unset($class["_config"]);
@@ -443,7 +498,7 @@ class ORM{
 
 		}';
 
-		$classString .= '}; $classModel = new '.$table.';';
+		$classString .= '}; $classModel = new \\'.$basename.'\\'.$table.';';
 
 		eval($classString);
 		

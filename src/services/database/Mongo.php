@@ -2,18 +2,14 @@
 
 namespace onservice\services\database;
 
-// use onservice\services\database\mongo\Essentials as Essentials;
-// use onservice\services\database\mongo\Document as Document;
 use onservice\services\database\mongo\Collection as Collection;
-// use onservice\services\database\mongo\Security as Security;
 
 class Mongo {
 
 	private $connection;
 
-	public function __construct($basename = null){
-		$this->connection = new \MongoClient('localhost:27017');
-		$this->basename = $basename;
+	public function __construct(){
+		$this->connection = new \MongoClient('localhost:27017');		
 	}
 
 	public function createBase($basename){
@@ -23,6 +19,7 @@ class Mongo {
 
 	public function base($base){		
 		$this->basename = $base;
+		$this->db = $this->connection->selectDB($base);
 		return new Collection($this->db,$this->basename);
 	}
 

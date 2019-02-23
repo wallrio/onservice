@@ -19,14 +19,6 @@ $server = new CreateServer( new Database( new Mongo() ) );
 $base = $server->database->base('BASENAME');
 ```
 
-### Configuration directly on instance
-
-```php
-$server = new CreateServer( new Database( new Mongo('BASENAME') ) );
-```
-
-
-
 ## Methods
 
 
@@ -93,6 +85,23 @@ $collection = $base->collection('COLLECTION_NAME');
 
 $result = $collection->document->select(array(
 	'username' => 'wallrio'
+));
+
+print_r($result);
+```
+
+
+##### Example - selecting a document with operator OR '||'
+> $result  =  $collection->document->select( WHERE );
+
+```php
+$server = new CreateServer( new Database( new Mongo() ) );
+$base = $server->database->base('BASENAME');					
+$collection = $base->collection('COLLECTION_NAME');
+
+$result = $collection->document->select(array(
+	'username' => 'wallrio',
+	'||.username' => 'fulano'
 ));
 
 print_r($result);

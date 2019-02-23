@@ -22,3 +22,5 @@ $server = new CreateServer( new Database( DRIVER ) );
 - [JSON](sub/database_json.md)
 - [Mongo](sub/database_mongo.md)
 - [ORM](sub/database_orm.md)
+- [ODM](sub/database_odm.md)
+- [OJM](sub/database_ojm.md)

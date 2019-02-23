@@ -34,12 +34,29 @@ $server->orm->setup($parameters);
 
 ## Find registers
 
+> $users = $server->orm->find(TABLE,WHERE);
+
 - Example
 
 ```php
-$users = $server->orm->find(TABLE,WHERE_SQL);
+$users = $server->orm->find('users',array('username'=>'fulano'));
 print_r($users);
 ```
+
+- Example with operator OR '||'
+
+```php
+$users = $server->orm->find('users',array('username'=>'fulano', '||.username'=>'ciclano'));
+print_r($users);
+```
+
+- Example with soundex '~'
+
+```php
+$users = $server->orm->find('users',array('name'=>'~Fulanu'));
+print_r($users);
+```
+
 
 
 ## Find and Update
@@ -47,7 +64,7 @@ print_r($users);
 - Example
 
 ```php
-$users = $server->orm->find(TABLE,WHERE_SQL);
+$users = $server->orm->find(TABLE,WHERE);
 $users[0]->email = 'newmail@domain.com';
 $users[0]->save();
 ```
@@ -82,12 +99,11 @@ $users->save();
 - Example
 
 ```php
-$users = $server->orm->find(TABLE,WHERE_SQL);
+$users = $server->orm->find(TABLE,WHERE);
 $server->orm->remove($users); 
 
 $users[0]->remove();// method optional to save
 ```
-
 
 
 
@@ -116,4 +132,4 @@ $server->orm->scheme($scheme);
 
 ```
 
-> The 'scheme' only creates or adds tables and fields, it is not possible to remove information in the database by the 'scheme', to remove it will require manual action.
+> The 'scheme' only creates or adds tables and fields, it is not possible to remove infODMation in the database by the 'scheme', to remove it will require manual action.

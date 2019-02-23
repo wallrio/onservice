@@ -43,6 +43,8 @@ class Mysql{
 
 
 	public function getScheme($table){
+		$this->connect();
+
 		$q = $this->db->prepare("SHOW COLUMNS FROM ".$table."");
 	    $q->execute();
 	    $table_fields = $q->fetchAll(\PDO::FETCH_OBJ);
@@ -58,18 +60,24 @@ class Mysql{
 
 	public function connect(){
 
-		
+			
 
 		if($this->basename != null){
 
 			try{
+
 				$this->db = new \PDO("mysql:host=".$this->host.";dbname=".$this->basename, $this->username, $this->password); 
+
+				
+
 				return true;
 			}catch(\Exception $e){		
+
 				die('onservice[Database:Mysql]: could not connect to base');				
 			}
 
 		}else{
+
 			try{
 				$this->db = new \PDO("mysql:host=".$this->host.";", $this->username, $this->password); 
 				return true;
@@ -128,6 +136,7 @@ class Mysql{
 
 	public function insert($table,array $fields){	
 
+
 		$fieldsJoin = '';
 		$valuesJoin = '';
 		$index = 0;
@@ -181,6 +190,7 @@ class Mysql{
 	}
 
 	public function query($sql,$array = null){	
+		$this->connect();	
 		$sth = $this->db->prepare($sql);
 		$sth->execute($array);
 		$count = $sth->rowCount();
@@ -189,12 +199,13 @@ class Mysql{
 	}
 
 	public function flush($sql,$array = null){
-		
-			$sth = $this->db->prepare($sql);
-			$sth->execute($array);
-			$count = $sth->rowCount();
-			$result = $sth->fetchAll(\PDO::FETCH_OBJ);
-			return $result;
+		$this->connect();	
+
+		$sth = $this->db->prepare($sql);
+		$sth->execute($array);
+		$count = $sth->rowCount();
+		$result = $sth->fetchAll(\PDO::FETCH_OBJ);
+		return $result;
 		
 	}
 

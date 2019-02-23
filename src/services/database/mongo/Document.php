@@ -81,7 +81,34 @@ class Document{
 
 	public function select(array $where = array()){
 
-		$cursor = $this->collection->find($where);
+		$foundOrOperator = false;		
+		$whereNew = [];
+		foreach ($where as $key => $value) {
+			
+			if( substr($key, 0,3) == '||.'){
+				$key = str_replace('||.', '', $key) ;
+				$foundOrOperator = true;
+			}
+			$whereNew[] = array($key=>$value);
+		}
+
+		if($foundOrOperator === false){
+			$whereNew = [];
+
+			foreach ($where as $key => $value) {
+				
+				if( substr($key, 0,3) == '&&.'){
+					$key = str_replace('&&.', '', $key) ;
+					$foundOrOperator = false;
+				}
+				$whereNew[$key] = $value;
+			}
+		}else{
+			$whereNew = array('$or'=>$whereNew);	
+		}
+		
+		$cursor = $this->collection->find($whereNew);
+
 		$array = array();
 		foreach ( $cursor as $id => $value ){		    
 		   	$array[$id] = (object) $value;
