@@ -55,5 +55,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - changed methods on CreateServer
 - changed service Mysql
+
+### Added
 - create ORM mapper
 - create PIPE service
+
+## [1.5.1] - 2019-2-23
+
+### Changed
+- changed all references from namespaces to tyne.
+
+### Added
+- create delete register to ORM mapper
