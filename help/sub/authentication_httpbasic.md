@@ -11,7 +11,7 @@ Authentication of user using HTTPBasic
 
 use onservice\CreateServer as CreateServer;
 use onservice\services\Authentication as Authentication;
-use onservice\services\Authentication\HTTPBasic as HTTPBasic;
+use onservice\services\authentication\HTTPBasic as HTTPBasic;
 
 
 $this->authentication = new CreateServer( new Authentication(new HTTPBasic()) );

@@ -6,7 +6,7 @@ abstracts the communication using TCP Procotol
 ```php
 use onservice\CreateServer as CreateServer;
 use onservice\services\Stream as Stream;
-use onservice\services\Stream\TCP as TCP;
+use onservice\services\stream\TCP as TCP;
 
 $server = new CreateServer(	new Stream(IP,ADDRESS,new TCP) );
 ```
@@ -111,7 +111,7 @@ Envia mensagem para um cliente especifico baseado no socket resource.
 ```php
 use onservice\CreateServer as CreateServer;
 use onservice\services\Stream as Stream;
-use onservice\services\Stream\TCP as TCP;
+use onservice\services\stream\TCP as TCP;
 
 $server = new CreateServer(	new Stream('0.0.0.0',8080,new TCP) );
 
@@ -197,7 +197,7 @@ Envia mensagem para todos o servidor.
 ```php
 use onservice\CreateServer as CreateServer;
 use onservice\services\Stream as Stream;
-use onservice\services\Stream\TCP as TCP;
+use onservice\services\stream\TCP as TCP;
 
 $server = new CreateServer(	new Stream('0.0.0.0',8080,new TCP) );
 

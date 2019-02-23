@@ -1,7 +1,7 @@
 <?php
 
 namespace onservice\services;
-use onservice\services\Database\InterfaceDatabase as InterfaceDatabase;
+use onservice\services\database\InterfaceDatabase as InterfaceDatabase;
 
 class Database{
 

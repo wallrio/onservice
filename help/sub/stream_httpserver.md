@@ -6,7 +6,7 @@ To create a server HTTP (Web Server)
 ```php
 use onservice\CreateServer as CreateServer;
 use onservice\services\Stream as Stream;
-use onservice\services\Stream\HTTPServer as HTTPServer;
+use onservice\services\stream\HTTPServer as HTTPServer;
 
 $server = new CreateServer(	new Stream(IP,ADDRESS,new HTTPServer) );
 ```
@@ -45,7 +45,7 @@ $server->stream->onReceiver(function($url,$stream){
 ```php
 use onservice\CreateServer as CreateServer;
 use onservice\services\Stream as Stream;
-use onservice\services\Stream\HTTPServer as HTTPServer;
+use onservice\services\stream\HTTPServer as HTTPServer;
 
 $server = new CreateServer(	new Stream('0.0.0.0','8080',new HTTPServer) );
 

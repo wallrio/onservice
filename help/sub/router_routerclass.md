@@ -6,7 +6,7 @@ This method is useful for use when there are a large number of routes.
 ##### Example:
 ```php
 use onservice\CreateServer as CreateServer;
-use onservice\services\Router\RouterClass as RouterClass;
+use onservice\services\router\RouterClass as RouterClass;
 
 // create the server
 $server = new CreateServer(new RouterClass);
@@ -257,7 +257,7 @@ class Logon {
 - The class name is the second level of the route
 - To create more levels use annotattions of methods
 
-- For each class is implicit the "namespace onservice\service\Router\RouterClass\ROUTE_CURRENT"
+- For each class is implicit the "namespace onservice\service\router\routerclass\ROUTE_CURRENT"
 
 
 
@@ -319,7 +319,7 @@ Useful for creating a Gateway API.
 ### Example
 ```php
 
-use onservice\services\Router\PushRoute as PushRoute;
+use onservice\services\router\PushRoute as PushRoute;
 
 class Logon {
 
@@ -335,7 +335,7 @@ class Logon {
 ### Example 2
 ```php
 
-use onservice\services\Router\PushRoute as PushRoute;
+use onservice\services\router\PushRoute as PushRoute;
 
 class Logon {
 
@@ -349,7 +349,7 @@ class Logon {
 ### Example 3
 ```php
 
-use onservice\services\Router\PushRoute as PushRoute;
+use onservice\services\router\PushRoute as PushRoute;
 
 class Logon {
 
@@ -363,7 +363,7 @@ class Logon {
 ### Example 4
 ```php
 
-use onservice\services\Router\PushRoute as PushRoute;
+use onservice\services\router\PushRoute as PushRoute;
 
 class Logon {
 

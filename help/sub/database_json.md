@@ -10,7 +10,7 @@ abstracts the communication with database using JSON driver
 
 use onservice\CreateServer as CreateServer;
 use onservice\services\Database as Database;
-use onservice\services\Database\JSON as JSON;
+use onservice\services\database\JSON as JSON;
 
 $server = new CreateServer( new Database( new JSON() ) );
 ```

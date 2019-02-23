@@ -19,7 +19,7 @@ use onservice\CreateServer as CreateServer;
 use onservice\services\LongPolling as LongPolling;
 
 // using persistence in file
-use onservice\services\LongPolling\FilePersistence as FilePersistence;
+use onservice\services\longpolling\FilePersistence as FilePersistence;
 $filePersistence = new FilePersistence(__DIR__.'/users'); // directory to save data (writeable)
 
 // create the server
@@ -54,7 +54,7 @@ $server->longpolling->start();
 
 ```php
 
-use onservice\services\LongPolling\MysqlPersistence as MysqlPersistence;
+use onservice\services\longpolling\MysqlPersistence as MysqlPersistence;
 
 $MysqlPersistence = new MysqlPersistence(array(
     'host'=>'HOST',

@@ -6,7 +6,7 @@ To create a client HTTP (Request site content)
 ```php
 use onservice\CreateServer as CreateServer;
 use onservice\services\Stream as Stream;
-use onservice\services\Stream\HTTPClient as HTTPClient;
+use onservice\services\stream\HTTPClient as HTTPClient;
 
 $server = new CreateServer(	new Stream(IP,ADDRESS,new HTTPClient) );
 ```
@@ -50,7 +50,7 @@ parameters to send on requesition.
 ```php
 use onservice\CreateServer as CreateServer;
 use onservice\services\Stream as Stream;
-use onservice\services\Stream\HTTPClient as HTTPClient;
+use onservice\services\stream\HTTPClient as HTTPClient;
 
 $server = new CreateServer(	new Stream('wallrio.com',80,new HTTPClient) );
 

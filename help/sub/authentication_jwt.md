@@ -11,7 +11,7 @@ Authentication of user using Json Web Token
 
 use onservice\CreateServer as CreateServer;
 use onservice\services\Authentication as Authentication;
-use onservice\services\Authentication\JWT as JWT;
+use onservice\services\authentication\JWT as JWT;
 
 
 $this->authentication = new CreateServer( new Authentication(new JWT(KEY_TOKEN)) );

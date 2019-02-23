@@ -2,8 +2,8 @@
 
 namespace onservice\services;
 
-use onservice\services\Process\StreamProcess as StreamProcess;
-use onservice\services\Process\MemoryProcess as MemoryProcess;
+use onservice\services\process\StreamProcess as StreamProcess;
+use onservice\services\process\MemoryProcess as MemoryProcess;
 
 class Process{
 

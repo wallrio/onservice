@@ -8,7 +8,7 @@ Abstracts communication with database via class.
 ```php
 
 use onservice\CreateServer as CreateServer;
-use onservice\services\Database\mapper\ORM as ORM;
+use onservice\services\database\mapper\ORM as ORM;
 
 $server = new CreateServer(new ORM);
 ```
@@ -68,7 +68,6 @@ $server->orm->save($users);
 
 ```php
 $users = $server->orm->create(TABLE);
-$users->id = 2;
 $users->name = 'Fulano da Silva';
 $users->username = 'fulano';
 $users->created = time();
@@ -76,6 +75,21 @@ $users->save();
 
 // $server->orm->save($users); // method optional to save
 ```
+
+
+### Remove a register on table
+
+- Example
+
+```php
+$users = $server->orm->find(TABLE,WHERE_SQL);
+$server->orm->remove($users); 
+
+$users[0]->remove();// method optional to save
+```
+
+
+
 
 ### Scheme
 Changes the structure of the database as defined by the 'scheme' method
@@ -93,7 +107,8 @@ $scheme = array(
 		'id'=> 'type:int, size:11, null:false, primary:true, increment:true', //field
 		'name'=> 'type:varchar, size:250', //field
 		'username'=> 'type:varchar, size:30', //field
-		'created'=> 'type:int, size:15' //field
+		'created'=> 'type:int, size:15' //field,
+		'desciption'=> 'type:longtext' //field
 	)
 );
 

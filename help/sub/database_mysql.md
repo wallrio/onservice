@@ -9,7 +9,7 @@ abstracts the communication with database using Mysql driver
 
 use onservice\CreateServer as CreateServer;
 use onservice\services\Database as Database;
-use onservice\services\Database\Mysql as Mysql;
+use onservice\services\database\Mysql as Mysql;
 
 $server = new CreateServer( new Database( new Mysql(HOST,USERNAME,PASSWORD,BASE) ) );
 ```

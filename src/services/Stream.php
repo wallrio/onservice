@@ -2,8 +2,8 @@
 
 namespace onservice\services;
 
-use onservice\services\Stream\Server as Server;
-use onservice\services\Stream\TCP as TCP;
+use onservice\services\stream\Server as Server;
+use onservice\services\stream\TCP as TCP;
 
 class Stream {
 

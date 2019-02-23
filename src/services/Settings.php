@@ -69,7 +69,7 @@ class Settings{
 				$fileContent = json_decode($fileContent);
 			}else if($extension == 'yml'){
 
-				require_once "Settings/spyc/Spyc.php";
+				require_once "settings/spyc/Spyc.php";
 				$fileContent = \Spyc::YAMLLoad($fileContent);
 				$fileContent = json_encode($fileContent);
 				$fileContent = json_decode($fileContent);

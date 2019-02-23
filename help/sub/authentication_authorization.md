@@ -11,7 +11,7 @@ Implements method of authorization of user
 
 use onservice\CreateServer as CreateServer;
 use onservice\services\Authentication as Authentication;
-use onservice\services\Authentication\Authorization as Authorization;
+use onservice\services\authentication\Authorization as Authorization;
 
 
 $this->authentication = new CreateServer( new Authentication(new Authorization()) );
@@ -65,8 +65,8 @@ if( !$this->authentication->authorization->check("admin","editor") ){
 
 use onservice\CreateServer as CreateServer;
 use onservice\services\Authentication as Authentication;
-use onservice\services\Authentication\Authorization as Authorization;
-use onservice\services\Authentication\JWT as JWT;
+use onservice\services\authentication\Authorization as Authorization;
+use onservice\services\authentication\JWT as JWT;
 
 
 $this->authentication = new CreateServer( new Authentication(new JWT('key123'),new Authorization()) );

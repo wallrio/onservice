@@ -7,7 +7,7 @@ abstracts the communication with database using Mongo driver (database noSQL)
 ```php
 use onservice\CreateServer as CreateServer;
 use onservice\services\Database as Database;
-use onservice\services\Database\Mongo as Mongo;
+use onservice\services\database\Mongo as Mongo;
 
 $server = new CreateServer( new Database( new Mongo() ) );
 ```
