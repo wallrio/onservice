@@ -88,4 +88,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - change attachService on CreateServer
-- implements sub-nivel on Document Json Database
+- implemented sub-nivel on Document Json Database
+
+## [1.6.3] - 2019-3-10
+
+### Changed
+- fixed essentials/Http
+- implemented GitLab support in Git Service
