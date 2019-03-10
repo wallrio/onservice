@@ -78,3 +78,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - created ODM mapper
 - created OJM mapper
+
+## [1.6.1] - 2019-2-24
+
+### Changed
+- fixed database in update register on json driver
+
+## [1.6.2] - 2019-3-10
+
+### Changed
+- change attachService on CreateServer
+- implements sub-nivel on Document Json Database

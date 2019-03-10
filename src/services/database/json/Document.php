@@ -72,14 +72,15 @@ class Document{
 						$join2='';
 						foreach ($key2Array as $key3 => $value3) {
 							if($key3 >= count($key2Array)-1){
-								$join.=$value3.'';
-								$join2.=$value3.'';
+								$join.='{"'.$value3.'"}';
+								$join2.='{"'.$value3.'"}';
 								eval('if(!isset($contentObj->fields->'.$join2.'))$contentObj->fields->'.$join2.'=(object) array();');
 							}
 							else{
-								$join.=$value3.'';
-								$join2.=$value3.'->';
-								eval('if(!isset($contentObj->fields->'.$join.'))$contentObj->fields->'.$join.'=(object) array();');
+								$join.='{"'.$value3.'"}'.'->';
+								$join2.='{"'.$value3.'"}'.'->';
+
+								eval(' if(!isset($contentObj->fields->'.substr($join, 0,strlen($join)-2).'))$contentObj->fields->'.substr($join, 0,strlen($join)-2).'=(object) array();');
 							}
 
 						}
@@ -90,6 +91,8 @@ class Document{
 						$contentObj->fields->$key2 = $value2;
 					}
 				}
+
+	
 				file_put_contents($filename, json_encode($contentObj));
 			}else{
 				return false;
@@ -125,11 +128,9 @@ class Document{
 			return false;
 		}
 
-		// $resultArray = scandir($collectionDir);
 		$resultArray = $this->scanAllDir($collectionDir);
 			
-		/*print_r($resultArray);
-		exit;*/
+	
 
 		foreach ($resultArray as $key => $value)
 			if($value == '.'  || $value == '..') unset($resultArray[$key]);
@@ -165,10 +166,24 @@ class Document{
 						$key2 = str_replace('||.', '', $key2) ;
 						$andOperator = false;	
 
+					}else if( substr($key2, 0,3) == '&&.'){
+						$key2 = str_replace('&&.', '', $key2) ;
+					
+						if( isset($contentObj->remove) && $contentObj->remove == true ) continue;			
 					}else{
 						if( isset($contentObj->remove) && $contentObj->remove == true ) continue;					
 					}
 
+					if(strpos($key2, '/') !==-1){
+						$key2 = str_replace('/', '->', $key2);
+						eval('$preval = isset($contentObj->fields->'.$key2.')?$contentObj->fields->'.$key2.':null;');
+
+						if($preval == $value2){
+							$found = true;
+							continue;
+						}
+					
+					}
 
 					if( isset($contentObj->fields->$key2) && $contentObj->fields->$key2 == $value2) $found = true;
 
