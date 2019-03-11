@@ -100,3 +100,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - fixed Git Service
+
+## [1.6.5] - 2019-3-11
+
+### Changed
+- fixed Document Json Driver Database

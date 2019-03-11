@@ -219,7 +219,9 @@ class Document{
 			
 
 			if($found == true){
-				$resultFinish[$contentObj->hash] = $contentObj->fields;
+				if(isset($contentObj->hash) && isset($contentObj->fields)){
+					$resultFinish[$contentObj->hash] = $contentObj->fields;
+				}
 			}
 		}
 
