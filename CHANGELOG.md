@@ -105,3 +105,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - fixed Document Json Driver Database
+
+## [1.6.6] - 2019-3-11
+
+### Changed
+- changed ignoreVerbsOptions value to default true 

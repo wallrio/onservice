@@ -7,7 +7,7 @@ class Router{
 	public $server,
 		   $namespace = 'router',
 		   $version = OnServiceVersion,
-		   $ignoreVerbsOptions = false;
+		   $ignoreVerbsOptions = true;
 
 	
 
