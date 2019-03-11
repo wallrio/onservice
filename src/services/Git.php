@@ -47,11 +47,22 @@ class Git{
 		$repositoryBranch = $repository.'-'.$branch;		
 
 		$modeGet = null;
+		$repositorySha = null;
 
 		if($urlParse['host'] == 'github.com'){
 			$url = $url. '/archive/'.$branch.'.zip';
 			$modeGet = 'github';
+
+			$data = array(
+				'url'=>$url,					
+				'method'=>'get'
+			);
+
+			if($username != null && $password != null)
+			$data['autenticate'] = "$username:$password";
 		}
+
+
 		if($urlParse['host'] == 'gitlab.com'){
 			$modeGet = 'gitlab';
 
@@ -62,82 +73,73 @@ class Git{
 				die('OnService-Git: missing token');
 			}
 
-			$url = 'https://gitlab.com/api/v4/projects/'.$projectid.'/repository/archive?private_token='.$token;
+			// start: get SHA from Branch
+			$data = array(
+				'url'=>'https://gitlab.com/api/v4/projects/'.$projectid.'/repository/branches?private_token='.$token,					
+				'method'=>'get'
+			);
+			$response = HttpCon::request($data);
+			$listBranchs = json_decode($response);
+			foreach ($listBranchs as $key => $value) {
+				if($value->name == $branch){
+					$sha = $value->commit->id;
+				}
+			}
+			// start: get SHA from Branch
+			
+			$repositorySha = $repository.'-'.$sha;
 
-			// https://gitlab.com/api/v3/projects/11248159/repository/archive?private_token=n1EQF9NYzCHSmvQqxvh9
+			$url = 'https://gitlab.com/api/v4/projects/'.$projectid.'/repository/archive.tar.gz?'.'sha='.$sha.'&private_token='.$token;
 
-			// $url = $url. '/-/archive/'.$branch.'/'.$repositoryBranch.'.zip';
+			$data = array(
+				'url'=>$url,					
+				'method'=>'get'
+			);
 		}
 
 
-		
 
-		$data = array(
-			'url'=>$url,					
-			'method'=>'get'
-		);
-
-		if($username != null && $password != null)
-		$data['autenticate'] = "$username:$password";
-
-
+	
 		$response = HttpCon::request($data);
-
-
 		if($response == false) return false;
+
 
 		if($modeGet == 'github'){
 			$filename = $branch.'.zip';
 			$filepath = $workspace.DIRECTORY_SEPARATOR.$filename;
-
 			file_put_contents($filepath, $response);		
 			$filetarget = $workspace;
-
 			Zip::extract($filepath,$filetarget);
 			File::rcopy($filetarget.DIRECTORY_SEPARATOR.$repositoryBranch.DIRECTORY_SEPARATOR.$directory, $filetarget.'/');
 			unlink($filepath);
 			File::rrmdir( $filetarget.DIRECTORY_SEPARATOR.$repositoryBranch.DIRECTORY_SEPARATOR );
 		}
 
+
 		if($modeGet == 'gitlab'){
 			$filename = $branch;
 			$filepath = $workspace.DIRECTORY_SEPARATOR.$filename;
-
-			//delete temp.tar.gz
-			if (file_exists($filepath.'.tar.gz')) {
-			    unlink($filepath.'.tar.gz');
-			}
-
-			//delete temp.tar
-			if (file_exists($filepath.'.tar')) {
-			    unlink($filepath.'.tar');
-			}
-
+		
+			if (file_exists($filepath.'.tar.gz')) unlink($filepath.'.tar.gz');
+			if (file_exists($filepath.'.tar')) unlink($filepath.'.tar');
+			
 			file_put_contents($filepath.'.tar.gz', $response);		
 			$filetarget = $workspace;
 			
 			$p = new \PharData($filepath.'.tar.gz');
-			$p->decompress(); // creates files.tar
+			$p->decompress();
 
-		
 			$phar = new \PharData($filepath.'.tar');
-			$phar->extractTo($workspace.DIRECTORY_SEPARATOR, null, true); // extract all files, and overwrite
+			$phar->extractTo($workspace.DIRECTORY_SEPARATOR, null, true); 
+	
+			if (file_exists($filepath.'.tar.gz')) unlink($filepath.'.tar.gz');
+			if (file_exists($filepath.'.tar')) unlink($filepath.'.tar');
 			
-			//delete temp.tar.gz
-			if (file_exists($filepath.'.tar.gz')) {
-			    unlink($filepath.'.tar.gz');
-			}
-
-			//delete temp.tar
-			if (file_exists($filepath.'.tar')) {
-			    unlink($filepath.'.tar');
-			}
-
 			$dirArray = scandir($workspace.DIRECTORY_SEPARATOR);
 
 			$file = null;
 			foreach ($dirArray as $key => $value) {
-				if(strpos($value, $repositoryBranch)!== false){
+				if(strpos($value, $repositorySha)!== false){
 					$file = $value;
 					break;
 				}
@@ -148,14 +150,8 @@ class Git{
 
 		}
 
-
-	
 		
-		
-		
-
 		return true;
-		
 	}
 
 

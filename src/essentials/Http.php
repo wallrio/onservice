@@ -9,7 +9,7 @@ class Http{
      	
         $url = isset($parameters['url'])?$parameters['url']:null;
         $method = isset($parameters['method'])?$parameters['method']:'get';
- 		$data = isset($parameters['data'])?$parameters['data']:null;
+ 		$data = isset($parameters['method'])?$parameters['data']:null;
  		$autenticate = isset($parameters['autenticate'])?$parameters['autenticate']:null;
 
     
@@ -27,16 +27,12 @@ class Http{
             }
         }
 
- 
-        if( is_array($data) && count($data)>0){
+        if( count($data)>0){
             $fields_string = http_build_query($data);            
             curl_setopt($curl,CURLOPT_POST, 1);
             curl_setopt($curl,CURLOPT_POSTFIELDS, $fields_string);                    
         }
 
-
-        
-        
         if($autenticate !== null)
         curl_setopt($curl, CURLOPT_USERPWD, $autenticate);
 
@@ -53,20 +49,17 @@ class Http{
         curl_close($curl);
 
 
+
         $headers = self::headerToArray($headers);
 
-
-
-
         $http_code = $headerAll['http_code'];
-        if($http_code === 300 || $http_code === 301 || $http_code === 302 || $http_code === 303){
+        if($http_code === 301){
             $redirect_url = $headerAll['redirect_url'];
             $parameters['url'] = $redirect_url;            
+
             return self::request($parameters,$header);            
         }
        
-
-
 
         $header = array(
           'code' => $headers['Request']['code'],

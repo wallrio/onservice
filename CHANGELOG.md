@@ -95,3 +95,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - fixed essentials/Http
 - implemented GitLab support in Git Service
+
+## [1.6.4] - 2019-3-10
+
+### Changed
+- fixed Git Service
