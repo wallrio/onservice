@@ -3,14 +3,15 @@
 namespace onservice\essentials;
 
 class Http{
-	
+    
 
-	public static function request(array $parameters, &$header = null){
-     	
+    public static function request(array $parameters, &$header = null){
+        
         $url = isset($parameters['url'])?$parameters['url']:null;
         $method = isset($parameters['method'])?$parameters['method']:'get';
- 		$data = isset($parameters['method'])?$parameters['data']:null;
- 		$autenticate = isset($parameters['autenticate'])?$parameters['autenticate']:null;
+        $data = isset($parameters['data'])?$parameters['data']:null;
+        $autenticate = isset($parameters['autenticate'])?$parameters['autenticate']:null;
+        $follow = isset($parameters['follow'])?$parameters['follow']:false;
 
     
         $curl = curl_init();
@@ -19,7 +20,10 @@ class Http{
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_HEADER, 1);
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, strtoupper($method) );
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, $follow);        
 
+        curl_setopt($curl, CURLOPT_FRESH_CONNECT, 1);
+        curl_setopt($curl, CURLOPT_FORBID_REUSE, 1);
 
         if($data !== null){
             if( gettype($data) !== 'array' ){
@@ -32,6 +36,7 @@ class Http{
             curl_setopt($curl,CURLOPT_POST, 1);
             curl_setopt($curl,CURLOPT_POSTFIELDS, $fields_string);                    
         }
+        
 
         if($autenticate !== null)
         curl_setopt($curl, CURLOPT_USERPWD, $autenticate);
@@ -48,18 +53,27 @@ class Http{
         $http_status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         curl_close($curl);
 
+        $pre_http_code =(int) $headerAll['http_code'];
+            
 
-
+        
+        
         $headers = self::headerToArray($headers);
 
-        $http_code = $headerAll['http_code'];
-        if($http_code === 301){
-            $redirect_url = $headerAll['redirect_url'];
+        
+
+        
+        $http_code =(int) $headers['Request']['code'];
+
+        if($http_code === 300 || $http_code === 301 || $http_code === 302){
+            $redirect_url = $headerAll['url'];
             $parameters['url'] = $redirect_url;            
 
-            return self::request($parameters,$header);            
+            $return = self::request($parameters,$header);            
+            return $return;
         }
-       
+        
+        $headers['Request']['url'] = $url;
 
         $header = array(
           'code' => $headers['Request']['code'],
@@ -74,12 +88,14 @@ class Http{
 
         $header = array_merge($header,$headersAfter);
 
-     
+        $header = $headers;
 
         if ($http_status==404)return false;
         
         if($err) return false;
         
+        
+
         return $body;
    
     }
@@ -92,12 +108,15 @@ class Http{
         $newArray = array();
         $newArray['Request'] = trim($method);
 
+        
+
         $RequestArray = explode(' ', $newArray['Request']);
 
         $newArray['Request'] = array(
           'protocol'=>$RequestArray[0],
-          'code'=>$RequestArray[1],
-          'message'=>$RequestArray[2]
+          'code'=>isset($RequestArray[1])?$RequestArray[1]:null,
+          'message'=>isset($RequestArray[2])?$RequestArray[2]:null,
+          
         );
         
 

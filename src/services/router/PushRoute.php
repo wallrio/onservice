@@ -50,20 +50,13 @@ class PushRoute{
 			'data'=>$data
 		),$header);
 			
-
 		$headerOthers = $header;
-
-		unset($headerOthers['code']);
-		unset($headerOthers['message']);
-		unset($headerOthers['type']);
-
-		
 
 		return array(
 			'body' 		=> $response,
-			'code'		=> $header['code'],
-			'message'	=> $header['message'],
-			'type'		=> $header['type'],
+			'code'		=> $header['Request']['code'],
+			'message'	=> $header['Request']['message'],
+			'type'		=> $header['Content-Type'],
 			'others'    => $headerOthers
 		);
 	}

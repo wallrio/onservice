@@ -17,6 +17,7 @@ class RouterClass{
 	}
 
 	public function loadLibs($dir = null){
+
 		if(!file_exists($dir)) return false;
 		$dirArray = File::findRecursive($dir);	
 		$this->dirArray = $dirArray;
@@ -27,6 +28,8 @@ class RouterClass{
 
 			$pathClass = $dir.$value;
 				$pathClass = str_replace(DIRECTORY_SEPARATOR.DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR, $pathClass);
+			
+
 
 			require_once $pathClass;
 		}
@@ -94,11 +97,15 @@ class RouterClass{
 			
 			if($keyNamespace == '\\')$keyNamespace = "";
 
+			
+
 			$dirArray = explode(DIRECTORY_SEPARATOR, $dirEnd);
 			unset($dirArray[count($dirArray)-1]);
-			$currentDir = getcwd().DIRECTORY_SEPARATOR.implode(DIRECTORY_SEPARATOR, $dirArray).DIRECTORY_SEPARATOR;
+	
+			$currentDir = implode(DIRECTORY_SEPARATOR, $dirArray).DIRECTORY_SEPARATOR;
 
 			$libs = $currentDir.'_class';
+
 			$this->loadLibs($libs);
 
 
@@ -109,7 +116,7 @@ class RouterClass{
 			echo $content;
 			$content2 = ob_get_contents();
 			ob_get_clean();
-		
+					
 			eval( $content2);		
 			eval('$route = new \\'.$namespace.'\\'.ucfirst($className).'($this->server)'.';');	
 						
@@ -217,7 +224,6 @@ class RouterClass{
 			
 			if($keyNamespace == '\\')$keyNamespace = "";
 
-			// $namespace = 'onservice\http\routes'.$keyNamespace.'';
 			$namespace = 'onservice\service\router\routerclass'.$keyNamespace.'';
 			
 			
