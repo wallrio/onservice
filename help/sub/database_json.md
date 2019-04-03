@@ -124,7 +124,7 @@ $base->deleteCollection('COLLECTION_NAME');
 Documents is where the data will be stored, it is similar to records of a table in a relational database.
 
 ##### Example - selecting a document 
-> $result  =  $collection->document->select( FIELDS );
+> $result  =  $collection->document->select( FIELDS, OPTIONS );
 
 ```php
 $server = new CreateServer( new Database( new JSON() ) );
@@ -145,7 +145,7 @@ print_r($result);
 
 If the select method parameter is not set, the query returns all documents in the collection
 
-
+- The parameters OPTIONS is optional.
 
 - Special consultations
 It is possible to filter a query using special characters.
@@ -204,6 +204,22 @@ $result = $collection->document->select(array(
 
 the above example looks for username 'Wallacy' OR username 'Wallace'
 
+
+##### Example - selecting a document with options
+
+```php
+$result = $collection->document->select(array(
+	'username' => 'Wallace'
+),array(
+	'open'=>false,
+	'nocontent'=>true,
+));
+
+```
+
+- OPTIONS:
+	- nocontent: (boolean) does not display the contents of the registry.
+	- open: (boolean) does not open the record in the search. (using TRUE, the response will return all records)
 
 ##### Example - creating a document 
 > $result  =  $collection->document->create( FIELDS );

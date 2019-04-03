@@ -31,7 +31,8 @@ class Http{
             }
         }
 
-        if( count($data)>0){
+
+        if(is_array($data) && count($data)>0){
             $fields_string = http_build_query($data);            
             curl_setopt($curl,CURLOPT_POST, 1);
             curl_setopt($curl,CURLOPT_POSTFIELDS, $fields_string);                    

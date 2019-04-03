@@ -118,7 +118,12 @@ class Document{
 	  return $result;
 	}
 
-	public function select(array $where = null,$hashSelect = null){
+	public function select(array $where = null,$options = null){
+
+		$hashSelect = isset($options['hash'])?$options['hash']:null;
+		$openFile = isset($options['open'])?$options['open']:true;
+		$nocontent = isset($options['nocontent'])?$options['nocontent']:false;
+
 		$collectionDir = $this->collection.DIRECTORY_SEPARATOR;
 		$collectionDir = str_replace('//', '/', $collectionDir);
 
@@ -127,10 +132,9 @@ class Document{
 			
 			return false;
 		}
-
+		
 		$resultArray = $this->scanAllDir($collectionDir);
-			
-	
+
 
 		foreach ($resultArray as $key => $value)
 			if($value == '.'  || $value == '..') unset($resultArray[$key]);
@@ -139,13 +143,26 @@ class Document{
 
 		$resultFinish = [];
 		foreach ($resultArray as $key => $value) {
-			$filename = $this->collection.DIRECTORY_SEPARATOR.$value;
-			$content = file_get_contents($filename);
 
-			$contentObj = json_decode($content);
+			$filename = $this->collection.DIRECTORY_SEPARATOR.$value;
+
+			
 			
 
 			$found = false;
+
+			if($openFile === true){				
+				$content = file_get_contents($filename);
+				$contentObj = json_decode($content);
+			}else{
+				$hash = $value;
+				$hash = str_replace('_jdoc.json', '', $hash);
+				$contentObj = (object) array(
+					'hash'=>$hash,
+					'fields'=>(object) array()
+				);		
+
+			}
 
 			if($hashSelect != null ){
 				if($hashSelect.'_jdoc.json' == $value){
@@ -216,11 +233,19 @@ class Document{
 				}
 			}
 
-			
+			if($openFile !== true){			
+				$found = true;
+			}
 
-			if($found == true){
-				if(isset($contentObj->hash) && isset($contentObj->fields)){
-					$resultFinish[$contentObj->hash] = $contentObj->fields;
+			if($found === true){
+			
+				
+				if( (isset($contentObj->hash) && isset($contentObj->fields)) || $openFile !== true){
+					if($nocontent === false){
+						$resultFinish[$contentObj->hash] = $contentObj->fields;
+					}else{						
+						$resultFinish[$contentObj->hash] = array();
+					}
 				}
 			}
 		}

@@ -110,3 +110,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - changed ignoreVerbsOptions value to default true 
+
+
+## [1.6.8] - 2019-4-1
+
+### Added
+- implemented OPTIONS in select on json driver
