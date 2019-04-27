@@ -16,7 +16,7 @@ $this->authentication = new CreateServer( new Authentication(DRIVER,DRIVER...) )
 
 # Drivers available
 
-- [Token Generator - JWT](help/authentication_jwt.md)
-- [HTTP Basic logon](help/authentication_httpbasic.md)
-- [Authorization](help/authentication_authorization.md)
+- [Token Generator - JWT](sub/authentication_jwt.md)
+- [HTTP Basic logon](sub/authentication_httpbasic.md)
+- [Authorization](sub/authentication_authorization.md)
 

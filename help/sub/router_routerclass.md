@@ -14,9 +14,15 @@ $server = new CreateServer(new RouterClass);
 $server->routerclass->start('DIRECTORY_OF_ROUTES');
 ```
 
-> DIRECTORY_OF_ROUTES = directories where the classes of the routes will be hosted, if omitted will be defined "http/routes/"
+> DIRECTORY_OF_ROUTES = directories where the classes of the routes will be hosted, if omitted will be defined "src/routes/"
 
 - Example
+
+```php
+$server->routerclass->start();
+```
+
+- Example 2
 
 ```php
 $server->routerclass->start(__DIR__.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'routes');
@@ -40,7 +46,7 @@ $server->routerclass->start(__DIR__.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATO
 - Structure of Directory/Files (Classes)
 
 
-![screenshot from 2017-11-25 21-47-41](https://raw.githubusercontent.com/wallrio/onservice/master/help/http/structure-dir.png)
+![screenshot from 2017-11-25 21-47-41](https://raw.githubusercontent.com/wallrio/onservice/master/help/sub/http/structure-dir.png)
 
 
 - Existing routes confirm structure above
