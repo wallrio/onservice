@@ -20,10 +20,11 @@ class Index{
 
 	/** 
 		@order: 1
+		@name:create-index
 		@description: make the file index.php
 	**/
 	public function createIndex(){
-
+		
 		$dir = getcwd().DIRECTORY_SEPARATOR;
 		$filename = $dir.'index.php';
 		$sourcePath = __DIR__.DIRECTORY_SEPARATOR.'_index'.DIRECTORY_SEPARATOR.'index.php';

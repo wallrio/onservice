@@ -220,5 +220,25 @@ class Walk {
 }
 ```
 
+### Custom name
+Enter the '@name' attribute in the method annotation.
+
+```php
+namespace console\help;
+
+class Walk {
+
+	public $order = 1;
+
+	/** 
+		@name: walk-run
+		@description: description of command 
+	**/
+	public function run(){		
+		return 'running...';
+	}
+}
+```
+
 ## Note
 always use the namespace to avoid class conflict

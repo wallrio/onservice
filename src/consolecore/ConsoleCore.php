@@ -78,7 +78,9 @@ class ConsoleCore {
 			$mthodsArray = get_class_methods($obj);
 
 			foreach ($mthodsArray as $key2 => $value2) {
-				$method = $value2;			
+				$method = $value2;		
+
+
 
 				$r = new \ReflectionClass( $className );
 				$doc = $r->getMethod($method)->getDocComment();
@@ -92,10 +94,11 @@ class ConsoleCore {
 					$annoArrayNew[$anName] = substr($anValue, strpos($anValue, ':')+1);
 				}
 
+				$nameMethod = isset($annoArrayNew['name'])?$annoArrayNew['name']:null;
 				$orderMethod = isset($annoArrayNew['order'])?$annoArrayNew['order']:100000;
 				$description = isset($annoArrayNew['description'])?$annoArrayNew['description']:null;
 
-				$method = ':'.$method;
+				$method = ':'.($nameMethod?$nameMethod:$method);
 
 				if($method === ':index'){									
 					$method = str_replace(''.$method, '',$method);
@@ -104,12 +107,14 @@ class ConsoleCore {
 				$order = isset($obj->order)?$obj->order:100000;
 				$descriptionClass = isset($obj->description)?$obj->description:null;
 
+				
 				$this->commands[strtolower($commandName).$method] = (object) array(
 					'obj'=> $obj,
 					'order'=> $order,
 					'orderMethod'=> $orderMethod,
 					'class'=> strtolower($commandName),
 					'method'=> $method,
+					'nameMethod'=> $value2,
 					'description'=> $description,
 					'descriptionClass'=> $descriptionClass,
 				);
@@ -186,6 +191,9 @@ class ConsoleCore {
 					$classNameCurrent = explode('/', $currentClass);
 					$classNameCurrent = reset($classNameCurrent);
 
+
+					
+
 					$currentDescriptionClass = $value->descriptionClass!=null?$value->descriptionClass:$classNameCurrent;
 					
 					echo "\n";
@@ -229,12 +237,17 @@ class ConsoleCore {
 			$commandArray = explode(':', $command);
 
 			$method = isset($commandArray[1])?$commandArray[1]:null;
+			
 
 			if($method === null){				
 				if(method_exists($this->commands[$command]->obj, 'index')){				
 					echo " ".$this->commands[$command]->obj->index($parameters);
 				}
 			}else{
+				
+				if($this->commands[$command]->nameMethod)
+					$method = $this->commands[$command]->nameMethod;
+				
 				if(method_exists($this->commands[$command]->obj, $method)){				
 					echo " ".$this->commands[$command]->obj->$method($parameters);
 				}

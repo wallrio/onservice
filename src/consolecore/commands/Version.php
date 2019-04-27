@@ -11,16 +11,6 @@ class Version{
 		
 	}
 
-	/** 
-		@order: 0
-		@description: show version of onservice 
-	**/
-	public function index(){
-		return OnServiceVersion;
-	}
-
-
-
-
+	
 
 }

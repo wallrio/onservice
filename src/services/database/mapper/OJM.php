@@ -33,12 +33,6 @@ class OJM{
 
 		$this->base = $this->database->base($basename);	
 
-		/*$collection = $this->base->collection('users');
-
-		$result = $collection->document->create(array(
-			'username' => 'fulano',
-			'name' => 'Fulano da Silva'
-		));*/
 
 	}
 
@@ -47,9 +41,6 @@ class OJM{
 		$collection = $this->base->collection($table);
 
 		$result = $collection->document->select($WHERE);
-
-		
-		
 
 		$classModel = [];
 		$classString = '';
@@ -134,9 +125,6 @@ class OJM{
 			
 				$response = $collection->document->delete($id);
 
-				if($response !== false) 
-					unset($this);
-				
 
 			}';
 
