@@ -23,9 +23,7 @@ Creates a parallel process by duplicating the current process
 		// your code
 		
 		return RETURN_VALUE;
-	},array(
-		'name'=>'fulano'
-	));
+	});
 
 
 ```
@@ -33,6 +31,32 @@ Creates a parallel process by duplicating the current process
 - RETURN_VALUE: 
 	- Description: value to be passed to parent process
 	- Type: string, number, array, object
+
+
+
+##### Example - passing parameters into the child process
+```php
+
+	use onservice\CreateServer as CreateServer;
+	use onservice\services\Process as Process;
+
+	$server = new CreateServer(	new Process() );
+
+	$server->process->fork(function($parameters,$pid,$stream,$server){
+		$name = $parameters['name'];
+		$language = $parameters['language'];
+
+		$nameFull = $name.' da Silva';
+		$languageFull = 'pt-'.$language;
+
+		return array('name'=>$nameFull,'language'=>$languageFull);
+	},array(
+		'name'=>'fulano',
+		'language'=>'br'
+	));
+
+
+```
 
 
 ##### Capturing the return of the fork
@@ -120,23 +144,40 @@ The example below creates a child process and ends soon after, leaving the child
 ```
 
 
-
-###### run:
-must contain the code to be executed in the process
-	
-- $parameters =	information passed by the index parameters
-- $memory = compartilhamento de informações entre processos
-- $server = reference to server class
-
-###### $memory
+###### $stream
 
 - save data
-	- $memory->save(string,optional index);
-	- $server->process->save(string,optional index);
+	- $stream->save(string,optional index);
+	- $server->process->stream(string,optional index);
 
 - load data
-	- $memory->save(optional index);
-	- $server->process->load(optional index);
+	- $stream->save(optional index);
+	- $server->process->stream(optional index);
+
+
+```php
+use onservice\CreateServer as CreateServer;
+use onservice\services\Process as Process;
+
+$server = new CreateServer(	new Process() );
+
+$server->process->fork(function($parameters,$pid,$stream,$process){
+
+	$stream->save('test');
+	$server->process->stream->save('test','a1');
+	
+});
+
+
+$server->process->callback(function($response,$stream,$process){	
+
+	echo $stream->load();
+	echo "\n";
+	echo $server->process->stream->load('a1');
+
+});
+```
+
 
 ###### parameters:
 option to pass values to the process
