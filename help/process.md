@@ -119,7 +119,7 @@ $server->process->stream->destroy()
 ```
 
 
-##### Criando um processo 'zumbi'
+##### Creating a Process 'zumbi'
 The example below creates a child process and ends soon after, leaving the child process running, regardless of the parent process that created it, usually this 'zombie' process because it will be running endlessly.
 
 ```php
