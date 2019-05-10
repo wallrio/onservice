@@ -4,9 +4,22 @@ namespace onservice\services\process;
 
 class MemoryProcess {
 
-	private $bufferSize = 16000000;
+	private $type = 'memory';
+	private $bufferSize = 16000000; // 16 Mb
 	private $permission = 0666;
+	private $identifier = 5;
 	
+	function __construct(){
+		$this->identifier = rand(1, 15);
+	}
+
+	public function getType(){
+		return $this->type; 
+	}
+
+	public function setIdentifier($identifier){		
+		$this->identifier = $identifier;
+	}
 	
 	public function setBuffer($size = 8192){		
 		$this->bufferSize = $size;
@@ -17,13 +30,15 @@ class MemoryProcess {
 	}
 
 	public function save($data = null,$index = 0){		
-		$SHM_KEY = ftok(__FILE__, chr( 4 ) ); 
+		$index = ord($index);		
+		$SHM_KEY = ftok(__FILE__, chr( $this->identifier ) ); 
 		$id =  shm_attach($SHM_KEY, $this->bufferSize, $this->permission);
-		shm_put_var($id, $index, $data);
+		shm_put_var($id, $index, $data);		
 	}
 
 	public function load($index = 0){
-		$SHM_KEY = ftok(__FILE__, chr( 4 ) ); 
+		$index = ord($index);
+		$SHM_KEY = ftok(__FILE__, chr( $this->identifier ) ); 
 		$id =  shm_attach($SHM_KEY, $this->bufferSize, $this->permission);		
 		
 		if(shm_has_var ( $id , $index ))
@@ -33,14 +48,14 @@ class MemoryProcess {
 	}
 
 	public function clear($index = 0){
-		$SHM_KEY = ftok(__FILE__, chr( 4 ) ); 
+		$SHM_KEY = ftok(__FILE__, chr( $this->identifier ) ); 
 		$id =  shm_attach($SHM_KEY, $this->bufferSize, $this->permission);
 		shm_put_var($id, $index, '');		
 		shm_remove_var($id,$index);		
 	}
 
 	public function destroy(){
-		$SHM_KEY = ftok(__FILE__, chr( 4 ) ); 
+		$SHM_KEY = ftok(__FILE__, chr( $this->identifier ) ); 
 		$id =  shm_attach($SHM_KEY, $this->bufferSize, $this->permission);		
 		shm_remove($id);		
 	}

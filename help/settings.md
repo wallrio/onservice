@@ -5,12 +5,16 @@ To create parameters and settings, which will be used in the application
 
 ## Instance
 
-	new Settings(PATH)
+	new Settings(PATH, MODE)
 
 - PATH (optional)
     - settings directory path
     - URL of the configuration file (JSON | YML)
     - if omitted, the configuration directory will be (./settings/)
+
+- MODE (optional)
+	- specifies the file type (yml|json)
+	- useful to use as PATH a URL without extension
 
 ##### Example:
 ```php
@@ -20,9 +24,8 @@ use onservice\services\Settings as Settings;
 // create the server
 $server = new CreateServer( new Settings() );
 
-$name = $server->settings->company->name;
+print_r($server->settings->repository);
 
-echo $name;
 ```
 
 ### Directory - example
@@ -53,14 +56,11 @@ create the configuration files in the directory defined in the constructor of th
 }
 ```
 
-- content of users.json
+- content of users.yml
 
-```json
-{
-	"brasil":{
-		"name":"Fulano da silva"
-	}
-}
+```yml
+brasil:
+  name: Fulano da silva
 ```
 
 - Accessing the above configuration
@@ -68,9 +68,9 @@ create the configuration files in the directory defined in the constructor of th
 ```php
 $server = new CreateServer( new Settings() );
 
-echo $server->settings->company->technology->name;
+echo $server->settings->repository->company->technology->name;
 
-echo $server->settings->directory->users->brasil->name;
+echo $server->settings->repository->directory->users->brasil->name;
 
 ```
 
@@ -79,8 +79,18 @@ echo $server->settings->directory->users->brasil->name;
 ```php
 $server = new CreateServer( new Settings('http://domain.com/setting.yml') );
 
-echo $server->settings->company->name;
+echo $server->settings->repository->company->name;
 
-echo $server->settings->user->name;
+echo $server->settings->repository->user->name;
+
+```
+
+
+### Setting remote - example
+
+```php
+$server = new CreateServer( new Settings('http://domain.com/configuration-database','yml') );
+
+echo $server->settings->repository->database->name;
 
 ```

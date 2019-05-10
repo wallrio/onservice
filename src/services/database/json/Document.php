@@ -128,8 +128,6 @@ class Document{
 		$collectionDir = str_replace('//', '/', $collectionDir);
 
 		if(!file_exists($collectionDir)){
-			throw new \Exception('Collection not found: '.$this->collectionName);
-			
 			return false;
 		}
 		

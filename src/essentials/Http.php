@@ -12,6 +12,8 @@ class Http{
         $data = isset($parameters['data'])?$parameters['data']:null;
         $autenticate = isset($parameters['autenticate'])?$parameters['autenticate']:null;
         $follow = isset($parameters['follow'])?$parameters['follow']:false;
+        $fallback = isset($parameters['fallback'])?$parameters['fallback']:null;
+        $timeout = isset($parameters['timeout'])?$parameters['timeout']:7;
 
     
         $curl = curl_init();
@@ -24,6 +26,9 @@ class Http{
 
         curl_setopt($curl, CURLOPT_FRESH_CONNECT, 1);
         curl_setopt($curl, CURLOPT_FORBID_REUSE, 1);
+
+        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 3); 
+        curl_setopt($curl, CURLOPT_TIMEOUT, $timeout); 
 
         if($data !== null){
             if( gettype($data) !== 'array' ){
@@ -55,9 +60,15 @@ class Http{
         curl_close($curl);
 
         $pre_http_code =(int) $headerAll['http_code'];
-            
-
         
+        if($header_size === 0){            
+            if($fallback !== null){
+                sleep(1);
+                return $fallback($parameters,$header,0);
+            }
+            return false;
+        }
+
         
         $headers = self::headerToArray($headers);
 

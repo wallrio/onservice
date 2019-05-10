@@ -116,3 +116,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - implemented OPTIONS in select on json driver
+
+
+## [2.0.0]
+
+### Added
+- implemented fallback parameter to essentials/Http
+- implemented timeout parameter to essentials/Http
+- implemented FileStream Class to services/Process
+
+### Changed
+- services/Process, changed with breaking change
+- services/Settings, some changes
+

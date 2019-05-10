@@ -16,9 +16,12 @@ class Settings{
 	
 	public $server = null;
 	public $namespace = 'settings';
+	
 
 	
-	public function __construct($dir = null){
+	public function __construct($dir = null,$mode = null){
+
+		$this->repository = (object) array();
 
 		if(
 			strpos($dir, 'http:')!==false ||
@@ -26,7 +29,10 @@ class Settings{
 		){	
 				
 			$file_parts = pathinfo($dir);
-			$extension = $file_parts['extension'];
+			$filename = $file_parts['filename'];
+			$extension = isset($file_parts['extension'])?$file_parts['extension']:null;
+
+			$this->repository->$filename = (object) array();
 
 			$fileContent = HttpCon::request(array(
 				'url'=>$dir,					
@@ -34,19 +40,21 @@ class Settings{
 			));
 			if($fileContent == false) return false;
 
+			if($mode !== null) $extension = $mode;
+
 			if($extension == 'json'){
 				$fileContent = json_decode($fileContent);
 			}else if($extension == 'yml'){
 
-				require_once "Settings/spyc/Spyc.php";
+				require_once "settings/spyc/Spyc.php";
 				$fileContent = \Spyc::YAMLLoad($fileContent);
 				$fileContent = json_encode($fileContent);
 				$fileContent = json_decode($fileContent);
 			}
 			
-			if(count($fileContent)>0)
+			if(is_object($fileContent) || is_array($fileContent))
 			foreach ($fileContent as $key => $value) {
-				$this->$key = $value;
+				$this->repository->$filename->$key = $value;
 			}
 			
 			return;
@@ -107,11 +115,11 @@ class Settings{
 
 					if($index == 0){
 						if( (count($namedirArray)-1) == $index)
-							eval('$this->'.$join.' = $fileContent;');
+							eval('$this->repository->'.$join.' = $fileContent;');
 						else
-							$this->$join =(object) array();
+							$this->repository->$join =(object) array();
 					}else{					
-						eval('$this->'.$join.' = $fileContent;');
+						eval('$this->repository->'.$join.' = $fileContent;');
 					}
 
 						
