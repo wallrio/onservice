@@ -31,8 +31,8 @@ Creates a parallel process by duplicating the current process
 ```
 
 - RETURN_VALUE: 
-	Description: value to be passed to parent process
-	Type: string, number, array, object
+	- Description: value to be passed to parent process
+	- Type: string, number, array, object
 
 
 ##### Capturing the return of the fork
