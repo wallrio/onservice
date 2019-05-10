@@ -265,7 +265,42 @@ class Logon {
 
 - For each class is implicit the "namespace onservice\service\router\routerclass\ROUTE_CURRENT"
 
+##### Define Method on route
+include the @method attribute with the Http verb to define by which request the method will respond
 
+
+```php
+
+class Logon {
+
+	/** @route: /user/
+		@method: get 
+	**/
+	public function getUser($urlPar,$requestPar){		
+		
+		return array(
+			'body' 		=> 'route: /logon/user/',
+			'code'		=> 200,
+			'message'	=> 'Ok',
+			'type'		=> 'text/plain'
+		);	
+	}
+
+	/** @route: /user/
+		@method: post
+	**/
+	public function createUser($urlPar,$requestPar){		
+		
+		return array(
+			'body' 		=> 'route: /logon/user/',
+			'code'		=> 200,
+			'message'	=> 'Ok',
+			'type'		=> 'text/plain'
+		);	
+	}
+
+}
+```
 
 #### Classes of assistance
 To assist in the implementation and coding of your routes, here is a brief step to work with custom classes.

@@ -129,3 +129,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - services/Process, changed with breaking change
 - services/Settings, some changes
 
+## [2.0.1]
+
+### Added
+- implemented parameter METHOD on annotation of class router

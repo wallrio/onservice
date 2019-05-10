@@ -13,7 +13,7 @@ class Router{
 
 	public function __construct(){}
 
-	public function checkRequest($route,&$args,&$requestPath){
+	public function checkRequest($route,&$args,&$requestPath,$annotationMethod = false){
 		
 		$route = str_replace('//', '/', $route);
 		$REQUEST_SCHEME = isset($_SERVER['REQUEST_SCHEME'])?$_SERVER['REQUEST_SCHEME']:null;
@@ -21,7 +21,8 @@ class Router{
 		$REQUEST_URI = isset($_SERVER['REQUEST_URI'])?$_SERVER['REQUEST_URI']:null;
 		$REDIRECT_URL = isset($_SERVER['REDIRECT_URL'])?$_SERVER['REDIRECT_URL']:null;
 		$SCRIPT_NAME = isset($_SERVER['SCRIPT_NAME'])?$_SERVER['SCRIPT_NAME']:null;
-			
+		$method = isset($_SERVER['REQUEST_METHOD'])?$_SERVER['REQUEST_METHOD']:null;
+		$method = strtolower($method);
 
 		$REDIRECT_URL = explode('?', $REDIRECT_URL);
 		$REDIRECT_URL = $REDIRECT_URL[0];
@@ -86,6 +87,8 @@ class Router{
 
 		if( $countFound === count($routeArray) &&  ( count($routeArray) === count($requestPathArray)) || ( $asteriskFound == true && ($countFound >= count($routeArray))) ){
 			$args = $parameters;
+
+			if(strlen($annotationMethod) === 0 || ($annotationMethod === $method))
 			return true;
 		}
 		
@@ -115,11 +118,9 @@ class Router{
 		return $return;
 	}
 
-	public function resource($route,$callback,$methodMode = false,$annoArrayNew = array() ){
+	public function resource($route,$callback,$methodMode = false,$annoArrayNew = array(),$annotationMethod = false){
 		
-	
-
-		if($this->checkRequest($route,$parameters,$requestPath)){
+		if($this->checkRequest($route,$parameters,$requestPath,$annotationMethod)){
 
 			$requestPar = $this->getRequest();
 

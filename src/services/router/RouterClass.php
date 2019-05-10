@@ -150,6 +150,15 @@ class RouterClass{
 				}
 				
 				$customRoute = isset($annoArrayNew['route'])?$annoArrayNew['route']:$customRoute;
+
+				$annotationMethod = isset($annoArrayNew['method'])?trim($annoArrayNew['method']):false;
+				$annotationMethod = strtolower($annotationMethod);
+
+				$methodRequest = isset($_SERVER['REQUEST_METHOD'])?$_SERVER['REQUEST_METHOD']:null;
+
+
+				
+				
 				
 				$modearray = false;
 				$checkArray = '';
@@ -158,8 +167,9 @@ class RouterClass{
 					$modearray = true;							
 				}
 					
+					
 
-
+				
 				if($modearray == true){
 					@eval('$checkArray = '.$customRoute.';');				
 				
@@ -170,6 +180,8 @@ class RouterClass{
 							$customRoute = trim($customRoute);
 							$routeRef_end = $routeRef.''.$customRoute;				
 
+									
+
 							$routeFound = $this->router->resource($routeRef_end,$route,$method,$annoArrayNew);
 						}
 					}
@@ -177,9 +189,11 @@ class RouterClass{
 
 					if($customRoute !== false){
 						$customRoute = trim($customRoute);
-						$routeRef_end = $routeRef.''.$customRoute;				
+						$routeRef_end = $routeRef.''.$customRoute;	
+
 						
-						$routeFound = $this->router->resource($routeRef_end,$route,$method,$annoArrayNew);
+						$routeFound = $this->router->resource($routeRef_end,$route,$method,$annoArrayNew,$annotationMethod);
+					
 					}
 				}
 
