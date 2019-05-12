@@ -11,7 +11,7 @@ use onservice\services\Router as Router;
 $server = new CreateServer( new Router() );
 ```
 
-# Functionality available
+## Functionality available
 
 - [Resource](sub/router_resource.md)
 - [RouterClass](sub/router_routerclass.md)
