@@ -40,7 +40,7 @@ class Process{
 			$pidChild = posix_getpid();
 			if(isset($method)){
 
-				$result = $method($parameters,$pidChild,$this->stream,$this);
+				$result = $method($parameters,$pidChild,$this->stream,$this,$this->server);
 				if($result !== null){					
 					$this->stream->save(json_encode(array('pid'=>$pidChild,'return'=>$result,'parameters'=>$parameters)),'.return-'.$pidChild);
 				}
@@ -56,6 +56,7 @@ class Process{
 
 
 	public function callbackAll($method = null){	
+
 		while (TRUE) {
 			$pid = pcntl_wait($status, WNOHANG);
 			usleep(100);
@@ -73,11 +74,16 @@ class Process{
 				}
 			}		  			
 		}
-		$method(self::$forkResponses,$this->stream,$this);
+		$response = $method(self::$forkResponses,$this->stream,$this,$this->server);
+
+		return $response;
 	}
 
 	
 	public function callback($method = null){
+
+		$response = [];
+
 		while (TRUE) {
 			$pid = pcntl_wait($status, WNOHANG);
 			usleep(100);
@@ -87,7 +93,7 @@ class Process{
 					usleep(100);
 					$returnFork = json_decode($returnFork);
 					self::$forkResponses[$pid] = $returnFork;
-					$method($returnFork,$this->stream,$this);
+					$response[$pid] = $method($returnFork,$this->stream,$this,$this->server);
 				}
 				// when child if done		  		
 				unset(self::$forkChilds[$pid]);
@@ -96,6 +102,8 @@ class Process{
 				}
 			}		  			
 		}
+
+		return $response;
 	}
 
 
@@ -109,11 +117,16 @@ class Process{
 				$returnFork = json_decode($returnFork);
 				self::$forkResponses[$pid] = $returnFork;
 				unset(self::$forkChilds[$pid]);
-				$method(self::$forkResponses[$pid],$this->stream,$this,self::$forkChilds);
+				$response = $method(self::$forkResponses[$pid],$this->stream,$this,self::$forkChilds,$this->server);
 			}else{
-				$method(null,$this->stream,$this,self::$forkChilds);
-			}	  			
+				$response = $method(null,$this->stream,$this,self::$forkChilds,$this->server);
+			}	  
+			if(!empty($response)){
+				break;
+			}			
 		}
+
+		return $response;
 	}
 
 

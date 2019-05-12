@@ -18,7 +18,7 @@ Creates a parallel process by duplicating the current process
 
 	$server = new CreateServer(	new Process() );
 
-	$server->process->fork(function($parameters,$pid,$stream,$server){
+	$server->process->fork(function($parameters,$pid,$stream,$process,$server){
 		
 		// your code
 		
@@ -42,7 +42,7 @@ Creates a parallel process by duplicating the current process
 
 	$server = new CreateServer(	new Process() );
 
-	$server->process->fork(function($parameters,$pid,$stream,$server){
+	$server->process->fork(function($parameters,$pid,$stream,$process,$server){
 		$name = $parameters['name'];
 		$language = $parameters['language'];
 
@@ -63,7 +63,7 @@ Creates a parallel process by duplicating the current process
 expects and captures the return of forks individually
 
 ```php
-$server->process->callback(function($response,$stream,$process){	
+$server->process->callback(function($response,$stream,$process,$server){	
 	
 	print_r($response);
 
@@ -75,7 +75,7 @@ $server->process->callback(function($response,$stream,$process){
 awaits the completion of all forks and captures the return of all
 
 ```php
-$server->process->callbackAll(function($response,$stream,$process){	
+$server->process->callbackAll(function($response,$stream,$process,$server){	
 	
 	print_r($response);
 
@@ -87,7 +87,7 @@ $server->process->callbackAll(function($response,$stream,$process){
 creates an infinite loop and captures the return of the forks individually
 
 ```php
-$server->process->while(function($callback, $stream,$process,$forkChilds){	
+$server->process->while(function($callback, $stream,$process,$forkChilds,$server){	
 		
 	sleep(1); // optional
 	print_r($callback);
@@ -129,7 +129,7 @@ The example below creates a child process and ends soon after, leaving the child
 
 	$server = new CreateServer(	new Process() );
 
-	$server->process->fork(function($parameters,$pid,$stream,$process){
+	$server->process->fork(function($parameters,$pid,$stream,$process,$server){
 	
 		while(true){			
 			sleep(1);
@@ -161,7 +161,7 @@ use onservice\services\Process as Process;
 
 $server = new CreateServer(	new Process() );
 
-$server->process->fork(function($parameters,$pid,$stream,$process){
+$server->process->fork(function($parameters,$pid,$stream,$process,$server){
 
 	$stream->save('test');
 	$server->process->stream->save('test','a1');
@@ -169,13 +169,16 @@ $server->process->fork(function($parameters,$pid,$stream,$process){
 });
 
 
-$server->process->callback(function($response,$stream,$process){	
+$response = $server->process->callback(function($response,$stream,$process,$server){	
 
 	echo $stream->load();
 	echo "\n";
 	echo $server->process->stream->load('a1');
 
 });
+
+echo $response;
+
 ```
 
 
