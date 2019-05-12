@@ -5,11 +5,13 @@ namespace console;
 use \onservice\consolecore\PrintConsole as PrintConsole;
 
 class Server{
+	
+	public $description = 'Inicia um servidor web local (PHP)';
 		
 	function __construct(){}
 
-	/** @description: Inicia um servidor web local (PHP) **/
-	public function run(){
+	
+	public function index(){
 		$ip = '127.0.0.1';
 		$port = 8082;
 

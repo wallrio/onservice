@@ -7,11 +7,13 @@ use \onservice\consolecore\PrintConsole as PrintConsole;
 
 class Routes{
 
+	public $order = 0;
+	public $description = 'Cria uma classe de rota';
+
 	function __construct(){}
 
-
-	/** @description: Cria uma classe de rota **/
-	public function create(array $parameters){
+	
+	public function index(array $parameters){
 		
 
 		$dir = 'src'.DIRECTORY_SEPARATOR.'routes';

@@ -26,6 +26,7 @@ class Console{
 	public $descriptionBold = null;
 	
 	public $legend = null;
+	public $commandsList = null;
 	
 
 
@@ -52,8 +53,11 @@ class Console{
 		$this->descriptionForecolor = isset($options['descriptionForecolor'])?$options['descriptionForecolor']:null;
 		$this->descriptionBackcolor = isset($options['descriptionBackcolor'])?$options['descriptionBackcolor']:null;
 		$this->descriptionBold = isset($options['descriptionBold'])?$options['descriptionBold']:null;
+	
+		$this->commandsList = isset($options['commands'])?$options['commands']:null;
 
-
+	
+	
 
 		$dirConsoleContainer = isset($options['dir'])?$options['dir']:null;
 		$useCode = isset($options['core'])?$options['core']:true;
@@ -63,6 +67,8 @@ class Console{
 		}else{
 			$this->dirConsoleContainer = $dirConsoleContainer;
 		}
+
+
 
 		if($useCode === true)
 		$this->checkConsole();
@@ -104,6 +110,7 @@ class Console{
 		$argv = isset($GLOBALS['argv'])?$GLOBALS['argv']:null;
 		$argc = isset($GLOBALS['argc'])?$GLOBALS['argc']:null;
 
+
 		if(is_array($argv) && count($argv) >0 ){
 
 			$dirArray = explode('/', __DIR__);
@@ -119,7 +126,9 @@ class Console{
 			$content = str_replace('<?php', '', $content);						
 			$content = str_replace('$console->run();', '', $content);			
 			$content = str_replace('$console->legend', '//$console->legend', $content);			
-			eval($content);	
+			
+			@eval($content);	
+
 		
 			if($this->title !== null) $console->title = $this->title;
 			if($this->titleForecolor !== null) $console->titleForecolor = $this->titleForecolor;
@@ -139,6 +148,7 @@ class Console{
 			if($this->descriptionBold !== null) $console->descriptionBold = $this->descriptionBold;
 			
 			if($this->legend !== null) $console->legend = $this->legend;
+			if($this->commandsList !== null) $console->commandsList = $this->commandsList;
 
 			if($this->titleBold !== null){	
 				$console->titleBold = $this->titleBold;

@@ -25,27 +25,27 @@ $server = new CreateServer( new Console('ARRAY_PARAMETERS') );
 ```
 
 - ARRAY_PARAMETERS: (optional)
-	- dir: (string) define the directory of commands.
 
-	- core: (boolean) enables/disables console display via '-c' option.
-	- title = (string) define the title of console.
-	- legend = (string) define the legende of console.
+| Attribute  			| Type   	| Description 											|
+| --------------------- | --------- | ----------------------------------------------------- |
+| dir  		 			| string 	| define the directory of commands  					|
+| commands   			| array 	| define the commands.  								|
+| core   				| boolean 	| enables/disables console display via '-c' option.  	|
+| title  				| string  	| define the title of console. 							|
+| legend 				| tring   	| define the legende of console. 						|
+| titleForecolor 		| color 	| define the forecolor of title 						|
+| titleBackcolor 		| color 	| define the backcolor of title 						|
+| titleBold 			| boolean 	| define the font bold of title 						|
+| commandForecolor 		| color 	| define the forecolor of command 						|
+| commandBackcolor 		| color 	| define the backcolor of command 						|
+| commandBold 			| boolean 	| define the font bold of command 						|
+| commandTitleForecolor | color 	| define the forecolor of command title 				|
+| commandTitleBackcolor | color 	| define the backcolor of command title 				|
+| commandTitleBold 		| boolean 	| define the font bold of command title 				|
+| descriptionForecolor 	| color 	| define the forecolor of description 					|
+| descriptionBackcolor 	| color 	| define the backcolor of description 					|
+| descriptionBold 		| boolean 	| define the font bold of description 					|
 
-	- titleForecolor = (color) define the forecolor of title.
-	- titleBackcolor = (color) define the backcolor of title.
-	- titleBold = (boolean) define the font bold of title.
-
-	- commandForecolor = (color) define the forecolor of command.
-	- commandBackcolor = (color) define the backcolor of command.
-	- commandBold = (boolean) define the font bold of command.
-
-	- commandTitleForecolor = (color) define the forecolor of command title.
-	- commandTitleBackcolor = (color) define the backcolor of command title.
-	- commandTitleBold = (boolean) define the font bold of command title.
-
-	- descriptionForecolor = (color) define the forecolor of description.
-	- descriptionBackcolor = (color) define the backcolor of description.
-	- descriptionBold = (boolean) define the font bold of description.
 
 - NOTE: if 'dir' not specified, the path will be 'src/console'
 
@@ -67,7 +67,8 @@ Open your terminal and execute:
 
 ```bash
 php your-index.php 
-```	
+```
+
 
 ## Create commands
  To create CLI commands, follow the steps below:
@@ -90,155 +91,122 @@ $server = new CreateServer(new Console(array(
 
 ```
 
-2. Create the directory specified in the previous step.
+### Example complete with array
 
-3. Create a class for the command to be made available.
+```php
+require "vendor/autoload.php";
 
-### Example
-For the 'walk' command, create the 'Walk.php' class.
+use onservice\CreateServer as CreateServer;
+use onservice\services\Console as Console;
+
+$server = new CreateServer(new Console(array(
+	"title"=>"My Console",
+	"legend"=>"v1.0",
+	"dir"=>"app/consoleCommands",
+	"commands" => array(
+		'help'=>array(
+			'order'=>2,
+			'description'=>'help...',
+			'function'=>function($parameters){
+				return 'help ok';
+			},
+			array('order'=>3,'name'=>'version','description'=>'version...','function'=>function(){return 'help/version...';}),
+			array('order'=>2,'name'=>'about','description'=>'about...','function'=>function(){return 'help/about...';}),
+		),
+	)
+)));
+
 ```
-src
- |
- |--console
- 		|
- 		|--Walk.php
+
+
+### Example complete with class
+
+1. Create your file index.php
+
+```php
+require "vendor/autoload.php";
+
+use onservice\CreateServer as CreateServer;
+use onservice\services\Console as Console;
+
+$server = new CreateServer(new Console(array(
+	"title"=>"My Console",
+	"legend"=>"v1.0",
+	"dir"=>"app/console"
+)));
+
 ```
 
-- Note: it is possible to create sub level for the command.
+2. Create the directory app/console
 
-### Example
-For the 'walk' command exemplified above, create in the 'walk.php' class the method below:
+	mkdir -p app/console
+
+3. in the app / console directory create the Help.php class
 
 ```php
 namespace console;
 
-class Walk {
-	/** @description: description of command **/
-	public function index(){		
+class Help {
+	
+	public $order = 0;
+	public $title = 'Help';
+	public $description = 'help...';
+
+	public function index($parameters){		
 		return 'index...';
 	}
 }
 ```
 
-### Example sub commands
+> $parameters = displays in an array the parameters after the command
+
+4. the structure for the Help class should be as below:
 
 ```
 src
  |
  |--console
  		|
- 		|--help
- 			|
- 			|--Walk.php
+ 		|--Help.php
 ```
 
+- Note: it is possible to create sub level for the command.
 
-> for the above directory, the command will be 'help/walk'
+5. create the directory app/console/help:
 
-4. In the created class, create one the methods of the specific commands
+	mkdir -p app/console/help
 
-### Example
-For the 'help/walk' command exemplified above, create in the 'help/walk.php' class the method below:
+6. create class 'app/console/help/about.php' who will respond to the command help/about:
 
 ```php
 namespace console\help;
 
-class Walk {
-	/** @description: description of command **/
-	public function index(){		
+class About {
+	
+	public $order = 0;	
+	public $title = 'About';
+	public $description = 'about...';
+
+	public function index($parameters){		
 		return 'index...';
 	}
 }
 ```
 
+4. the total structure should be as below:
 
-### Example of additional commands
-For the 'help/walk: run' command, create the following method in the 'help/walk.php' class:
-
-```php
-namespace console\help;
-
-class Walk {
-	/** @description: description of command **/
-	public function run(){		
-		return 'running...';
-	}
-}
+```
+src
+ |
+ |--console
+ 		|
+ 		|--Help.php
+ 		|
+ 		|--help
+ 			|--about.php
 ```
 
 
-## Change the description of the command group
-Enter the 'description' property in the command class.
-
-
-### Example
-
-```php
-namespace console\help;
-
-class Walk {
-
-	public $description = "Description group of commands";
-
-	...
-}
-```
-
-## Sort commands
-Enter a property with the name 'order' with the position priority value in the command class.
-
-### Example
-
-```php
-namespace console\help;
-
-class Walk {
-
-	public $order = 1;
-
-	...
-}
-```
-
-### Sort Sub Commands
-Enter the '@order' attribute in the method annotation.
-
-```php
-namespace console\help;
-
-class Walk {
-
-	public $order = 1;
-
-	/** 
-		@order: 0
-		@description: description of command 
-	**/
-	public function run(){		
-		return 'running...';
-	}
-}
-```
-
-### Custom name
-Enter the '@name' attribute in the method annotation.
-
-```php
-namespace console\help;
-
-class Walk {
-
-	public $order = 1;
-
-	/** 
-		@name: walk-run
-		@description: description of command 
-	**/
-	public function run(){		
-		return 'running...';
-	}
-}
-```
 
 ## Note
 always use the namespace to avoid class conflict

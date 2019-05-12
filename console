@@ -11,10 +11,13 @@ spl_autoload_register(function ($class_name) {
     if(!file_exists($path))
     	$path = 'src'.DIRECTORY_SEPARATOR.'consolecore'.DIRECTORY_SEPARATOR.$class_name . '.php';    
 
+    
     include $path;
 });
 
+$argv = $GLOBALS['argv'];
+$command = isset($argv[0])?$argv[0]:'command';
 
 $console = new ConsoleCore(null);
-$console->legend = "\n ".'Usage: command [option] [arguments]';
+$console->legend = "\n ".'Usage: '.$command.' [option] [arguments]';
 $console->run();
