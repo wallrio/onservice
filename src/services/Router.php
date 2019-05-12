@@ -2,6 +2,8 @@
 
 namespace onservice\services;
 
+use onservice\essentials\Http as Http;
+
 class Router{
 	
 	public $server,
@@ -12,6 +14,13 @@ class Router{
 	
 
 	public function __construct(){}
+
+	
+	public function request($url,$parameters = array(),&$header = null){
+		$data = $parameters;
+		$data['url'] = $url;		
+		return Http::request($data,$header,$this);
+	}
 
 	public function checkRequest($route,&$args,&$requestPath,$annotationMethod = false){
 		

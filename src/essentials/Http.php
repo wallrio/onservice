@@ -5,7 +5,7 @@ namespace onservice\essentials;
 class Http{
     
 
-    public static function request(array $parameters, &$header = null){
+    public static function request(array $parameters, &$header = null,$context = null){
         
         $url = isset($parameters['url'])?$parameters['url']:null;
         $method = isset($parameters['method'])?$parameters['method']:'get';
@@ -14,6 +14,7 @@ class Http{
         $follow = isset($parameters['follow'])?$parameters['follow']:false;
         $fallback = isset($parameters['fallback'])?$parameters['fallback']:null;
         $timeout = isset($parameters['timeout'])?$parameters['timeout']:7;
+        $onlyheader = isset($parameters['onlyheader'])?$parameters['onlyheader']:false;
 
     
         $curl = curl_init();
@@ -29,6 +30,9 @@ class Http{
 
         curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 3); 
         curl_setopt($curl, CURLOPT_TIMEOUT, $timeout); 
+
+
+        
 
         if($data !== null){
             if( gettype($data) !== 'array' ){
@@ -61,29 +65,38 @@ class Http{
 
         $pre_http_code =(int) $headerAll['http_code'];
         
+
+        $headers = self::headerToArray($headers);
+
+        $http_code =(int) $headers['Request']['code'];
+
+
+
+        if($http_code === 300 || $http_code === 301 || $http_code === 302){            
+            
+
+
+            if($follow === true){
+                $redirect_url = $headers['Location'];
+                $parameters['url'] = $redirect_url;                        
+                $return = self::request($parameters,$header,$context);            
+                return $return;
+            }
+        }
+        
+
         if($header_size === 0){            
             if($fallback !== null){
+                
+        // print_r($parameters);
                 sleep(1);
-                return $fallback($parameters,$header,0);
+                return $fallback($parameters,$header,$context);
             }
             return false;
         }
 
         
-        $headers = self::headerToArray($headers);
-
-        
-
-        
-        $http_code =(int) $headers['Request']['code'];
-
-        if($http_code === 300 || $http_code === 301 || $http_code === 302){
-            $redirect_url = $headerAll['url'];
-            $parameters['url'] = $redirect_url;            
-
-            $return = self::request($parameters,$header);            
-            return $return;
-        }
+       
         
         $headers['Request']['url'] = $url;
 
@@ -102,10 +115,16 @@ class Http{
 
         $header = $headers;
 
+
+
+
         if ($http_status==404)return false;
         
         if($err) return false;
         
+        if($onlyheader === true)
+            return $header;
+
         
 
         return $body;
