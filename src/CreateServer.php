@@ -3,7 +3,7 @@
 
 namespace onservice; 
 
-define('OnServiceVersion','2.0.4');
+define('OnServiceVersion','2.0.5');
 
 class CreateServer{
 	
