@@ -20,10 +20,11 @@ class Http{
         $curl = curl_init();
 
         curl_setopt($curl, CURLOPT_URL, $url);
+        // curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_HEADER, 1);
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, strtoupper($method) );
-        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, $follow);        
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, $follow);                
 
         curl_setopt($curl, CURLOPT_FRESH_CONNECT, 1);
         curl_setopt($curl, CURLOPT_FORBID_REUSE, 1);
@@ -78,7 +79,18 @@ class Http{
 
             if($follow === true){
                 $redirect_url = $headers['Location'];
-                $parameters['url'] = $redirect_url;                        
+
+                $hostSchemeArray = parse_url($url);
+                        // print_r($hostSchemeArray);      
+                if( (strpos($redirect_url, 'https://') === false && strpos($redirect_url, 'http://') === false)){
+
+                    $parameters['url'] = $hostSchemeArray['scheme'].'://'.$hostSchemeArray['host'].''.$redirect_url;       
+                }else{
+                    $parameters['url'] = $redirect_url;       
+                }
+                
+
+                // print_r($parameters);
                 $return = self::request($parameters,$header,$context);            
                 return $return;
             }
@@ -88,9 +100,10 @@ class Http{
         if($header_size === 0){            
             if($fallback !== null){
                 
-        // print_r($parameters);
-                sleep(1);
-                return $fallback($parameters,$header,$context);
+        // print_r($headers);
+                // sleep(1);
+                // usleep(100000);
+                return $fallback($parameters,$headers,$context);
             }
             return false;
         }

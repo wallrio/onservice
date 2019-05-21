@@ -210,3 +210,10 @@ src
 
 ## Note
 always use the namespace to avoid class conflict
+
+
+## Input/Output on CLI
+
+- [Input](sub/console_input.md)
+- [Output](sub/console_output.md)
+

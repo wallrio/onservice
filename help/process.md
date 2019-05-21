@@ -2,7 +2,7 @@
 service for create process parallel
 
 
-### Fork
+## Fork
 Creates a parallel process by duplicating the current process
 
 	$server->process->fork($method, $parameters);
@@ -18,7 +18,7 @@ Creates a parallel process by duplicating the current process
 
 	$server = new CreateServer(	new Process() );
 
-	$server->process->fork(function($parameters,$pid,$stream,$process,$server){
+	$server->process->fork(function($parameters, $pidChild, $streamClass,$contextProcess,$serverClass){
 		
 		// your code
 		
@@ -42,7 +42,7 @@ Creates a parallel process by duplicating the current process
 
 	$server = new CreateServer(	new Process() );
 
-	$server->process->fork(function($parameters,$pid,$stream,$process,$server){
+	$server->process->fork(function($parameters, $pidChild, $streamClass,$contextProcess,$serverClass){
 		$name = $parameters['name'];
 		$language = $parameters['language'];
 
@@ -92,8 +92,12 @@ $server->process->while(function($callback, $stream,$process,$forkChilds,$server
 	sleep(1); // optional
 	print_r($callback);
 
+	// to exit the loop use the return with any value
+	// return true 
 });
 ```
+
+> to exit the loop use the return with any value
 
 ##### Changing the streaming method
 changing the streaming method to write to file
@@ -129,7 +133,7 @@ The example below creates a child process and ends soon after, leaving the child
 
 	$server = new CreateServer(	new Process() );
 
-	$server->process->fork(function($parameters,$pid,$stream,$process,$server){
+	$server->process->fork(function($parameters, $pidChild, $streamClass,$contextProcess,$serverClass){
 	
 		while(true){			
 			sleep(1);
@@ -147,12 +151,17 @@ The example below creates a child process and ends soon after, leaving the child
 ##### $stream
 
 - save data
-	- $stream->save(string,optional index);
-	- $server->process->stream(string,optional index);
+	- $stream->save(string,optional index, optional segment);
+	- $server->process->stream->save(string,optional index, optional segment);
+
+- string: values of all types
+- index: registry ID
+- index: segment ID 
+
 
 - load data
-	- $stream->save(optional index);
-	- $server->process->stream(optional index);
+	- $stream->load(optional index, optional segment);
+	- $server->process->stream->load(optional index, optional segment);
 
 
 ```php
@@ -161,7 +170,7 @@ use onservice\services\Process as Process;
 
 $server = new CreateServer(	new Process() );
 
-$server->process->fork(function($parameters,$pid,$stream,$process,$server){
+$server->process->fork(function($parameters, $pidChild, $streamClass,$contextProcess,$serverClass){
 
 	$stream->save('test');
 	$server->process->stream->save('test','a1');
@@ -169,7 +178,7 @@ $server->process->fork(function($parameters,$pid,$stream,$process,$server){
 });
 
 
-$response = $server->process->callback(function($response,$stream,$process,$server){	
+$response = $server->process->callback(function($responseFromChilds, $streamClass, $forkChildsList, $contextProcess, $serverClass){	
 
 	echo $stream->load();
 	echo "\n";
@@ -182,4 +191,8 @@ echo $response;
 ```
 
 
+## Stream Communication of process
+
+- [Memory](sub/process_memory.md)
+- [FileStream](sub/process_filestream.md)
 

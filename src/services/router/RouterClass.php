@@ -250,7 +250,7 @@ class RouterClass{
 			if($routeRef == '')$routeRef='/';
 
 			if (method_exists($route, 'error')) {		
-				$routeFound = $this->router->resource($routeRef.'/+',$route,'error');
+				$routeFound = $this->router->resource($routeRef.'/+',$route,'error',$annoArrayNew);
 			}
 
 		}

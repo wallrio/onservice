@@ -2,7 +2,7 @@
 Performs HTTP requests
 
 
-	$response = $server->router->request(URL, PARAMETERS, &HEADER_RESPONSE);
+	$response = $server->router->request(URL, PARAMETERS, HEADER_RESPONSE);
 
 | Attribute			| Type 		| description
 |-------------------|-----------|---------------------------------------------------|
@@ -12,7 +12,7 @@ Performs HTTP requests
 
 
 
-### values available for PARAMETERS
+## valores disponiveis para o PARAMETERS
 
 | Attribute		| Type 		| description																 |
 |---------------|-----------|----------------------------------------------------------------------------|
