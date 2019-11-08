@@ -54,6 +54,12 @@ class RouterClass{
 		}
 
 		$dirs = File::findRecursive($dir);
+		
+		foreach ($dirs as $key => $value) {
+			$info = pathinfo($value);
+			$extension = $info['extension'];
+			if($extension !== 'php') unset($dirs[$key]);
+		}		
 
 		$this->attachRoutes($dirs);	
 	}
@@ -249,8 +255,8 @@ class RouterClass{
 			
 			if($routeRef == '')$routeRef='/';
 
-			if (method_exists($route, 'error')) {		
-				$routeFound = $this->router->resource($routeRef.'/+',$route,'error',$annoArrayNew);
+			if (method_exists($route, 'error')) {						
+				$routeFound = $this->router->resource($routeRef.'/+',$route,'error');
 			}
 
 		}
