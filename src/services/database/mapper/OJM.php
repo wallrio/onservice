@@ -36,7 +36,7 @@ class OJM{
 
 	}
 
-	public function find($table,$WHERE = array(),$hash = null ){
+	public function find($table,$WHERE = array(),$options = null ){
 		
 		$basename = $this->config['basename'];
 
@@ -52,7 +52,8 @@ class OJM{
 
 		$collection = $this->base->collection($table);
 
-		$result = $collection->document->select($WHERE,$hash);
+	
+		$result = $collection->document->select($WHERE,$options);
 
 		$classModel = [];
 		$classString = '';
@@ -61,8 +62,7 @@ class OJM{
 		foreach ($result as $key => $value) {	
 			
 			$key = str_replace('/', '\\', $key);		
-			$key = preg_replace('/[^\/A-Za-z0-9\-]/', '', $key);		
-			// $key = preg_replace('/[^\A-Za-z0-9\-]/', '', $key);			
+			$key = preg_replace('/[^\/A-Za-z0-9\-]/', '', $key);			
 
 
 
@@ -85,13 +85,19 @@ class OJM{
 				$tableName = get_class($class);
 				$tableName = explode("\\\", $tableName);
 				
-				$id = $tableName[1];
-				$id = substr($id, 1);
+			
+				$tableNameLast = end($tableName);
+				unset($tableName[count($tableName)-1]);
+				foreach ($tableName as $key2 => $value2) {
+					if( substr($value2, 0,1) === "_" ){
+						$tableName[$key2] = substr($value2, 1);
+					}
+				}
+				$id = end($tableName);
+				$id = explode("_", $id);
+				$id = $id[0];
 
-				$idArray = explode("_", $id);
-				$id = $idArray[0];
-
-				$tableName = end($tableName);
+			
 
 				$parameters = $GLOBALS["onservice"]["Database"]["mapper"];
 
@@ -110,7 +116,7 @@ class OJM{
 				$class = (array) $class;
 
 				$base = $database->base($basename);		
-				$collection = $base->collection($tableName);
+				$collection = $base->collection($tableNameLast);
 
 				$result = $collection->document->update($id,
 					$class
@@ -176,20 +182,34 @@ class OJM{
 
 	public function save($class,$fieldCompare = 'id'){
 		
+		
+
 		if(gettype($class) === 'array'){
 			foreach ($class as $key => $value) {
+				
 				$tableName = get_class($value);
 				$tableName = explode('\\', $tableName);
-				$id = $tableName[1];
-				$id = substr($id, 1);
+			
+				$tableNameLast = end($tableName);
 
-				$tableName = end($tableName);
+				unset($tableName[count($tableName)-1]);
 
-				$collection = $this->base->collection($tableName);
+				foreach ($tableName as $key2 => $value2) {
+					if( substr($value2, 0,1) === '_' ){
+						$tableName[$key2] = substr($value2, 1);
+					}
+				}
 
+				$id = end($tableName);
+				$id = explode('_', $id);
+				$id = $id[0];
+
+				$collection = $this->base->collection($tableNameLast);
+	
 				$result = $collection->document->update($id,
 					$value
 				);
+
 
 			}
 		}else{
@@ -264,6 +284,8 @@ class OJM{
 			$basename = isset($parameters["basename"])?$parameters["basename"]:null;
 			
 			$database = new  \onservice\services\database\JSON();
+
+
 
 			$database->config(array(
 				"dir" => $dir,	

@@ -49,6 +49,8 @@ class Document{
 		$collectionDir = $this->collection.DIRECTORY_SEPARATOR;
 		$collectionDir = str_replace('//', '/', $collectionDir);
 
+		
+
 		if(gettype($id) == 'string'){
 			$filesArray = [$id];
 		}else if(gettype($id) == 'array'){
@@ -56,22 +58,17 @@ class Document{
 		}
 
 		foreach ($filesArray as $key => $value) {		
-
-
 			if( gettype($value) == 'string' )
-				$filename = $collectionDir . $value.$this->suffix.'.json';
-			else if( gettype($value) == 'object' ||  gettype($value) == 'array' )
+				$filename = $collectionDir .$value.$this->suffix.'.json';
+			else if( gettype($value) == 'object' )
 				$filename = $collectionDir . $key.$this->suffix.'.json';
 			
 				
-			
 
-			if(file_exists($filename)){		
-
+			if(file_exists($filename)){				
 				$content = file_get_contents($filename);
 				$contentObj = json_decode($content);
-
-				if( (is_array($fields) || is_object($fields)) && count($fields)<1) return false;
+				if(count($fields)<1) return false;
 				foreach ($fields as $key2 => $value2) {
 					if(strpos($key2, '/')!= false ){
 						$key2Array = explode('/', $key2);
@@ -95,19 +92,13 @@ class Document{
 						eval('$contentObj->fields->'.$join2.' = $value2 ;');
 						
 					}else{
-						
-
-						if(gettype($value) == 'object'){
-							$contentObj->fields->$key2 = $value2;
-						}else if(gettype($value) == 'array'){
-							$contentObj->fields[$key2] = $value2;							
-						}else{
-							$contentObj->fields->$key2 = $value2;						
-						}
+						$contentObj->fields->$key2 = $value2;
 					}
 				}
 
-	
+			
+
+
 				file_put_contents($filename, json_encode($contentObj));
 			}else{
 				return false;
@@ -135,6 +126,8 @@ class Document{
 
 	public function select(array $where = null,$options = null){
 
+		
+
 		$hashSelect = isset($options['hash'])?$options['hash']:null;
 		$openFile = isset($options['open'])?$options['open']:true;
 		$nocontent = isset($options['nocontent'])?$options['nocontent']:false;
@@ -143,8 +136,6 @@ class Document{
 		$collectionDir = str_replace('//', '/', $collectionDir);
 
 		if(!file_exists($collectionDir)){
-			throw new \Exception('Collection not found: '.$this->collectionName);
-			
 			return false;
 		}
 		
@@ -156,23 +147,20 @@ class Document{
 		
 		$resultArray = array_values($resultArray);
 
-		$remove = false;
-
-		$index1 = 0;
 		$resultFinish = [];
-
 		foreach ($resultArray as $key => $value) {
-		
 
 			$filename = $this->collection.DIRECTORY_SEPARATOR.$value;
 
 			
+			
 
 			$found = false;
 
-			if($openFile === true){				
+			if($openFile === true && $hashSelect === null){				
 				$content = file_get_contents($filename);
 				$contentObj = json_decode($content);
+				
 			}else{
 				$hash = $value;
 				$hash = str_replace('_jdoc.json', '', $hash);
@@ -180,93 +168,104 @@ class Document{
 					'hash'=>$hash,
 					'fields'=>(object) array()
 				);		
+				$where = null;
 
+				
 			}
+
 
 			if($hashSelect != null ){
 				if($hashSelect.'_jdoc.json' == $value){
+
+					$content = file_get_contents($filename);
+					$contentObj = json_decode($content);
+
 					$resultFinish[$contentObj->hash] = $contentObj->fields;
 					$found = true;
 				}				
 				continue;
 			}
 
-
-
 			if($where == null){
 				$found = true;
 			}else{
-			
-				$operator = null;
+				$andOperator = true;
 				$index2 = 0;
-				$combCond = [];
-				$found = true; 
 				foreach ($where as $key2 => $value2) {
 					
-					$operator = '';
-
 					if( substr($key2, 0,3) == '||.'){
 						$key2 = str_replace('||.', '', $key2) ;
-						$operator = 'or';
+						$andOperator = false;	
 
 					}else if( substr($key2, 0,3) == '&&.'){
 						$key2 = str_replace('&&.', '', $key2) ;
-						$operator = 'and';		
+					
+						if( isset($contentObj->remove) && $contentObj->remove == true ) continue;			
 					}else{
-						$operator = 'and'; 					
+						if( isset($contentObj->remove) && $contentObj->remove == true ) continue;					
 					}
-		
-					if(strpos($key2, '/') !==-1) $key2 = str_replace('/', '->', $key2);
 
-					eval('$preval = isset($contentObj->fields->'.$key2.')?$contentObj->fields->'.$key2.':null;');
+					if(strpos($key2, '/') !==-1){
+						$key2 = str_replace('/', '->', $key2);
+						eval('$preval = isset($contentObj->fields->'.$key2.')?$contentObj->fields->'.$key2.':null;');
 
-						
-					if($preval === $value2){								
-						$combCond[] = $operator;
-					}else{
-						if( substr($value2, 0,1) === '~'){
-							if( soundex($preval) === soundex(substr($value2, 1))){
-								$combCond[] = $operator;
-							}else{
-								$found = false;
-							}
-						}else if( substr($value2, 0,1) === '*'){
-							if( strpos(strtolower($preval), substr(strtolower($value2), 1) ) !== false ){
-								$combCond[] = $operator;
-							}else{
-								$found = false;
-							}
-						}else{
-							$found = false;
-						}	
-					}
-					$index2++;
-				}
-
-		
-				if( array_search('or',$combCond) !== false )
-					$found = true;
-				
-				if( $found === true ){
-					if( (isset($contentObj->hash) && isset($contentObj->fields)) || $openFile !== true){
-						if($nocontent === false){
-							$resultFinish[$contentObj->hash] = $contentObj->fields;
-						}else{						
-							$resultFinish[$contentObj->hash] = array();
+						if($preval == $value2){
+							$found = true;
+							continue;
 						}
+					
 					}
+
+					if( isset($contentObj->fields->$key2) && $contentObj->fields->$key2 == $value2) $found = true;
+
+					if( substr($value2, 0,1) == '~')
+					if( soundex($contentObj->fields->$key2) == soundex(substr($value2, 1))) $found = true;
+
+					if( substr($value2, 0,1) == '*')
+					if( strpos($contentObj->fields->$key2, substr($value2, 1) ) !== false ) $found = true;
+				
+					if( $andOperator === true){	
+
+						if(!isset($contentObj->fields->$key2)){
+							$found = false;
+							continue;
+						}
+
+						if( ($contentObj->fields->$key2 == $value2) ) 
+							$found = true;
+						else
+							$found = false;
+						
+					}
+
+					if($found == false){
+						$contentObj->remove = true;						
+					}
+
+					$index2++;
+
 				}
-
-
 			}
 
+			if($openFile !== true){			
+				$found = true;
+			}
 
-
-			$index1++;
+			if($found === true){
 			
+				if( (isset($contentObj->hash) && isset($contentObj->fields)) || $openFile !== true){
+					
+					if($nocontent === false){
+						$resultFinish[$contentObj->hash] = $contentObj->fields;
+					}else{						
+						$hash2 = $value;
+						$hash2 = str_replace('_jdoc.json', '', $hash2);
+						$resultFinish[$contentObj->hash] = array('hash'=>$hash2);
+					}
+				}
+			}
 		}
 
-	
 		if(count($resultFinish) > 0)
 			return $resultFinish;
 		else
@@ -279,6 +278,9 @@ class Document{
 			$hash = md5(json_encode($fields).''.time());			
 		}
 		
+		// $hash = str_replace(array('@','.'), '', $hash);			
+		$hash = preg_replace('/[^\/A-Za-z0-9\-]/', '', $hash);			
+
 		$filename = $this->collection.DIRECTORY_SEPARATOR.$hash.$this->suffix.'.json';
 		$filename = str_replace('//', '/', $filename);
 
