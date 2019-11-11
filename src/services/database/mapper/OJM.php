@@ -38,6 +38,18 @@ class OJM{
 
 	public function find($table,$WHERE = array(),$hash = null ){
 		
+		$basename = $this->config['basename'];
+
+		$basename = str_replace('/', '\\', $basename);
+		$basenameArray = explode('\\', $basename);
+		foreach ($basenameArray as $key => $value) {
+			if( is_numeric( substr($value, 0,1) ) === true ){
+				$basenameArray[$key] = '_'.$value;
+			}
+		}
+		$basename = implode('\\', $basenameArray);
+
+
 		$collection = $this->base->collection($table);
 
 		$result = $collection->document->select($WHERE,$hash);
@@ -52,9 +64,10 @@ class OJM{
 			$key = preg_replace('/[^\/A-Za-z0-9\-]/', '', $key);		
 			// $key = preg_replace('/[^\A-Za-z0-9\-]/', '', $key);			
 
-			$classString .= 'namespace '.$this->config['basename'].'\_'.$key.'_'.time().';'."\n";	
-			// print_r($classString);
 
+
+			$classString .= 'namespace '.$basename.'\_'.$key.'_'.time().';'."\n";	
+			
 			$classString .= 'class '.$table.' {';	
 
 			if(!isset($GLOBALS['onservice'])) $GLOBALS['onservice'] = array();
@@ -198,6 +211,16 @@ class OJM{
 
 	public function create($table,$hash = null){
 		$basename = $this->config['basename'];
+
+		$basename = str_replace('/', '\\', $basename);
+		$basenameArray = explode('\\', $basename);
+		foreach ($basenameArray as $key => $value) {
+			if( is_numeric( substr($value, 0,1) ) === true ){
+				$basenameArray[$key] = '_'.$value;
+			}
+		}
+		$basename = implode('\\', $basenameArray);
+
 		$result = array();
 
 		$object = new \StdClass;
@@ -207,7 +230,7 @@ class OJM{
 			array_push($columns, $key);
 		}
 
-		$basename = str_replace('/', '\\', $basename);
+	
 
 		$classString = 'namespace '.$basename.';'."\n";	
 

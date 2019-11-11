@@ -30,6 +30,18 @@ class ODM{
 
 	public function find($table,$WHERE = array() ){
 		
+		$basename = $this->config['basename'];
+
+		$basename = str_replace('/', '\\', $basename);
+		$basenameArray = explode('\\', $basename);
+		foreach ($basenameArray as $key => $value) {
+			if( is_numeric( substr($value, 0,1) ) === true ){
+				$basenameArray[$key] = '_'.$value;
+			}
+		}
+		$basename = implode('\\', $basenameArray);
+
+
 		$collection = $this->base->collection($table);
 
 		$result = $collection->document->select($WHERE);
@@ -45,7 +57,7 @@ class ODM{
 
 			$key = preg_replace('/[^A-Za-z0-9\-]/', '', $key);	
 					
-			$classString .= 'namespace '.$this->config['basename'].'\_'.$key.';'."\n";	
+			$classString .= 'namespace '.$basename.'\_'.$key.';'."\n";	
 			$classString .= 'class '.$table.' {';	
 
 			if(!isset($GLOBALS['onservice'])) $GLOBALS['onservice'] = array();
@@ -176,6 +188,17 @@ class ODM{
 
 	public function create($table){
 		$basename = $this->config['basename'];
+
+		$basename = str_replace('/', '\\', $basename);
+		$basenameArray = explode('\\', $basename);
+		foreach ($basenameArray as $key => $value) {
+			if( is_numeric( substr($value, 0,1) ) === true ){
+				$basenameArray[$key] = '_'.$value;
+			}
+		}
+		$basename = implode('\\', $basenameArray);
+
+
 		$result = array();
 
 		$object = new \StdClass;

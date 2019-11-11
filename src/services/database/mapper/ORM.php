@@ -220,6 +220,18 @@ class ORM{
 
 	public function find($table,$WHERE = null){
 
+		$basename = $this->config['basename'];
+
+		$basename = str_replace('/', '\\', $basename);
+		$basenameArray = explode('\\', $basename);
+		foreach ($basenameArray as $key => $value) {
+			if( is_numeric( substr($value, 0,1) ) === true ){
+				$basenameArray[$key] = '_'.$value;
+			}
+		}
+		$basename = implode('\\', $basenameArray);
+
+
 		$WHERE_String = '';
 		$index = 0;
 		foreach ($WHERE as $key => $value) {
@@ -271,7 +283,8 @@ class ORM{
 				$id = $key;
 
 
-			$classString .= 'namespace '.$this->config['basename'].'\_'.$id.';'."\n";	
+
+			$classString .= 'namespace '.$basename.'\_'.$id.';'."\n";	
 			$classString .= 'class '.$table.' {';	
 
 			if(!isset($GLOBALS['onservice'])) $GLOBALS['onservice'] = array();
@@ -451,12 +464,25 @@ class ORM{
 		$result = $this->database->getScheme($table);
 		$basename = $this->config['basename'];
 
+		$basename = str_replace('/', '\\', $basename);
+		$basenameArray = explode('\\', $basename);
+		foreach ($basenameArray as $key => $value) {
+			if( is_numeric( substr($value, 0,1) ) === true ){
+				$basenameArray[$key] = '_'.$value;
+			}
+		}
+		$basename = implode('\\', $basenameArray);
+
+
+
 		$object = new \StdClass;
 		$columns = array();
 		foreach ($result as $key => $value) {
 			$object->$key = null;
 			array_push($columns, $key);
 		}
+
+
 
 		$classString = 'namespace '.$basename.';'."\n";	
 
