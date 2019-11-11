@@ -36,23 +36,30 @@ class OJM{
 
 	}
 
-	public function find($table,$WHERE = array() ){
+	public function find($table,$WHERE = array(),$hash = null ){
 		
 		$collection = $this->base->collection($table);
 
-		$result = $collection->document->select($WHERE);
+		$result = $collection->document->select($WHERE,$hash);
 
 		$classModel = [];
 		$classString = '';
 		$index = 0;
 		if( is_array($result) && count($result)>0)
-		foreach ($result as $key => $value) {			
-			$classString .= 'namespace '.$this->config['basename'].'\_'.$key.';'."\n";	
+		foreach ($result as $key => $value) {	
+			
+			$key = str_replace('/', '\\', $key);		
+			$key = preg_replace('/[^\/A-Za-z0-9\-]/', '', $key);		
+			// $key = preg_replace('/[^\A-Za-z0-9\-]/', '', $key);			
+
+			$classString .= 'namespace '.$this->config['basename'].'\_'.$key.'_'.time().';'."\n";	
+			// print_r($classString);
+
 			$classString .= 'class '.$table.' {';	
 
 			if(!isset($GLOBALS['onservice'])) $GLOBALS['onservice'] = array();
 			if(!isset($GLOBALS['onservice']["Database"])) $GLOBALS['onservice']["Database"] = array();
-			if(!isset($GLOBALS['onservice']["Database"]["mapper"])) $GLOBALS['onservice']["Database"]["mapper"] = $this->config;
+			if(isset($GLOBALS['onservice']["Database"])) $GLOBALS['onservice']["Database"]["mapper"] = $this->config;
 			
 			foreach ($value as $key2 => $value2) {
 				$classString .= 'public $'.$key2.';';
@@ -67,6 +74,9 @@ class OJM{
 				
 				$id = $tableName[1];
 				$id = substr($id, 1);
+
+				$idArray = explode("_", $id);
+				$id = $idArray[0];
 
 				$tableName = end($tableName);
 
@@ -93,7 +103,7 @@ class OJM{
 					$class
 				);
 
-			
+
 			}';
 
 			$classString .= ' function remove(){
@@ -186,7 +196,7 @@ class OJM{
 		
 	}
 
-	public function create($table){
+	public function create($table,$hash = null){
 		$basename = $this->config['basename'];
 		$result = array();
 
@@ -197,18 +207,24 @@ class OJM{
 			array_push($columns, $key);
 		}
 
+		$basename = str_replace('/', '\\', $basename);
+
 		$classString = 'namespace '.$basename.';'."\n";	
 
 		$classString .= 'class '.$table.' {';		
 
+		
+
 		if(!isset($GLOBALS['onservice'])) $GLOBALS['onservice'] = array();
 		if(!isset($GLOBALS['onservice']["Database"])) $GLOBALS['onservice']["Database"] = array();
-		if(!isset($GLOBALS['onservice']["Database"]["mapper"])) $GLOBALS['onservice']["Database"]["mapper"] = $this->config;
+		if(isset($GLOBALS['onservice']["Database"])) $GLOBALS['onservice']["Database"]["mapper"] = $this->config;
 
 	
 		foreach ($result as $key => $value) {			
 			$classString .= 'public $'.$key.';';
 		}
+
+
 
 		$classString .= 'public function save(){ 
 			$class = $this;			
@@ -230,10 +246,11 @@ class OJM{
 				"dir" => $dir,	
 				"basename" => $basename
 			));
-		
+			
+	
 			$base = $database->base($basename);					
 			$collection = $base->collection($tableName);
-			$result = $collection->document->create($class);
+			$result = $collection->document->create($class,"'.$hash.'");
 
 			return true;
 

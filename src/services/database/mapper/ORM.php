@@ -276,7 +276,7 @@ class ORM{
 
 			if(!isset($GLOBALS['onservice'])) $GLOBALS['onservice'] = array();
 			if(!isset($GLOBALS['onservice']["Database"])) $GLOBALS['onservice']["Database"] = array();
-			if(!isset($GLOBALS['onservice']["Database"]["mapper"])) $GLOBALS['onservice']["Database"]["mapper"] = $this->config;
+			if(isset($GLOBALS['onservice']["Database"])) $GLOBALS['onservice']["Database"]["mapper"] = $this->config;
 			
 			foreach ($value as $key2 => $value2) {
 				$classString .= 'public $'.$key2.';';
@@ -464,7 +464,7 @@ class ORM{
 
 		if(!isset($GLOBALS['onservice'])) $GLOBALS['onservice'] = array();
 		if(!isset($GLOBALS['onservice']["Database"])) $GLOBALS['onservice']["Database"] = array();
-		if(!isset($GLOBALS['onservice']["Database"]["mapper"])) $GLOBALS['onservice']["Database"]["mapper"] = $this->config;
+		if(isset($GLOBALS['onservice']["Database"])) $GLOBALS['onservice']["Database"]["mapper"] = $this->config;
 
 	
 		foreach ($result as $key => $value) {			

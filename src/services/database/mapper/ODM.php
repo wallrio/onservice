@@ -41,13 +41,16 @@ class ODM{
 		$classString = '';
 		$index = 0;
 		if( is_array($result) && count($result)>0)
-		foreach ($result as $key => $value) {			
+		foreach ($result as $key => $value) {	
+
+			$key = preg_replace('/[^A-Za-z0-9\-]/', '', $key);	
+					
 			$classString .= 'namespace '.$this->config['basename'].'\_'.$key.';'."\n";	
 			$classString .= 'class '.$table.' {';	
 
 			if(!isset($GLOBALS['onservice'])) $GLOBALS['onservice'] = array();
 			if(!isset($GLOBALS['onservice']["Database"])) $GLOBALS['onservice']["Database"] = array();
-			if(!isset($GLOBALS['onservice']["Database"]["mapper"])) $GLOBALS['onservice']["Database"]["mapper"] = $this->config;
+			if(isset($GLOBALS['onservice']["Database"])) $GLOBALS['onservice']["Database"]["mapper"] = $this->config;
 			
 			foreach ($value as $key2 => $value2) {
 				$classString .= 'public $'.$key2.';';
@@ -188,7 +191,7 @@ class ODM{
 
 		if(!isset($GLOBALS['onservice'])) $GLOBALS['onservice'] = array();
 		if(!isset($GLOBALS['onservice']["Database"])) $GLOBALS['onservice']["Database"] = array();
-		if(!isset($GLOBALS['onservice']["Database"]["mapper"])) $GLOBALS['onservice']["Database"]["mapper"] = $this->config;
+		if(isset($GLOBALS['onservice']["Database"])) $GLOBALS['onservice']["Database"]["mapper"] = $this->config;
 
 	
 		foreach ($result as $key => $value) {			
