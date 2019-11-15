@@ -188,6 +188,7 @@ class Document{
 
 			if($where == null){
 				$found = true;
+				$resultFinish[$contentObj->hash] = $contentObj->fields;
 			}else{
 				$andOperator = true;
 				$index2 = 0;

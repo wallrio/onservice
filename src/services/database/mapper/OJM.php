@@ -64,7 +64,9 @@ class OJM{
 			$key = str_replace('/', '\\', $key);		
 			$key = preg_replace('/[^\/A-Za-z0-9\-]/', '', $key);			
 
-
+			if( is_numeric( substr($table, 0,1) ) ){
+				$table = '_'.$table;
+			}
 
 			$classString .= 'namespace '.$basename.'\_'.$key.'_'.time().';'."\n";	
 			
@@ -72,7 +74,8 @@ class OJM{
 
 			if(!isset($GLOBALS['onservice'])) $GLOBALS['onservice'] = array();
 			if(!isset($GLOBALS['onservice']["Database"])) $GLOBALS['onservice']["Database"] = array();
-			if(isset($GLOBALS['onservice']["Database"])) $GLOBALS['onservice']["Database"]["mapper"] = $this->config;
+			if(isset($GLOBALS['onservice']["Database"])) 
+				$GLOBALS['onservice']["Database"]["mapper"] = $this->config;
 			
 			foreach ($value as $key2 => $value2) {
 				$classString .= 'public $'.$key2.';';
@@ -83,6 +86,8 @@ class OJM{
 				$class = $this;			
 				
 				$tableName = get_class($class);
+
+				 
 				$tableName = explode("\\\", $tableName);
 				
 			
@@ -97,7 +102,8 @@ class OJM{
 				$id = explode("_", $id);
 				$id = $id[0];
 
-			
+				
+		
 
 				$parameters = $GLOBALS["onservice"]["Database"]["mapper"];
 
@@ -112,7 +118,12 @@ class OJM{
 				));
 
 
-	
+				if( substr($tableNameLast, 0,1) === "_" ){
+					$tableNameLast = substr($tableNameLast, 1);
+				}
+		
+				
+
 				$class = (array) $class;
 
 				$base = $database->base($basename);		
@@ -163,6 +174,7 @@ class OJM{
 			$index++;
 		}
 
+		// echo($classString);
 		eval($classString);
 			
 
@@ -250,7 +262,9 @@ class OJM{
 			array_push($columns, $key);
 		}
 
-	
+		if( is_numeric( substr($table, 0,1) ) ){
+			$table = '_'.$table;
+		}
 
 		$classString = 'namespace '.$basename.';'."\n";	
 
@@ -260,7 +274,8 @@ class OJM{
 
 		if(!isset($GLOBALS['onservice'])) $GLOBALS['onservice'] = array();
 		if(!isset($GLOBALS['onservice']["Database"])) $GLOBALS['onservice']["Database"] = array();
-		if(isset($GLOBALS['onservice']["Database"])) $GLOBALS['onservice']["Database"]["mapper"] = $this->config;
+		if(isset($GLOBALS['onservice']["Database"])) 
+			$GLOBALS['onservice']["Database"]["mapper"] = $this->config;
 
 	
 		foreach ($result as $key => $value) {			
@@ -291,6 +306,10 @@ class OJM{
 				"dir" => $dir,	
 				"basename" => $basename
 			));
+
+			if( substr($tableName, 0,1) === "_" ){
+				$tableName = substr($tableName, 1);
+			}
 			
 	
 			$base = $database->base($basename);					
