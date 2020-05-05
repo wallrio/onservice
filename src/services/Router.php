@@ -160,7 +160,13 @@ class Router{
 
 			$requestPar['url'] = $requestPath;
 			$requestPar['endpoint'] = $routeTarget;
+			
 
+			if(isset($GLOBALS['middle']))
+			$requestPar['middle'] = $GLOBALS['middle'];
+
+
+			
 
 			if( $methodMode !== false && $methodMode !== null ){				
 				if(method_exists($callback, $methodMode))
