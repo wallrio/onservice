@@ -3,7 +3,7 @@ service for make API and applications RestFull
 
 ### method: resource
 
-	$server->router->resource(ROUTE,CALLBACK);
+	$router->resource(ROUTE,CALLBACK);
 
 Used to respond to an HTTP request
 
@@ -21,13 +21,13 @@ contains the requested values of the route
 
 ##### Example:
 ```php
-use onservice\CreateServer as CreateServer;
-use onservice\services\Router as Router;
 
-// create the server
-$server = new CreateServer(	new Router() );
+use onservice\services\router\RouterClass as RouterClass;
 
-$server->router->resource('/',function($urlPar,$requestPar){
+// create the service
+$router = new RouterClass();
+
+$router->resource('/',function($urlPar,$requestPar){
 	// your code
 	return array(
 		'body' 		=> 'body response',
@@ -45,13 +45,13 @@ Request in browser
 	URL: http://address-server-router/users/fulano/32	
 	
 ```php
-use onservice\CreateServer as CreateServer;
-use onservice\services\Router as Router;
 
-// create the server
-$server = new CreateServer(	new Router() );
+use onservice\services\router\RouterClass as RouterClass;
 
-$server->router->resource('/users/{name}/{age}}',function($urlPar,$requestPar){
+// create the service
+$router = new RouterClass();
+
+$router->resource('/users/{name}/{age}}',function($urlPar,$requestPar){
 
 	// $urlPar = Array ( [name] => fulano [age] => 32 )
 	// $requestPar = Array ( [method] => get [data] => Array() [url] => /users/fulano  )
@@ -72,13 +72,12 @@ Request in browser
 	URL: http://address-server-router/city/brasil/sao-paulo
 	
 ```php
-use onservice\CreateServer as CreateServer;
-use onservice\services\Router as Router;
+use onservice\services\router\RouterClass as RouterClass;
 
-// create the server
-$server = new CreateServer(	new Router() );
+// create the service
+$router = new Router();
 
-$server->router->resource('/city/+',function($urlPar,$requestPar){
+$router->resource('/city/+',function($urlPar,$requestPar){
 
 	// $urlPar = Array ( [country] => brasil )
 	// $requestPar = Array ( [method] => get [url] => /city/brasil/sao-paulo )
@@ -106,29 +105,29 @@ $server->router->resource('/city/+',function($urlPar,$requestPar){
 
 - DOT (.)
 ```
-$server->router->resource('/city/.',FUNCTION);
+$router->resource('/city/.',FUNCTION);
 ```
 
 - ASTERISK (*)
 ```
-$server->router->resource('/city/+',FUNCTION);
+$router->resource('/city/+',FUNCTION);
 ```
 
 - EMPTY 
 ```
-$server->router->resource('/city',FUNCTION);
+$router->resource('/city',FUNCTION);
 ```
 
 - WITH BAR (same as the EMPTY) 
 ```
-$server->router->resource('/city/',FUNCTION);
+$router->resource('/city/',FUNCTION);
 ```
 
 #### Verb HTTP OPTIONS:
 to work around problems with requests between domain it is possible to use the parameter "ignoreVerbsOptions" to ignore the OPTIONS request of the browser.
 
 ```php
-$server->router->ignoreVerbsOptions = true;
+$router->ignoreVerbsOptions = true;
 ```
 
 > use this parameter before the request methods

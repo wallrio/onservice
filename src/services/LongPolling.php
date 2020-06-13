@@ -4,12 +4,10 @@ namespace onservice\services;
 
 class LongPolling{
 
-	public $server = null;
 	private $updatetime = null;
 	private $startinfo = null;
 	private $persistenceDriver = null;
 
-	public $namespace = 'longpolling';
 
 	public function __construct($persistenceDriver){
 		$this->persistenceDriver = $persistenceDriver;

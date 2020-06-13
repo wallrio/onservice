@@ -11,11 +11,13 @@ class Server{
 	function __construct(){}
 
 	
-	public function index(){
+	public function index(array $parameters){
 		$ip = '127.0.0.1';
-		$port = 8082;
+		$port = isset($parameters[0])?$parameters[0]:8082;
 
-		echo PrintConsole::write(" ".PrintConsole::fixedStringSize('Running Server on '.$ip.':'.$port),array('bold'=>false,'forecolor'=>'yellow'));
+
+		echo PrintConsole::write(" ".'Running Server on '.$ip.':'.$port,array('bold'=>false,'forecolor'=>'yellow'));
+		echo "\n\n ";
 		
 		@exec(' php -S '.$ip.':'.$port."");		
 		return '';

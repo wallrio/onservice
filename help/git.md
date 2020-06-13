@@ -10,7 +10,7 @@ Workflow Service for version control with GIT
 ## Basic use
 downloads the files from the repository to the local working directory
 
-	$server->git->get(ARRAY_PARAMETERS);
+	$git->get(ARRAY_PARAMETERS);
 
 
 
@@ -19,9 +19,9 @@ downloads the files from the repository to the local working directory
 
 	use onservice\services\Git as Git;
 
-	$server = new CreateServer( new Git() );
+	$git = new Git();
 
-	$result = $server->git->get(array(
+	$result = $git->get(array(
 		'url'=>'https://github.com/user/repository.git',
 		'workspace'=> getcwd()
 	));
@@ -33,9 +33,9 @@ downloads the files from the repository to the local working directory
 
 	use onservice\services\Git as Git;
 
-	$server = new CreateServer( new Git() );
+	$git = new Git();
 
-	$result = $server->git->get(array(
+	$result = $git->get(array(
 		'url'=>'https://github.com/user/repository.git'
 		'workspace'=> getcwd(),
 		'username'=>'username',
@@ -49,9 +49,9 @@ downloads the files from the repository to the local working directory
 
 	use onservice\services\Git as Git;
 
-	$server = new CreateServer( new Git() );
+	$git = new Git();
 
-	$result = $server->git->get(array(
+	$result = $git->get(array(
 		'url'=>'https://github.com/user/repository.git',
 		'branch'=>'development'
 	));
@@ -63,9 +63,9 @@ downloads the files from the repository to the local working directory
 
 	use onservice\services\Git as Git;
 
-	$server = new CreateServer( new Git() );
+	$git = new Git();) );
 	
-	$result = $server->git->get(array(
+	$result = $git->get(array(
 		'url'=>'https://github.com/user/repository.git',
 		'branch'=>'development',
 		'directory'=>'src'
@@ -79,8 +79,10 @@ downloads the files from the repository to the local working directory
 
 ```php
 	use onservice\services\Git as Git;
-	$server = new CreateServer( new Git() );
-	$result = $server->git->get(array(
+	
+	$git = new Git();
+	
+	$result = $git->get(array(
 		'url'=>'https://gitlab.com/user/repository.git'
 		'branch'=>'master',
 		'workspace'=> getcwd(),

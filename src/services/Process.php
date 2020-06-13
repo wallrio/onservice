@@ -7,8 +7,6 @@ use onservice\services\process\MemoryProcess as MemoryProcess;
 class Process{
 	
 	public 
-		$namespace = 'process',
-		$server = null,
 		$memory = null,
 		$stream = null,
 		$id = null,
@@ -96,7 +94,7 @@ class Process{
 	/**
 	 * [creates a process for asynchronous calls]
 	 * @param  [type]  $method         [function to be executed asynchronously, the return will be passed to the methods o retorno será passado para os metodos callback,callbackAll,while]
-	 * @method   [function($parameters, $pidChild, $streamClass,$contextProcess,$serverClass)]
+	 * @method   [function($parameters, $pidChild, $streamClass,$process)]
 	 * @param  [array]  $parameters     [values to be passed into the process]
 	 * @param  boolean $monitorProcess [if set to false, the process is not counted in the listing]
 	 * @return [integer/string]        [number of process]
@@ -109,7 +107,7 @@ class Process{
 			}else if ($pid == 0) {
 				$pidChild = posix_getpid();
 				if(isset($method)){
-					$result = $method($parameters,$pidChild,$this->stream,$this,$this->server);
+					$result = $method($parameters,$pidChild,$this->stream,$this);
 					if($result !== null){				
 						$this->stream->save(json_encode(array('pid'=>$pidChild,'return'=>$result,'parameters'=>$parameters)),'.return-'.$pidChild,$this->id);
 					}
@@ -126,7 +124,7 @@ class Process{
 
 	/**
 	 * [runs only when all processes are finalized]
-	 * @param  [function] $method [function($responseFromChilds, $streamClass, $forkChildsList, $contextProcess, $serverClass)]
+	 * @param  [function] $method [function($responseFromChilds, $streamClass, $forkChildsList, $process)]
 	 * @return [any]        
 	 */
 	public function callbackAll($method = null){	
@@ -149,7 +147,7 @@ class Process{
 				}
 			}		  			
 		}
-		$response = $method(self::$forkResponses,$this->stream,self::$forkChilds, $this, $this->server);
+		$response = $method(self::$forkResponses,$this->stream,self::$forkChilds, $this);
 
 		$this->stream->destroy();
 
@@ -158,7 +156,7 @@ class Process{
 
 	/**
 	 * [is executed when there is some value received by a process]
-	 * @param  [function] $method [function($responseFromChilds, $streamClass, $forkChildsList, $contextProcess, $serverClass)]
+	 * @param  [function] $method [function($responseFromChilds, $streamClass, $forkChildsList, $process)]
 	 * @return [any]        
 	 */
 	public function callback($method = null){
@@ -174,7 +172,7 @@ class Process{
 					usleep(100);
 					$returnFork = json_decode($returnFork);
 					self::$forkResponses[$pid] = $returnFork;
-					$response[$pid] = $method($returnFork,$this->stream,self::$forkChilds,$this, $this->server);
+					$response[$pid] = $method($returnFork,$this->stream,self::$forkChilds,$this);
 				}
 				// when child if done		  		
 				unset(self::$forkChilds[$pid]);
@@ -189,7 +187,7 @@ class Process{
 
 	/**
 	 * [creates an infinite loop that responds to the returns of the fork]
-	 * @param  [function] $method [function($responseFromChilds, $streamClass, $forkChildsList, $contextProcess, $serverClass)]
+	 * @param  [function] $method [function($responseFromChilds, $streamClass, $forkChildsList, $process)]
 	 * @return [any]        [return any value to end the loop]
 	 */
 	public function while($method = null){	
@@ -204,11 +202,11 @@ class Process{
 				$returnFork = json_decode($returnFork);
 				self::$forkResponses[$pid] = $returnFork;
 				unset(self::$forkChilds[$pid]);
-				$response = $method(self::$forkResponses[$pid],$this->stream, self::$forkChilds, $this, $this->server);
+				$response = $method(self::$forkResponses[$pid],$this->stream, self::$forkChilds, $this);
 
 				
 			}else{
-				$response = $method(null,$this->stream,self::$forkChilds, $this, $this->server);
+				$response = $method(null,$this->stream,self::$forkChilds, $this);
 			}	  
 			if(!empty($response)){
 				break;

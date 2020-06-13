@@ -4,8 +4,6 @@ namespace onservice\services;
 
 class Console{
 
-	public $server = null;
-	public $namespace = 'console';
 	public $dirConsoleContainer;
 	public $title = null;
 
@@ -29,10 +27,6 @@ class Console{
 	public $commandsList = null;
 	
 
-
-
-
-	// public function __construct($dirConsoleContainer = null,$useCode = true){		
 	public function __construct($options = null){		
 
 		$this->title = isset($options['title'])?$options['title']:null;

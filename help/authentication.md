@@ -5,10 +5,10 @@ Interface to authenticate user
 
 ```php
 
-use onservice\CreateServer as CreateServer;
+
 use onservice\services\Authentication as Authentication;
 
-$this->authentication = new CreateServer( new Authentication(DRIVER,DRIVER...) );
+$authentication = new Authentication(DRIVER,DRIVER...) ;
 
 ```
 

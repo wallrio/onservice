@@ -8,19 +8,19 @@ abstracts the communication with database using JSON driver
 
 ```php
 
-use onservice\CreateServer as CreateServer;
+
 use onservice\services\Database as Database;
 use onservice\services\database\JSON as JSON;
 
-$server = new CreateServer( new Database( new JSON() ) );
+$database = new Database( new JSON() );
 ```
 
 ## Setting 
 
 ```php
-$server = new CreateServer( new Database( new JSON() ) );
+$database = new Database( new JSON() ) ;
 
-$server->database->config(array(
+$database->config(array(
 	'dir' => DIRECTORY_TO_SAVE_THE_DATA,	// optional - default = temporary dir
 	'basename' => 'BASENAME'
 ));
@@ -34,15 +34,15 @@ $server->database->config(array(
 ### Example
 
 ```php
-$server = new CreateServer( new Database( new JSON() ) );
-$base = $server->database->base('BASENAME');
+$database = new Database( new JSON() );
+$base = $database->base('BASENAME');
 ```
 
 
 ### Configuration directly on instance
 
 ```php
-$server = new CreateServer( new Database( new JSON(DIRECTORY_TO_SAVE_THE_DATA, BASENAME) ) );
+$database = new Database( new JSON(DIRECTORY_TO_SAVE_THE_DATA, BASENAME) );
 ```
 
 
@@ -52,19 +52,19 @@ $server = new CreateServer( new Database( new JSON(DIRECTORY_TO_SAVE_THE_DATA, B
 #### Create a base:
 
 ```php
-$base = $server->database->createBase('BASE_NAME');
+$base = $database->createBase('BASE_NAME');
 ```
 
 ##### Example 
 
 ```php
-$server = new CreateServer( new Database( new JSON() ) );
+$database = new Database( new JSON() );
 
-$server->database->config(array(
+$database->config(array(
 	'dir' => __DIR__.DIRECTORY_SEPARATOR.'database',
 ));
 
-$base = $server->database->createBase('BASENAME');					
+$base = $database->createBase('BASENAME');					
 
 
 ```
@@ -75,13 +75,13 @@ Collection is where the documents will be housed, it is similar to tables in rel
 ##### Example 
 
 ```php
-$server = new CreateServer( new Database( new JSON() ) );
+$database = new Database( new JSON() ) ;
 
-$server->database->config(array(
+$database->config(array(
 	'dir' => __DIR__.DIRECTORY_SEPARATOR.'database',
 ));
 
-$base = $server->database->base('BASENAME');					
+$base = $database->base('BASENAME');					
 $collection = $base->collection('COLLECTION_NAME');
 
 ```
@@ -91,13 +91,13 @@ $collection = $base->collection('COLLECTION_NAME');
 ###### Example 
 
 ```php
-$server = new CreateServer( new Database( new JSON() ) );
+$database = new Database( new JSON() );
 
-$server->database->config(array(
+$database->config(array(
 	'dir' => __DIR__.DIRECTORY_SEPARATOR.'database',
 ));
 
-$base = $server->database->base('BASENAME');					
+$base = $database->base('BASENAME');					
 $collection = $base->createCollection('COLLECTION_NAME');
 
 ```
@@ -107,13 +107,13 @@ $collection = $base->createCollection('COLLECTION_NAME');
 ###### Example 
 
 ```php
-$server = new CreateServer( new Database( new JSON() ) );
+$database = new Database( new JSON() ) ;
 
-$server->database->config(array(
+$database->config(array(
 	'dir' => __DIR__.DIRECTORY_SEPARATOR.'database',
 ));
 
-$base = $server->database->base('BASENAME');					
+$base = $database->base('BASENAME');					
 $base->deleteCollection('COLLECTION_NAME');
 
 ```
@@ -127,13 +127,13 @@ Documents is where the data will be stored, it is similar to records of a table 
 > $result  =  $collection->document->select( FIELDS, OPTIONS );
 
 ```php
-$server = new CreateServer( new Database( new JSON() ) );
+$database = new Database( new JSON() ) ;
 
-$server->database->config(array(
+$database->config(array(
 	'dir' => __DIR__.DIRECTORY_SEPARATOR.'database',
 ));
 
-$base = $server->database->base('BASENAME');					
+$base = $database->base('BASENAME');					
 $collection = $base->collection('COLLECTION_NAME');
 
 $result = $collection->document->select(array(
@@ -225,13 +225,13 @@ $result = $collection->document->select(array(
 > $result  =  $collection->document->create( FIELDS );
 
 ```php
-$server = new CreateServer( new Database( new JSON() ) );
+$database = new Database( new JSON() ) ;
 
-$server->database->config(array(
+$database->config(array(
 	'dir' => __DIR__.DIRECTORY_SEPARATOR.'database',
 ));
 
-$base = $server->database->base('BASENAME');					
+$base = $database->base('BASENAME');					
 $collection = $base->collection('COLLECTION_NAME');
 
 $result = $collection->document->create(array(
@@ -245,13 +245,13 @@ $result = $collection->document->create(array(
 
 > $result  =  $collection->document->update( ID, FIELDS );
 ```php
-$server = new CreateServer( new Database( new JSON() ) );
+$database = new Database( new JSON() ) ;
 
-$server->database->config(array(
+$database->config(array(
 	'dir' => __DIR__.DIRECTORY_SEPARATOR.'database',
 ));
 
-$base = $server->database->base('BASENAME');					
+$base = $database->base('BASENAME');					
 $collection = $base->collection('COLLECTION_NAME');
 
 $result = $collection->document->update(
@@ -322,13 +322,13 @@ $result = $collection->document->update(
 > $result  =  $collection->document->delete( ID );
 > 
 ```php
-$server = new CreateServer( new Database( new JSON() ) );
+$database = new Database( new JSON() ) ;
 
-$server->database->config(array(
+$database->config(array(
 	'dir' => __DIR__.DIRECTORY_SEPARATOR.'database',
 ));
 
-$base = $server->database->base('BASENAME');					
+$base = $database->base('BASENAME');					
 $collection = $base->collection('COLLECTION_NAME');
 
 $result = $collection->document->delete('aee4da48c9f47f7038fd852fea715bdb');
@@ -354,9 +354,9 @@ $result = $collection->document->delete($resultSelect);
 
 #### Cascading methods - Example
 ```php
-$server = new CreateServer( new Database( new JSON() ) );
+$database = new Database( new JSON() ) ;
 
-$result = $server->database
+$result = $database
 		->base('BASENAME')
 		->collection('COLLECTION_NAME')
 		->document->select();

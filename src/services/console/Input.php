@@ -37,9 +37,6 @@ class Input{
 
 	public static function question($string,$default = null,$required = false,array $response = null,array $parameters = array(),$try = false){
 
-		// if($response == null) $response = array('yes','no','cancel');
-
-		// if($try == false) echo "\n";
 		
 		echo " ".PrintConsole::write($string,array('bold'=>false,'forecolor'=>'yellow'));
 		if($response !== null){

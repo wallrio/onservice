@@ -5,7 +5,7 @@ service for create process parallel
 ## Fork
 Creates a parallel process by duplicating the current process
 
-	$server->process->fork($method, $parameters);
+	$process->fork($method, $parameters);
 
 - $method =	function to be executed by child process
 - $parameters =	informação passada para o processo filho
@@ -13,12 +13,11 @@ Creates a parallel process by duplicating the current process
 ##### Example basic
 ```php
 
-	use onservice\CreateServer as CreateServer;
 	use onservice\services\Process as Process;
 
-	$server = new CreateServer(	new Process() );
+	$process = new Process();
 
-	$server->process->fork(function($parameters, $pidChild, $streamClass,$contextProcess,$serverClass){
+	$process->fork(function($parameters, $pidChild, $streamClass,$contextProcess,$serverClass){
 		
 		// your code
 		
@@ -36,13 +35,12 @@ Creates a parallel process by duplicating the current process
 
 ##### Example - passing parameters into the child process
 ```php
-
-	use onservice\CreateServer as CreateServer;
+	
 	use onservice\services\Process as Process;
 
-	$server = new CreateServer(	new Process() );
+	$process = new Process();
 
-	$server->process->fork(function($parameters, $pidChild, $streamClass,$contextProcess,$serverClass){
+	$process->fork(function($parameters, $pidChild, $streamClass,$process){
 		$name = $parameters['name'];
 		$language = $parameters['language'];
 
@@ -63,7 +61,7 @@ Creates a parallel process by duplicating the current process
 expects and captures the return of forks individually
 
 ```php
-$server->process->callback(function($response,$stream,$process,$server){	
+$process->callback(function($response,$stream,$process){	
 	
 	print_r($response);
 
@@ -75,7 +73,7 @@ $server->process->callback(function($response,$stream,$process,$server){
 awaits the completion of all forks and captures the return of all
 
 ```php
-$server->process->callbackAll(function($response,$stream,$process,$server){	
+$process->callbackAll(function($response,$stream,$process){	
 	
 	print_r($response);
 
@@ -87,7 +85,7 @@ $server->process->callbackAll(function($response,$stream,$process,$server){
 creates an infinite loop and captures the return of the forks individually
 
 ```php
-$server->process->while(function($callback, $stream,$process,$forkChilds,$server){	
+$process->while(function($callback, $stream,$process,$forkChilds){	
 		
 	sleep(1); // optional
 	print_r($callback);
@@ -104,7 +102,7 @@ changing the streaming method to write to file
 
 ```php
 use onservice\services\process\FileStream as FileStream;
-$server->process->streamType(new FileStream);
+$process->streamType(new FileStream);
 ```
 
 
@@ -112,14 +110,14 @@ $server->process->streamType(new FileStream);
 by default the identifier of the stream is changed at each instantiation, so for communication between distinct applications it is necessary to force the identifier.
 
 ```php
-$server->process->stream->setIdentifier(7);
+$process->stream->setIdentifier(7);
 ```
 
 
 ##### Clear stream
 
 ```php
-$server->process->stream->destroy()
+$process->stream->destroy()
 ```
 
 
@@ -128,12 +126,11 @@ The example below creates a child process and ends soon after, leaving the child
 
 ```php
 
-	use onservice\CreateServer as CreateServer;
 	use onservice\services\Process as Process;
 
-	$server = new CreateServer(	new Process() );
+	$process = new Process();
 
-	$server->process->fork(function($parameters, $pidChild, $streamClass,$contextProcess,$serverClass){
+	$process->fork(function($parameters, $pidChild, $streamClass,$process){
 	
 		while(true){			
 			sleep(1);
@@ -152,7 +149,7 @@ The example below creates a child process and ends soon after, leaving the child
 
 - save data
 	- $stream->save(string,optional index, optional segment);
-	- $server->process->stream->save(string,optional index, optional segment);
+	- $process->stream->save(string,optional index, optional segment);
 
 - string: values of all types
 - index: registry ID
@@ -161,16 +158,15 @@ The example below creates a child process and ends soon after, leaving the child
 
 - load data
 	- $stream->load(optional index, optional segment);
-	- $server->process->stream->load(optional index, optional segment);
+	- $process->stream->load(optional index, optional segment);
 
 
 ```php
-use onservice\CreateServer as CreateServer;
 use onservice\services\Process as Process;
 
-$server = new CreateServer(	new Process() );
+$process = new Process();
 
-$server->process->fork(function($parameters, $pidChild, $streamClass,$contextProcess,$serverClass){
+$process->fork(function($parameters, $pidChild, $streamClass,$process){
 
 	$stream->save('test');
 	$server->process->stream->save('test','a1');
@@ -178,7 +174,7 @@ $server->process->fork(function($parameters, $pidChild, $streamClass,$contextPro
 });
 
 
-$response = $server->process->callback(function($responseFromChilds, $streamClass, $forkChildsList, $contextProcess, $serverClass){	
+$response = $process->callback(function($responseFromChilds, $streamClass, $forkChildsList, $process){	
 
 	echo $stream->load();
 	echo "\n";

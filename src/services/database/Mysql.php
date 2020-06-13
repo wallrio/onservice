@@ -201,6 +201,13 @@ class Mysql{
 	public function flush($sql,$array = null){
 		$this->connect();	
 
+		if(is_array($array) && count($array)>0)
+		foreach ($array as $key => $value) {
+			if(is_array($value))
+			$array[$key] = json_encode($value); 
+		}
+
+
 		$sth = $this->db->prepare($sql);
 		$sth->execute($array);
 		$count = $sth->rowCount();

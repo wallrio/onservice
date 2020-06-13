@@ -22,7 +22,6 @@ clean all register
 ##### Example basic
 ```php
 
-	use onservice\CreateServer as CreateServer;
 	use onservice\services\process\MemoryProcess as MemoryProcess;
 
 	$memory = new MemoryProcess;
@@ -37,7 +36,6 @@ clean all register
 ##### Example with id
 ```php
 
-	use onservice\CreateServer as CreateServer;
 	use onservice\services\process\MemoryProcess as MemoryProcess;
 
 	$memory = new MemoryProcess;

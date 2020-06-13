@@ -14,20 +14,20 @@ use onservice\services\Authentication as Authentication;
 use onservice\services\authentication\JWT as JWT;
 
 
-$this->authentication = new CreateServer( new Authentication(new JWT(KEY_TOKEN)) );
+$authentication = new Authentication(new JWT(KEY_TOKEN));
 ```
 
 ## Create Token
 
 ```php
-$token = $this->authentication->token->encode(ARRAY_PARAMETERS);
+$token = $authentication->token->encode(ARRAY_PARAMETERS);
 
 ```
 
 - Example:
 
 ```php
-$token = $this->authentication->token->encode(array(
+$token = $authentication->token->encode(array(
 	'username'=>'Fulano',			// optional
 	'name'=>'Fulano da Silva',		// optional
 	'email'=>'fulano@email.com',	// optional
@@ -37,7 +37,7 @@ $token = $this->authentication->token->encode(array(
 
 ## Convert token
 ```php
-$tokenParameters = $this->authentication->token->decode($token);		
+$tokenParameters = $authentication->token->decode($token);		
 
 ```
 
@@ -46,7 +46,6 @@ $tokenParameters = $this->authentication->token->decode($token);
 
 ```php
 
-use onservice\CreateServer as CreateServer;
 use onservice\services\Authentication as Authentication;
 use onservice\services\Authentication\JWT as JWT;
 
@@ -54,10 +53,10 @@ use onservice\services\Authentication\JWT as JWT;
 $token = $_REQUEST['token'];
 
 // instance the service
-$this->authentication = new CreateServer( new Authentication(new JWT('abc123')) );
+$authentication = new Authentication(new JWT('abc123'));
 
 // decode the token
-$tokenParameters = $this->authentication->token->decode($token);
+$tokenParameters = $authentication->token->decode($token);
 
 // condition of access
 if($tokenParameters === false){
@@ -72,7 +71,7 @@ if($tokenParameters === false){
 ## Other optional values in Token creation
 
 ```php
-$token = $this->authentication->token->encode(array(
+$token = $authentication->token->encode(array(
 	"jti" => "", 								// optional - token id
 	"sub" => "",								// optional - token subject or user ID
 	"iss" => "http://site-owner.com", 				// optional - The token-generating application domain

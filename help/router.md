@@ -5,15 +5,14 @@ service for make API and applications RestFull
 
 ```php
 
-use onservice\CreateServer as CreateServer;
 use onservice\services\Router as Router;
 
-$server = new CreateServer( new Router() );
+$router = new Router();
 ```
 
 # Functionality available
 
+- [Router API](sub/router_api.md)
 - [Resource](sub/router_resource.md)
-- [RouterClass](sub/router_routerclass.md)
 - [Request](sub/router_request.md)
 

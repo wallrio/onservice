@@ -8,11 +8,8 @@ use onservice\essentials\File as File;
 
 class Git{
 
-	public $server = null;
-	public $namespace = 'git';
 
 	public function __construct(){}
-
 
 
 	public function get(array $parameters){
