@@ -14,11 +14,6 @@ use onservice\essentials\File as File;
 
 class Settings{
 	
-	public $server = null;
-	public $namespace = 'settings';
-	
-
-	
 	public function __construct($dir = null,$mode = null){
 
 		$this->repository = (object) array();

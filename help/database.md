@@ -5,13 +5,13 @@ abstracts the communication with database
 
 ```php
 
-use onservice\CreateServer as CreateServer;
+
 use onservice\services\Database as Database;
 use onservice\services\database\Mysql as Mysql;
 use onservice\services\database\JSON as JSON;
 use onservice\services\database\Mongo as Mongo;
 
-$server = new CreateServer( new Database( DRIVER ) );
+$server = new Database( DRIVER );
 ```
 
 > DRIVER is the method of persistence

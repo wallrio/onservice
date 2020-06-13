@@ -7,11 +7,10 @@ abstracts the communication with database using Mysql driver
 
 ```php
 
-use onservice\CreateServer as CreateServer;
 use onservice\services\Database as Database;
 use onservice\services\database\Mysql as Mysql;
 
-$server = new CreateServer( new Database( new Mysql(HOST,USERNAME,PASSWORD,BASE) ) );
+$database = new Database( new Mysql(HOST,USERNAME,PASSWORD,BASE) ) ;
 ```
 
 - The parameter *BASE* is optional
@@ -20,9 +19,9 @@ $server = new CreateServer( new Database( new Mysql(HOST,USERNAME,PASSWORD,BASE)
 the method *config* is optional if was settings on instance
 
 ```php
-$server = new CreateServer( new Database( new Mysql() ) );
+$database = new Database( new Mysql() );
 
-$server->database->config(array(
+$database->config(array(
 	'host'=>'localhost',
 	'basename'=>'basename',
 	'username'=>'username',
@@ -39,22 +38,22 @@ $server->database->config(array(
 
 #### Create base:
 ```php
-$server->database->createBase(BASE_NAME);
+$database->createBase(BASE_NAME);
 ```
 
 ##### Example 
 
 ```php
-$server = new CreateServer( new Database( new Mysql() ) );
+$database = new Database( new Mysql() );
 
-$server->database->config(array(
+$database->config(array(
 	'host'=>'localhost',
 	'username'=>'username',
 	'password'=>'password',
 ));
 
-$resultCreateBase = $server->database->createBase('BASENAME');					
-$resultCreateBase = $server->database->base('BASENAME');
+$resultCreateBase = $database->createBase('BASENAME');					
+$resultCreateBase = $database->base('BASENAME');
 
 ```
 
@@ -62,12 +61,12 @@ $resultCreateBase = $server->database->base('BASENAME');
 
 #### Create table:
 ```php
-$server->database->createTable(TABLE_NAME,FIELDS);
+$database->createTable(TABLE_NAME,FIELDS);
 ```
 
 Example:
 ```php
-$server->database->createTable('users',array(
+$database->createTable('users',array(
 'id'=>'int NOT NULL AUTO_INCREMENT PRIMARY KEY',
 'name'=> 'VARCHAR(30) NOT NULL',
 'email'=> 'VARCHAR(150)',
@@ -78,7 +77,7 @@ $server->database->createTable('users',array(
 
 #### Select register:
 ```php
-$result = $server->database->select(TABLE_NAME,WHERE);
+$result = $database->select(TABLE_NAME,WHERE);
 ```
 
 - Example:
@@ -90,13 +89,13 @@ $server->database->select('users','username = "fulano"');
 
 #### INSERT register:
 ```php
-$server->database->insert(TABLE_NAME,FIELD);
+$database->insert(TABLE_NAME,FIELD);
 ```
 
 Example:
 
 ```php
-$server->database->insert('users',array(
+$database->insert('users',array(
 	'name'		=>	'Fulano da Silva',
 	'email'		=>	'fulano@email.com',
 	'created'	=>	time(),
@@ -105,22 +104,22 @@ $server->database->insert('users',array(
 
 #### Delete register:
 ```php
-$server->database->delete(TABLE_NAME,WHERE);
+$database->delete(TABLE_NAME,WHERE);
 ```
 Example:
 
 ```php
-$server->database->delete('users','id = "abc01"');
+$database->delete('users','id = "abc01"');
 ```
 
 #### UPDATE register:
 ```php
-$server->database->update(TABLE_NAME,WHERE);
+$database->update(TABLE_NAME,WHERE);
 ```
 
 Example:
 ```php
-$server->database->update('users',array(
+$database->update('users',array(
 	'name'		=>	'Fulano da Silva',
 	'email'		=>	'fulano@email.com',
 	'created'	=>	time(),

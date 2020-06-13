@@ -7,10 +7,9 @@ Abstracts communication with database via class.
 
 ```php
 
-use onservice\CreateServer as CreateServer;
 use onservice\services\database\mapper\ORM as ORM;
 
-$server = new CreateServer(new ORM);
+$orm = new ORM;
 ```
 
 ## Setting 
@@ -18,7 +17,7 @@ $server = new CreateServer(new ORM);
 - Example
 
 ```php
-$server = new CreateServer(new ORM);
+$orm = new ORM;
 
 $parameters = array(
 	'driver'=>'driver',
@@ -28,32 +27,32 @@ $parameters = array(
 	'basename'=>'basename'
 );
 
-$server->orm->setup($parameters);
+$orm->setup($parameters);
 ```
 
 
 ## Find registers
 
-> $users = $server->orm->find(TABLE,WHERE);
+> $users = $orm->find(TABLE,WHERE);
 
 - Example
 
 ```php
-$users = $server->orm->find('users',array('username'=>'fulano'));
+$users = $orm->find('users',array('username'=>'fulano'));
 print_r($users);
 ```
 
 - Example with operator OR '||'
 
 ```php
-$users = $server->orm->find('users',array('username'=>'fulano', '||.username'=>'ciclano'));
+$users = $orm->find('users',array('username'=>'fulano', '||.username'=>'ciclano'));
 print_r($users);
 ```
 
 - Example with soundex '~'
 
 ```php
-$users = $server->orm->find('users',array('name'=>'~Fulanu'));
+$users = $orm->find('users',array('name'=>'~Fulanu'));
 print_r($users);
 ```
 
@@ -64,7 +63,7 @@ print_r($users);
 - Example
 
 ```php
-$users = $server->orm->find(TABLE,WHERE);
+$users = $orm->find(TABLE,WHERE);
 $users[0]->email = 'newmail@domain.com';
 $users[0]->save();
 ```
@@ -73,10 +72,10 @@ $users[0]->save();
 
 - Example
 ```php
-// $users = $server->orm->find('device');
+// $users = $orm->find('device');
 // $users[0]->email = 'newmail@domain.com';
 
-$server->orm->save($users);
+$orm->save($users);
 ```
 
 ### Create a new register on table
@@ -84,13 +83,13 @@ $server->orm->save($users);
 - Example
 
 ```php
-$users = $server->orm->create(TABLE);
+$users = $orm->create(TABLE);
 $users->name = 'Fulano da Silva';
 $users->username = 'fulano';
 $users->created = time();
 $users->save();
 
-// $server->orm->save($users); // method optional to save
+// $orm->save($users); // method optional to save
 ```
 
 
@@ -99,8 +98,8 @@ $users->save();
 - Example
 
 ```php
-$users = $server->orm->find(TABLE,WHERE);
-$server->orm->remove($users); 
+$users = $orm->find(TABLE,WHERE);
+$orm->remove($users); 
 
 $users[0]->remove();// method optional to save
 ```
@@ -128,7 +127,7 @@ $scheme = array(
 	)
 );
 
-$server->orm->scheme($scheme);
+$orm->scheme($scheme);
 
 ```
 

@@ -18,13 +18,12 @@ To create parameters and settings, which will be used in the application
 
 ##### Example:
 ```php
-use onservice\CreateServer as CreateServer;
 use onservice\services\Settings as Settings;
 
 // create the server
-$server = new CreateServer( new Settings() );
+$settings = new Settings();
 
-print_r($server->settings->repository);
+print_r($settings->repository);
 
 ```
 
@@ -66,22 +65,22 @@ brasil:
 - Accessing the above configuration
 
 ```php
-$server = new CreateServer( new Settings() );
+$settings = new Settings();
 
-echo $server->settings->repository->company->technology->name;
+echo $settings->repository->company->technology->name;
 
-echo $server->settings->repository->directory->users->brasil->name;
+echo $settings->repository->directory->users->brasil->name;
 
 ```
 
 ### Setting remote - example
 
 ```php
-$server = new CreateServer( new Settings('http://domain.com/setting.yml') );
+$settings = new Settings('http://domain.com/setting.yml') ;
 
-echo $server->settings->repository->company->name;
+echo $settings->repository->company->name;
 
-echo $server->settings->repository->user->name;
+echo $settings->repository->user->name;
 
 ```
 
@@ -89,8 +88,8 @@ echo $server->settings->repository->user->name;
 ### Setting remote - example
 
 ```php
-$server = new CreateServer( new Settings('http://domain.com/configuration-database','yml') );
+$settings = new Settings('http://domain.com/configuration-database','yml');
 
-echo $server->settings->repository->database->name;
+echo $settings->repository->database->name;
 
 ```

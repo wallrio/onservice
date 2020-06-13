@@ -1,6 +1,6 @@
 <?php
 /**
-*	OnService [version] 
+*	Generate by OnService console 
 **/
 
 require 'vendor/autoload.php';

@@ -30,13 +30,13 @@ Performs HTTP requests
 ##### Example:
 
 ```php
-use onservice\CreateServer as CreateServer;
-use onservice\services\Router as Router;
+
+use onservice\services\router\RouterClass as RouterClass;
 
 // create the server
-$server = new CreateServer( new Router() );
+$router = new RouterClass() ;
 
-$response = $server->router->request('wallrio.com');
+$response = $router->request('wallrio.com');
 
 echo $response;
 
@@ -47,14 +47,13 @@ echo $response;
 ##### Example send Post data:
 
 ```php
-...
 
 $data = array(
 	'username'=>'user',
 	'password'=>'123'
 );
 
-$response = $server->router->request('domain-to-request.com',array(
+$response = $router->request('domain-to-request.com',array(
 	'method' => 'post',	
 	'data'=>$data
 ));
@@ -63,9 +62,8 @@ $response = $server->router->request('domain-to-request.com',array(
 ##### Example send Post data:
 
 ```php
-...
 
-$response = $server->router->request('domain-to-request.com',array(
+$response = $router->request('domain-to-request.com',array(
 	'method' => 'post',	
 	'data'=>$data
 ));
@@ -75,9 +73,8 @@ $response = $server->router->request('domain-to-request.com',array(
 ##### Example with authentication:
 
 ```php
-...
 
-$response = $server->router->request('domain-to-request.com',array(	
+$response = $router->request('domain-to-request.com',array(	
 	'autenticate'=>'username:password'
 ));
 ```
@@ -86,9 +83,8 @@ $response = $server->router->request('domain-to-request.com',array(
 ##### Example with fallback:
 
 ```php
-...
 
-$response = $server->router->request('domain-to-request.com',array(	
+$response = $router->request('domain-to-request.com',array(	
 	'timeout'=>2,
 	'onlyheader'=>true,
 	'follow'=>true,

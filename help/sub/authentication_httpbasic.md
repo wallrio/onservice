@@ -9,12 +9,11 @@ Authentication of user using HTTPBasic
 
 ```php
 
-use onservice\CreateServer as CreateServer;
 use onservice\services\Authentication as Authentication;
 use onservice\services\authentication\HTTPBasic as HTTPBasic;
 
 
-$this->authentication = new CreateServer( new Authentication(new HTTPBasic()) );
+$authentication = new Authentication(new HTTPBasic()) ;
 ```
 
 
@@ -22,7 +21,7 @@ $this->authentication = new CreateServer( new Authentication(new HTTPBasic()) );
 
 ```php
 
-$this->authentication->httpbasic->cancel(function(){
+$authentication->httpbasic->cancel(function(){
 	// user canceled 
 });
 
@@ -35,7 +34,7 @@ $this->authentication->httpbasic->cancel(function(){
 		
 ```php
 
-$this->authentication->httpbasic->check(function($data){
+$authentication->httpbasic->check(function($data){
 	if($data->username === 'USERNAME_OF_BASE' && $data->password === 'PASSWORD_OF_BASE')
 	return true;
 });
@@ -53,7 +52,7 @@ $this->authentication->httpbasic->check(function($data){
 
 ```php
 
-$this->authentication->httpbasic->success(function(){
+$authentication->httpbasic->success(function(){
 	// user logged 
 });
 
@@ -63,7 +62,7 @@ $this->authentication->httpbasic->success(function(){
 
 ```php
 
-if( $this->authentication->httpbasic->status === false  ) exit;
+if( $authentication->httpbasic->status === false  ) exit;
 
 ```
 
@@ -74,6 +73,6 @@ if( $this->authentication->httpbasic->status === false  ) exit;
 
 ```php
 
-$this->authentication->httpbasic->clean();
+$authentication->httpbasic->clean();
 
 ```

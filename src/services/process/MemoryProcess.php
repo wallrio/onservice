@@ -85,7 +85,7 @@ class MemoryProcess {
 	}
 
 	public function destroy(){
-		if($id === null) $id = $this->identifier;
+		if(!isset($id) ) $id = $this->identifier;
 		$SHM_KEY = ftok(__FILE__, chr( $id ) ); 
 		$id =  shm_attach($SHM_KEY, $this->bufferSize, $this->permission);		
 		shm_remove($id);		

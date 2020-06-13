@@ -5,18 +5,17 @@ abstracts the communication with database using Mongo driver (database noSQL)
 
 
 ```php
-use onservice\CreateServer as CreateServer;
 use onservice\services\Database as Database;
 use onservice\services\database\Mongo as Mongo;
 
-$server = new CreateServer( new Database( new Mongo() ) );
+$database = new Database( new Mongo() ) ;
 ```
 
 ### Example
 
 ```php
-$server = new CreateServer( new Database( new Mongo() ) );
-$base = $server->database->base('BASENAME');
+$database = new Database( new Mongo() ) ;
+$base = $database->base('BASENAME');
 ```
 
 ## Methods
@@ -25,14 +24,14 @@ $base = $server->database->base('BASENAME');
 #### Create a base:
 
 ```php
-$base = $server->database->createBase('BASE_NAME');
+$base = $database->createBase('BASE_NAME');
 ```
 
 ##### Example 
 
 ```php
-$server = new CreateServer( new Database( new Mongo() ) );
-$base = $server->database->createBase('BASENAME');					
+$database = new Database( new Mongo() ) ;
+$base = $database->createBase('BASENAME');					
 ```
 
 
@@ -42,8 +41,8 @@ Collection is where the documents will be housed, it is similar to tables in rel
 ##### Example 
 
 ```php
-$server = new CreateServer( new Database( new Mongo() ) );
-$base = $server->database->base('BASENAME');					
+$database = new Database( new Mongo() ) ;
+$base = $database->base('BASENAME');					
 $collection = $base->collection('COLLECTION_NAME');
 ```
 
@@ -53,8 +52,8 @@ $collection = $base->collection('COLLECTION_NAME');
 ###### Example 
 
 ```php
-$server = new CreateServer( new Database( new Mongo() ) );
-$base = $server->database->base('BASENAME');					
+$database = new Database( new Mongo() ) ;
+$base = $database->base('BASENAME');					
 $collection = $base->createCollection('COLLECTION_NAME');
 ```
 
@@ -65,8 +64,8 @@ $collection = $base->createCollection('COLLECTION_NAME');
 ###### Example 
 
 ```php
-$server = new CreateServer( new Database( new Mongo() ) );
-$base = $server->database->base('BASENAME');					
+$server = new Database( new Mongo() );
+$base = $database->base('BASENAME');					
 $base->deleteCollection('COLLECTION_NAME');
 
 ```
@@ -79,8 +78,8 @@ Documents is where the data will be stored, it is similar to records of a table 
 > $result  =  $collection->document->select( WHERE );
 
 ```php
-$server = new CreateServer( new Database( new Mongo() ) );
-$base = $server->database->base('BASENAME');					
+$database = new Database( new Mongo() ) ;
+$base = $database->base('BASENAME');					
 $collection = $base->collection('COLLECTION_NAME');
 
 $result = $collection->document->select(array(
@@ -95,8 +94,8 @@ print_r($result);
 > $result  =  $collection->document->select( WHERE );
 
 ```php
-$server = new CreateServer( new Database( new Mongo() ) );
-$base = $server->database->base('BASENAME');					
+$database = new Database( new Mongo() );
+$base = $database->base('BASENAME');					
 $collection = $base->collection('COLLECTION_NAME');
 
 $result = $collection->document->select(array(
@@ -113,8 +112,8 @@ print_r($result);
 > $result  =  $collection->document->create( FIELDS );
 
 ```php
-$server = new CreateServer( new Database( new Mongo() ) );
-$base = $server->database->base('BASENAME');					
+$database = new Database( new Mongo() ) ;
+$base = $database->base('BASENAME');					
 $collection = $base->collection('COLLECTION_NAME');
 
 $result = $collection->document->create(array(
@@ -129,9 +128,9 @@ $result = $collection->document->create(array(
 
 > $result  =  $collection->document->update( ID, FIELDS );
 ```php
-$server = new CreateServer( new Database( new Mongo() ) );
+$database = new Database( new Mongo() ) ;
 
-$base = $server->database->base('BASENAME');					
+$base = $database->base('BASENAME');					
 $collection = $base->collection('COLLECTION_NAME');
 
 $result = $collection->document->update(
@@ -175,13 +174,13 @@ $result = $collection->document->update(
 > $result  =  $collection->document->delete( ID );
 > 
 ```php
-$server = new CreateServer( new Database( new Mongo() ) );
+$database = new Database( new Mongo() ) ;
 
-$server->database->config(array(
+$database->config(array(
 	'dir' => __DIR__.DIRECTORY_SEPARATOR.'database',
 ));
 
-$base = $server->database->base('BASENAME');					
+$base = $database->base('BASENAME');					
 $collection = $base->collection('COLLECTION_NAME');
 
 $result = $collection->document->delete('aee4da48c9f47f7038fd852fea715bdb');
@@ -208,9 +207,9 @@ $result = $collection->document->delete($resultSelect);
 
 #### Cascading methods - Example
 ```php
-$server = new CreateServer( new Database( new Mongo() ) );
+$database = new Database( new Mongo() ) ;
 
-$result = $server->database
+$result = $database
 		->base('BASENAME')
 		->collection('COLLECTION_NAME')
 		->document->select();

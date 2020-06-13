@@ -23,13 +23,16 @@ class ODM{
 
 		$this->config = $parameters;	
 		
-		$this->database = new Database( new Mongo() );	
+		$this->database = new Database( new Mongo($parameters) );	
 		$this->base = $this->database->base($basename);	
 
 	}
 
 	public function find($table,$WHERE = array() ){
 		
+		$table = str_replace('-', '_', $table);
+		$table = str_replace('.', '_', $table);
+
 		$basename = $this->config['basename'];
 
 		$basename = str_replace('/', '\\', $basename);
@@ -46,6 +49,7 @@ class ODM{
 
 		$result = $collection->document->select($WHERE);
 
+
 		
 		
 
@@ -55,8 +59,10 @@ class ODM{
 		if( is_array($result) && count($result)>0)
 		foreach ($result as $key => $value) {	
 
+			$microtime = preg_replace('/[^A-Za-z0-9\-]/', '', microtime());	
 			$key = preg_replace('/[^A-Za-z0-9\-]/', '', $key);	
-					
+			$key .= '_'.$microtime;
+
 			$classString .= 'namespace '.$basename.'\_'.$key.';'."\n";	
 			$classString .= 'class '.$table.' {';	
 
@@ -85,7 +91,7 @@ class ODM{
 				
 				$basename = isset($parameters["basename"])?$parameters["basename"]:null;
 				
-				$database = new  \onservice\services\database\Mongo();
+				$database = new  \onservice\services\database\Mongo($parameters);
 	
 				$class = (array) $class;
 
@@ -113,7 +119,7 @@ class ODM{
 			
 				$basename = isset($parameters["basename"])?$parameters["basename"]:null;
 				
-				$database = new  \onservice\services\database\Mongo();
+				$database = new  \onservice\services\database\Mongo($parameters);
 				$base = $database->base($basename);	
 
 				$class = (array) $class;
@@ -122,8 +128,7 @@ class ODM{
 			
 				$response = $collection->document->delete($id);
 
-				if($response !== false) 
-					unset($this);
+				
 				
 
 			}';
@@ -189,6 +194,9 @@ class ODM{
 	public function create($table){
 		$basename = $this->config['basename'];
 
+		$table = str_replace('-', '_', $table);
+		$table = str_replace('.', '_', $table);
+
 		$basename = str_replace('/', '\\', $basename);
 		$basenameArray = explode('\\', $basename);
 		foreach ($basenameArray as $key => $value) {
@@ -197,6 +205,7 @@ class ODM{
 			}
 		}
 		$basename = implode('\\', $basenameArray);
+
 
 
 		$result = array();
@@ -238,7 +247,7 @@ class ODM{
 			$password = isset($parameters["password"])?$parameters["password"]:null;
 			$basename = isset($parameters["basename"])?$parameters["basename"]:null;
 			
-			$database = new \onservice\services\database\Mongo();
+			$database = new \onservice\services\database\Mongo($parameters);
 		
 			$base = $database->base($basename);					
 			$collection = $base->collection($tableName);
@@ -250,6 +259,7 @@ class ODM{
 
 		$classString .= '}; $classModel = new \\'.$basename.'\\'.$table.';';
 
+		// echo($classString);
 		eval($classString);
 		
 		return $classModel;

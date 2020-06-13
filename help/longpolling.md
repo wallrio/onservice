@@ -15,7 +15,6 @@ Create the file server.php
 ```php
 require "../../vendor/autoload.php";
 
-use onservice\CreateServer as CreateServer;
 use onservice\services\LongPolling as LongPolling;
 
 // using persistence in file
@@ -23,16 +22,16 @@ use onservice\services\longpolling\FilePersistence as FilePersistence;
 $filePersistence = new FilePersistence(__DIR__.'/users'); // directory to save data (writeable)
 
 // create the server
-$server = new CreateServer( new LongPolling($filePersistence) );
+$longpolling = new LongPolling($filePersistence);
 
 // config the connection
-$server->longpolling->config( array(    
+$longpolling->config( array(    
     'startinfo' => 'Welcome...', // message to send when client connect
     'updatetime'=> 5    // time in seconds to update the connection on the client
 ));
 
 // set action on receiver data of client
-$server->longpolling->received(function($from,$data,$service){
+$longpolling->received(function($from,$data,$service){
     // $from        =   (string)                 id of  sender
     // $data        =   (string|object|number)   message of sender
     // $service     =   (object)                 reference to service longpolling
@@ -46,7 +45,7 @@ $server->longpolling->received(function($from,$data,$service){
 });
 
 // initialize the server longpolling
-$server->longpolling->start();
+$longpolling->start();
 
 ```
 
@@ -63,7 +62,7 @@ $MysqlPersistence = new MysqlPersistence(array(
     'password' => 'PASSWORD'
 ));
 
-$server = new CreateServer( new LongPolling($MysqlPersistence) );
+$longpolling = new LongPolling($MysqlPersistence);
 
 ```
 

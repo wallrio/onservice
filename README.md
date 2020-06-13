@@ -1,7 +1,9 @@
 
+> versions 2.x.x are discontinued, starting with version 3.0.0, the concept of classes are modified, so there may be breaks in code using versions 2.x.x.
+
 # OnService
 
-Interface for creating servers and services.
+Interface for creating of services.
 
 ## Installation
 
@@ -12,83 +14,18 @@ $ composer require wallrio/onservice "*"
 ```
 
 
-## Usage
 
-Creating the server.
-
-```php
-<?php
-
-require 'vendor/autoload.php';
-
-use onservice\CreateServer as CreateServer;
-
-$server = new CreateServer();
-
-```
-
-## Usage the service
-
-When creating the server attach the service of interest
-
-```php
-
-use onservice\CreateServer as CreateServer;
-use onservice\services\Router as Router;
-
-$server = new CreateServer( new Router() );
-
-```
-
-
-
-After providing the service to the server, you can use all the features that the service provides.
-
-##### Example
-
-```ph
-$server->router->resource('/',function($urlPar,$requestPar){
-
-        $html = 'First Page';
-        $html .= '<hr>';
-
-        return array(
-            'body'=>$html,
-            'code'=>200
-        );
-});
-
-```
-
-
-### Multiple services
-
-
-```php
-
-use onservice\CreateServer as CreateServer;
-use onservice\services\Router as Router;
-use onservice\services\Process as Process;
-
-$server = new CreateServer( new Process(), new Router(),... );
-
-```
-
-
-
-# Available services
+## Available services
 
 - [Router](help/router.md)
-- [LongPolling](help/longpolling.md)
 - [Process](help/process.md)
 - [Database](help/database.md)
-- [Stream](help/stream.md)
-- [Authentication](help/authentication.md)
 - [Settings](help/settings.md)
-- [Git](help/git.md)
 - [Console](help/console.md)
-- [Pipe](help/pipe.md)
-- [Middle](help/middle.md)
+- [Git](help/git.md)
+- [Stream](help/stream.md)
+- [LongPolling](help/longpolling.md)
+- [Authentication](help/authentication.md)
 
 
 ## License

@@ -15,17 +15,17 @@ class Http{
         $fallback = isset($parameters['fallback'])?$parameters['fallback']:null;
         $timeout = isset($parameters['timeout'])?$parameters['timeout']:7;
         $onlyheader = isset($parameters['onlyheader'])?$parameters['onlyheader']:false;
+        $headerRequest = isset($parameters['header'])?$parameters['header']:null;
 
     
         $curl = curl_init();
 
         curl_setopt($curl, CURLOPT_URL, $url);
-        // curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_HEADER, 1);
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, strtoupper($method) );
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, $follow);                
-
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_FRESH_CONNECT, 1);
         curl_setopt($curl, CURLOPT_FORBID_REUSE, 1);
 
@@ -33,6 +33,13 @@ class Http{
         curl_setopt($curl, CURLOPT_TIMEOUT, $timeout); 
 
 
+         if($headerRequest !== null){       
+            $headerSend = array();
+            foreach ($headerRequest as $key => $value) {
+                $headerSend[] = $key.':'.$value;
+            }     
+            curl_setopt($curl, CURLOPT_HTTPHEADER, $headerSend);
+        }
         
 
         if($data !== null){
@@ -80,8 +87,7 @@ class Http{
             if($follow === true){
                 $redirect_url = $headers['Location'];
 
-                $hostSchemeArray = parse_url($url);
-                        // print_r($hostSchemeArray);      
+                $hostSchemeArray = parse_url($url);    
                 if( (strpos($redirect_url, 'https://') === false && strpos($redirect_url, 'http://') === false)){
 
                     $parameters['url'] = $hostSchemeArray['scheme'].'://'.$hostSchemeArray['host'].''.$redirect_url;       
@@ -90,7 +96,6 @@ class Http{
                 }
                 
 
-                // print_r($parameters);
                 $return = self::request($parameters,$header,$context);            
                 return $return;
             }
@@ -100,9 +105,7 @@ class Http{
         if($header_size === 0){            
             if($fallback !== null){
                 
-        // print_r($headers);
-                // sleep(1);
-                // usleep(100000);
+
                 return $fallback($parameters,$headers,$context);
             }
             return false;

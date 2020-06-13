@@ -38,6 +38,10 @@ class OJM{
 
 	public function find($table,$WHERE = array(),$options = null ){
 		
+		$table = str_replace('-', '_', $table);
+		$table = str_replace('.', '_', $table);
+
+
 		$basename = $this->config['basename'];
 
 		$basename = str_replace('/', '\\', $basename);
@@ -242,6 +246,11 @@ class OJM{
 	}
 
 	public function create($table,$hash = null){
+
+		$table = str_replace('-', '_', $table);
+		$table = str_replace('.', '_', $table);
+
+		
 		$basename = $this->config['basename'];
 
 		$basename = str_replace('/', '\\', $basename);

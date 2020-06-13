@@ -4,11 +4,10 @@ abstracts the communication using TCP Procotol
 ## Instance 
 
 ```php
-use onservice\CreateServer as CreateServer;
 use onservice\services\Stream as Stream;
 use onservice\services\stream\TCP as TCP;
 
-$server = new CreateServer(	new Stream(IP,ADDRESS,new TCP) );
+$stream = new Stream(IP,ADDRESS,new TCP);
 ```
 
 
@@ -17,20 +16,20 @@ $server = new CreateServer(	new Stream(IP,ADDRESS,new TCP) );
 ### start
 abre a conexão
 
-	$server->stream->start();
+	$stream->start();
 
 ### finish
 fecha a conexão
 
 ```php
-	$server->stream->finish();
+	$stream->finish();
 ```
 
 ### onReceiver
 executa quando recebe novas mensagens
 
 ```php
-	$server->stream->onReceiver(function($message,$scopeStream,$socketClient){
+	$stream->onReceiver(function($message,$scopeStream,$socketClient){
 		return "Message to sender";
 	});
 ```
@@ -39,7 +38,7 @@ executa quando recebe novas mensagens
 executa em loop enquanto o servidor estiver ativo
 
 ```php
-	$server->stream->onReceiverLoop(function($serverData,$scopeStream){
+	$stream->onReceiverLoop(function($serverData,$scopeStream){
 		return "Message to sender";
 	});
 ```
@@ -48,7 +47,7 @@ executa em loop enquanto o servidor estiver ativo
 executa quando um cliente é desconectado
 
 ```php
-	$server->stream->onClientDisconnected(function($clientData,$scopeStream){
+	$stream->onClientDisconnected(function($clientData,$scopeStream){
 		
 	});	
 ```
@@ -57,7 +56,7 @@ executa quando um cliente é desconectado
 executa quando ocorre algum erro
 
 ```php
-	$server->stream->onError(function($serverData,$scopeStream){
+	$stream->onError(function($serverData,$scopeStream){
 		
 	});	
 ```
@@ -66,7 +65,7 @@ executa quando ocorre algum erro
 executa quando o servidor iniciar a conexão
 
 ```php
-	$server->stream->onOpen(function($serverData,$scopeStream){
+	$stream->onOpen(function($serverData,$scopeStream){
 		
 	});	
 ```
@@ -75,7 +74,7 @@ executa quando o servidor iniciar a conexão
 executa quando o servidor fecha a conexão
 
 ```php
-	$server->stream->onClose(function($serverData,$scopeStream){
+	$stream->onClose(function($serverData,$scopeStream){
 		
 	});	
 ```
@@ -84,7 +83,7 @@ executa quando o servidor fecha a conexão
 executa quando um cliente se conecta com o servidor
 
 ```php
-	$server->stream->onNewClient(function($clientData,$scopeStream){
+	$stream->onNewClient(function($clientData,$scopeStream){
 		
 	});	
 ```
@@ -93,7 +92,7 @@ executa quando um cliente se conecta com o servidor
 Envia mensagem para todos os clientes conectados.
 
 ```php
-	$server->stream->sendAll($message);	
+	$stream->sendAll($message);	
 ```
 
 
@@ -102,20 +101,20 @@ Envia mensagem para todos os clientes conectados.
 Envia mensagem para um cliente especifico baseado no socket resource.
 
 ```php
-	$server->stream->sendToSocket($socketClient,$message);	
+	$stream->sendToSocket($socketClient,$message);	
 ```
 
 
 ## Example 
 
 ```php
-use onservice\CreateServer as CreateServer;
+
 use onservice\services\Stream as Stream;
 use onservice\services\stream\TCP as TCP;
 
-$server = new CreateServer(	new Stream('0.0.0.0',8080,new TCP) );
+$stream = new Stream('0.0.0.0',8080,new TCP);
 
-$server->stream->onReceiver(function($message,$scopeStream,$socketClient){
+$stream->onReceiver(function($message,$scopeStream,$socketClient){
 
 	echo "Received From Client:".$message."\n";
 
@@ -126,7 +125,7 @@ $server->stream->onReceiver(function($message,$scopeStream,$socketClient){
 	
 });
 
-$server->stream->start();
+$stream->start();
 
 
 ```
@@ -141,7 +140,7 @@ $server->stream->start();
 conecta com o servidor
 
 ```php
-	$server->stream->connect();	
+	$stream->connect();	
 ```
 
 
@@ -149,7 +148,7 @@ conecta com o servidor
 executa quando o cliente se conecta com o servidor
 
 ```php
-	$server->stream->onNewClient(function($clientData,$scopeStream){
+	$stream->onNewClient(function($clientData,$scopeStream){
 		
 	});	
 ```
@@ -159,7 +158,7 @@ executa quando o cliente se conecta com o servidor
 executa quando o cliente se desconecta do servidor
 
 ```php
-	$server->stream->onDisconnect(function($clientData,$scopeStream){
+	$stream->onDisconnect(function($clientData,$scopeStream){
 		
 	});	
 ```
@@ -169,7 +168,7 @@ executa quando ocorre algum erro na conexão com o servidor
 
 
 ```php
-	$server->stream->onConnectError(function($ip,$port){
+	$stream->onConnectError(function($ip,$port){
 		
 	});	
 ```
@@ -179,7 +178,7 @@ executa quando recebe novas mensagens
 
 
 ```php
-	$server->stream->onReceiver(function($message,$scopeStream,$socketClient){
+	$stream->onReceiver(function($message,$scopeStream,$socketClient){
 		return "Message to sender";
 	});	
 ```
@@ -189,19 +188,18 @@ executa quando recebe novas mensagens
 Envia mensagem para todos o servidor.
 
 ```php
-	$server->stream->send($message);	
+	$stream->send($message);	
 ```
 
 ## Example 
 
 ```php
-use onservice\CreateServer as CreateServer;
 use onservice\services\Stream as Stream;
 use onservice\services\stream\TCP as TCP;
 
-$server = new CreateServer(	new Stream('0.0.0.0',8080,new TCP) );
+$stream = new Stream('0.0.0.0',8080,new TCP);
 
-$server->stream->onReceiver(function($message,$scopeStream,$socketClient){
+$stream->onReceiver(function($message,$scopeStream,$socketClient){
 
 	echo "Received From Server:".$message."\n";
 
@@ -209,7 +207,7 @@ $server->stream->onReceiver(function($message,$scopeStream,$socketClient){
 	
 });
 
-$server->stream->connect();
+$stream->connect();
 
 
 ```

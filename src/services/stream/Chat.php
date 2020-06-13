@@ -61,10 +61,7 @@ class Chat{
 
 
         $this->send('id***'.$this->id);
-        // usleep(10000);
-        // $this->send('get-clients***');
-            
-        // usleep(1000);
+
 
         while(true){
 
@@ -210,9 +207,6 @@ class Chat{
         
             }
 
-
-
-            // $this->checkConnection();
 
             // loop lendo novas mensagens
             foreach ($this->clients as $key => $value) {

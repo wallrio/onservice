@@ -18,7 +18,11 @@ class Document{
 
 
 	public function create($fields = null,$hash = null){
-		return $this->collection->insert( $fields );
+		if (class_exists('MongoClient')) {
+			return $this->collection->insert( $fields );
+		}else{
+			return $this->collection->insertOne( $fields );		
+		}
 	}
 
 	public function update($id,$fields = null){
@@ -39,9 +43,16 @@ class Document{
 			else if( gettype($value) == 'object' )
 				$idItem = $key;
 
-			$filter = new \MongoId($idItem);
+			$idItem = explode('_', $idItem);
+			$idItem = $idItem[0];
+			
+			if (class_exists('MongoClient')) {
+				$filter = new \MongoId($idItem);
+			}else{
+				$filter = new \MongoDB\BSON\ObjectID( $idItem );
+			}
 
-			$this->collection->update(
+			$this->collection->updateOne(
 				['_id'=> $filter],
 				['$set' =>$fields], 
 				['multi' => false, 'upsert' => false]
@@ -73,7 +84,14 @@ class Document{
 			else if( gettype($value) == 'object' )
 				$idItem = $key;
 
-			$this->collection->remove(array('_id' => new \MongoId($idItem)));
+			$idItem = explode('_', $idItem);
+			$idItem = $idItem[0];
+
+			if (class_exists('MongoClient')) {
+				$this->collection->remove(array('_id' => new \MongoId($idItem)));
+			}else{
+				$this->collection->deleteOne(array('_id' => new \MongoDB\BSON\ObjectID($idItem)));				
+			}
 		}
 
 		return true;
@@ -109,10 +127,14 @@ class Document{
 		
 		$cursor = $this->collection->find($whereNew);
 
+
 		$array = array();
 		foreach ( $cursor as $id => $value ){		    
-		   	$array[$id] = (object) $value;
-		   	unset($array[$id]->_id);
+						
+			$key = reset($value->_id);
+		   	$array[$key] = (object) $value;
+			
+		   	unset($array[$key]->_id);
 		}
 
 		if(count($array)>0)

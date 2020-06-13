@@ -21,7 +21,6 @@ clean all register
 ##### Example basic
 ```php
 
-	use onservice\CreateServer as CreateServer;
 	use onservice\services\process\FileStream as FileStream;
 
 	$filestream = new FileStream;
@@ -36,7 +35,6 @@ clean all register
 ##### Example with id
 ```php
 
-	use onservice\CreateServer as CreateServer;
 	use onservice\services\process\FileStream as FileStream;
 
 	$filestream = new FileStream;

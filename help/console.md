@@ -1,5 +1,4 @@
 
-
 # Console
 Service to create a custom command-line interface (CLI)
 
@@ -7,10 +6,12 @@ Service to create a custom command-line interface (CLI)
 ```php
 use onservice\services\Console as Console;
 
-// create the server
-$server = new CreateServer( new Console() );
+// create the service
+new Console(array(
+	"title"=>"My Console",
+	"legend"=>"v1.0"
+));
 ```
-
 
 ## Note
 The code created with the "console" service must be executed exclusively in the terminal
@@ -21,7 +22,7 @@ The code created with the "console" service must be executed exclusively in the 
 ### instance
 
 ```php
-$server = new CreateServer( new Console('ARRAY_PARAMETERS') );
+new Console('ARRAY_PARAMETERS')
 ```
 
 - ARRAY_PARAMETERS: (optional)
@@ -73,23 +74,7 @@ php your-index.php
 ## Create commands
  To create CLI commands, follow the steps below:
 
-1. First define the directory that will house the commands, this can be done by the constructor of class 'new Console'.
 
-### Example
-
-```php
-require "vendor/autoload.php";
-
-use onservice\CreateServer as CreateServer;
-use onservice\services\Console as Console;
-
-$server = new CreateServer(new Console(array(
-	"title"=>"My Console",
-	"legend"=>"v1.0",
-	"dir"=>"app/consoleCommands"
-)));
-
-```
 
 ### Example complete with array
 
@@ -99,7 +84,7 @@ require "vendor/autoload.php";
 use onservice\CreateServer as CreateServer;
 use onservice\services\Console as Console;
 
-$server = new CreateServer(new Console(array(
+new Console(array(
 	"title"=>"My Console",
 	"legend"=>"v1.0",
 	"dir"=>"app/consoleCommands",
@@ -114,9 +99,15 @@ $server = new CreateServer(new Console(array(
 			array('order'=>2,'name'=>'about','description'=>'about...','function'=>function(){return 'help/about...';}),
 		),
 	)
-)));
+))
 
 ```
+
+
+### Example
+
+In this example, the directory that will host the commands is defined, this can be done by the constructor of the class 'new Console'
+
 
 
 ### Example complete with class
@@ -126,14 +117,13 @@ $server = new CreateServer(new Console(array(
 ```php
 require "vendor/autoload.php";
 
-use onservice\CreateServer as CreateServer;
 use onservice\services\Console as Console;
 
-$server = new CreateServer(new Console(array(
+new Console(array(
 	"title"=>"My Console",
 	"legend"=>"v1.0",
 	"dir"=>"app/console"
-)));
+))
 
 ```
 

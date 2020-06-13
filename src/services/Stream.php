@@ -2,13 +2,10 @@
 
 namespace onservice\services;
 
-use onservice\services\stream\Server as Server;
 use onservice\services\stream\TCP as TCP;
 
 class Stream {
 
-	public $server = null;
-	public $namespace = 'stream';	
 	public $driver = null;
 	public $debug = null;
 	public $id = null;
@@ -18,8 +15,7 @@ class Stream {
 	private $address = '127.0.0.1';
 	private $port = 3333;
 
-	// first call after contructor
-	public function _init($server){}
+	public function _init(){}
 
 	public function __construct($address = '127.0.0.1', $port = 3333, $driver = null){
 		$this->address = $address;

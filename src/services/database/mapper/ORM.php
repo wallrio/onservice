@@ -38,6 +38,9 @@ class ORM{
 
 			$table = $key;
 
+			$table = str_replace('-', '_', $table);
+			$table = str_replace('.', '_', $table);
+
 			$result = (array) $result;
 			$value = (array) $value;
 
@@ -102,7 +105,8 @@ class ORM{
 
 	public function checkDiffAttributes($table,$schemeLocal,$schemeBase){
 
-	
+		$table = str_replace('-', '_', $table);
+		$table = str_replace('.', '_', $table);
 
 		// normaliza a matriz de $schemeLocal e $schemeBase ----------------------
 		$schemeBaseNew = [];
@@ -220,6 +224,10 @@ class ORM{
 
 	public function find($table,$WHERE = null){
 
+		$table = str_replace('-', '_', $table);
+		$table = str_replace('.', '_', $table);
+
+		
 		$basename = $this->config['basename'];
 
 		$basename = str_replace('/', '\\', $basename);
@@ -234,10 +242,11 @@ class ORM{
 
 		$WHERE_String = '';
 		$index = 0;
+		if(is_array($WHERE))
 		foreach ($WHERE as $key => $value) {
 			$operator = "";
-			if($index > count($value)-1){
-
+			// if($index > count($WHERE)-1){
+			if($index > 0){				
 				if( substr($key, 0,3) == '||.'){
 					$key = str_replace('||.', '', $key) ;
 					$operator = " OR ";
@@ -263,6 +272,16 @@ class ORM{
 
 
 		$result = $this->database->select($table,$WHERE_String);
+
+		// convert json to array
+		foreach ($result as $key => $value) {
+			foreach ($value as $key2 => $value2) {
+				$resultJson = json_decode($value2,true);	
+				if ( is_array($resultJson) ) {
+				    $result[$key]->{$key2} = $resultJson;
+				}
+			}
+		}
 
 		
 
@@ -313,6 +332,8 @@ class ORM{
 				
 				$database = new \onservice\services\Database( new \onservice\services\Database\Mysql($host,$username,$password,$basename ) );
 				
+				
+				
 				$id = $class->$fieldCompare;	
 				
 				$class = (array) $class;
@@ -343,13 +364,13 @@ class ORM{
 				$database = new \onservice\services\Database( new \onservice\services\Database\Mysql($host,$username,$password,$basename ) );
 				
 				
-				// $id = $class->$fieldCompare;	
+				$id = $class->$fieldCompare;	
 				
 				$class = (array) $class;
 
 				$response = $database->delete($tableName,$fieldCompare." = \"".$id."\"");
 
-				if($response !== false) unset($this);
+				if($response !== false) unset($class);
 				
 
 			}';
@@ -461,6 +482,10 @@ class ORM{
 
 
 	public function create($table){
+
+		$table = str_replace('-', '_', $table);
+		$table = str_replace('.', '_', $table);
+
 		$result = $this->database->getScheme($table);
 		$basename = $this->config['basename'];
 

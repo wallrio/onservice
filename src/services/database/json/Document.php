@@ -279,8 +279,6 @@ class Document{
 			$hash = md5(json_encode($fields).''.time());			
 		}
 		
-		// $hash = str_replace(array('@','.'), '', $hash);			
-		// $hash = preg_replace('/[^\/A-Za-z0-9\-]/', '', $hash);			
 
 		$filename = $this->collection.DIRECTORY_SEPARATOR.$hash.$this->suffix.'.json';
 		$filename = str_replace('//', '/', $filename);

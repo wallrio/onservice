@@ -10,9 +10,9 @@ class PushRoute{
 
 
 
-	function __construct($url = null,$requestPar = null){
+	function __construct($url = null,$httpRequest = null){
 		$this->url = $url;
-		$this->requestPar = $requestPar;
+		$this->httpRequest = $httpRequest;
 
 	}
 
@@ -20,23 +20,19 @@ class PushRoute{
 	 * método obrigatório
 	 * @return [array]
 	 */
-	public  function run(){
-		$requestPar = $this->requestPar;
+	public  function response(){
+		$httpRequest = $this->httpRequest;
 		$data = null;
 
-		if($requestPar !== null ){
-			
-			if(isset($requestPar['method'])){
-				$method = $requestPar['method'];
-				$data = isset($requestPar['data'][$method])?$requestPar['data'][$method]:null;
-			}else{
-				$method = key($requestPar);
-				$data = isset($requestPar[$method])?$requestPar[$method]:null;			
-			}			
-		}
 
-		if( strtolower($method) === 'get'){		
+		$method = isset($httpRequest['method'])?$httpRequest['method']:null;
+		$data = isset($httpRequest['data'])?$httpRequest['data']:[];
+		$headerRequest = isset($httpRequest['header'])?$httpRequest['header']:null;
+
+		if( strtolower( $method ) === 'get'){		
 			$fields_string = http_build_query($data);   
+
+			if(strlen($fields_string)>0)
 			if(parse_url($this->url, PHP_URL_QUERY)){
 				$this->url = $this->url.'&'.$fields_string;
 			}else{
@@ -44,12 +40,15 @@ class PushRoute{
 			}	
 		}
 		
-		$response = Http::request(array(
+		$requestOptions = [
 			'url'=>$this->url,
 			'method'=>isset($method)?$method:'get',
-			'data'=>$data
-		),$header);
-			
+			'header'=>$headerRequest,
+			'data'=>$data,
+		];
+	
+		$response = Http::request($requestOptions,$header);
+
 		$headerOthers = $header;
 
 		return array(
@@ -57,7 +56,8 @@ class PushRoute{
 			'code'		=> $header['Request']['code'],
 			'message'	=> $header['Request']['message'],
 			'type'		=> $header['Content-Type'],
-			'others'    => $headerOthers
+			'others'    => $headerOthers,
+			'finish'    => 1
 		);
 	}
 }

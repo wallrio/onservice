@@ -8,20 +8,18 @@ Implements method of authorization of user
 
 
 ```php
-
-use onservice\CreateServer as CreateServer;
 use onservice\services\Authentication as Authentication;
 use onservice\services\authentication\Authorization as Authorization;
 
 
-$this->authentication = new CreateServer( new Authentication(new Authorization()) );
+$authentication = new Authentication(new Authorization());
 ```
 
 ## Set the authorization of user current
 
 ```php
 
-$this->authentication->authorization->current('user');
+$authentication->authorization->current('user');
 
 ```
 
@@ -29,7 +27,7 @@ $this->authentication->authorization->current('user');
 
 ```php
 
-$this->authentication->authorization->allowed(array("admin","editor"));
+$authentication->authorization->allowed(array("admin","editor"));
 
 ```
 
@@ -39,7 +37,7 @@ $this->authentication->authorization->allowed(array("admin","editor"));
 
 ```php
 
-$this->authentication->authorization->allowed(array("admin","editor"),function(){
+$authentication->authorization->allowed(array("admin","editor"),function(){
 	// code
 	exit;
 });
@@ -50,7 +48,7 @@ $this->authentication->authorization->allowed(array("admin","editor"),function()
 
 ```php
 
-if( !$this->authentication->authorization->check("admin","editor") ){
+if( !$authentication->authorization->check("admin","editor") ){
 	// code
 }
 
@@ -63,15 +61,14 @@ if( !$this->authentication->authorization->check("admin","editor") ){
 
 ```php
 
-use onservice\CreateServer as CreateServer;
 use onservice\services\Authentication as Authentication;
 use onservice\services\authentication\Authorization as Authorization;
 use onservice\services\authentication\JWT as JWT;
 
 
-$this->authentication = new CreateServer( new Authentication(new JWT('key123'),new Authorization()) );
+$authentication = new Authentication(new JWT('key123'),new Authorization());
 
-$tokenParameters = $this->authentication->token->decode('token received by any parameter');
+$tokenParameters = $authentication->token->decode('token received by any parameter');
 
 if($tokenParameters === false){
 	echo 'access denied';
@@ -79,8 +76,8 @@ if($tokenParameters === false){
 }else{
 	$username = $tokenParameters->username;
 	$role = $tokenParameters->role;
-	$this->authentication->authorization->current($role);
-	$this->authentication->authorization->allowed(array("admin","editor"));
+	$authentication->authorization->current($role);
+	$authentication->authorization->allowed(array("admin","editor"));
 	// the process only continue if role of user is admin or editor
 	
 	echo 'access allowed';

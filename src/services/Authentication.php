@@ -5,8 +5,6 @@ namespace onservice\services;
 
 class Authentication{
 
-	public $server = null;
-	public $namespace = 'authentication';
 
 	public function __construct($driver = null){
 		$this->driver = $driver;	

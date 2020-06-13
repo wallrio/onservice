@@ -5,8 +5,6 @@ use onservice\services\database\InterfaceDatabase as InterfaceDatabase;
 
 class Database{
 
-	public $server = null;
-	public $namespace = 'database';
 
 	public function __construct($driver){
 		$this->driver = $driver;		
