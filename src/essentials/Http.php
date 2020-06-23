@@ -25,7 +25,11 @@ class Http{
         curl_setopt($curl, CURLOPT_HEADER, 1);
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, strtoupper($method) );
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, $follow);                
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        
+        // ignore definitions to access HTTPS
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST,  2);
+        
         curl_setopt($curl, CURLOPT_FRESH_CONNECT, 1);
         curl_setopt($curl, CURLOPT_FORBID_REUSE, 1);
 
