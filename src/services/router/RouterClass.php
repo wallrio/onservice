@@ -2,6 +2,8 @@
 
 namespace onservice\services\router;
 
+require __DIR__.DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR."version.php";
+
 use onservice\CreateServer as CreateServer;
 use onservice\essentials\Http as Http;
 
@@ -12,9 +14,12 @@ use onservice\services\router\RequestHttp as RequestHttp;
 
 class RouterClass{
 	
-	public 	 
-		$ignoreVerbsOptions = true;
+	public $server,
+		   $namespace = 'routerclass',		 
+		   $version = OnServiceVersion,  
+		   $ignoreVerbsOptions = true;
 
+	
 
 	public function __construct(){
 		// set CORS to open 
@@ -29,7 +34,6 @@ class RouterClass{
 		$data['url'] = $url;		
 		return Http::request($data,$header,$this);
 	}
-
 
 	public function checkRequest($route,&$args,&$requestPath,$annotationMethod = false){
 		
@@ -48,9 +52,11 @@ class RouterClass{
 
 		if(empty($REDIRECT_URL)){
 			$REDIRECT_URL = $REQUEST_URI;
+		
 			$REDIRECT_URL = explode('?', $REDIRECT_URL);
 			$REDIRECT_URL = $REDIRECT_URL[0];
 		}
+
 
 
 		if(dirname($SCRIPT_NAME) === '/')
@@ -70,6 +76,9 @@ class RouterClass{
 		if(count($routeArray)<1) $routeArray = array('/');
 		if(count($requestPathArray)<1) $requestPathArray = array('/');
 
+		
+		
+
 		$showerAll = false;
 		$shower = true;
 		$index = 0;
@@ -82,7 +91,10 @@ class RouterClass{
 		$asteriskFound = false;
 
 			preg_match_all('/{(.*)}/m', $value , $matches);
-	
+			
+			
+
+		
 			if( isset($requestPathArray[$key])){				
 				if($value == $requestPathArray[$key]){
 					$countFound++;
@@ -94,12 +106,15 @@ class RouterClass{
 						$countFound++;
 					}
 				}
+
 			}				
 
 			if( count($matches[1]) > 0){
 				$countFound++;
 
 				$valueFiltred = str_replace('{'.$matches[1][0].'}', '', $value);
+
+				
 
 				if( isset($requestPathArray[$key]) ){
 					$requestPathArrayFiltred = substr($requestPathArray[$key], 0,strlen($valueFiltred));				
@@ -115,8 +130,10 @@ class RouterClass{
 
 
 		
+
 		if( $countFound === count($routeArray) &&  ( count($routeArray) === count($requestPathArray)) || ( $asteriskFound == true && ($countFound >= count($routeArray))) ){
 			$args = $parameters;
+
 			if(strlen($annotationMethod) === 0 || ($annotationMethod === $method))
 			return true;
 		}
@@ -126,40 +143,44 @@ class RouterClass{
 
 
 
-	public function parse_raw_http_request($input){
+	public function parse_raw_http_request($input)
+{
 
-		$CONTENT_TYPE = isset($_SERVER['CONTENT_TYPE'])?$_SERVER['CONTENT_TYPE']:'text/plain';
+  // grab multipart boundary from content type header
+  preg_match('/boundary=(.*)$/', $_SERVER['CONTENT_TYPE'], $matches);
+  $boundary = isset($matches[1])?$matches[1]:null;
 
-		// grab multipart boundary from content type header
-		preg_match('/boundary=(.*)$/', $CONTENT_TYPE, $matches);
-		$boundary = isset($matches[1])?$matches[1]:null;
+  if($boundary === null) return false;
+  // split content by boundary and get rid of last -- element
+  $a_blocks = preg_split("/-+$boundary/", $input);
+  array_pop($a_blocks);
 
-		if($boundary === null) return false;
-		// split content by boundary and get rid of last -- element
-		$a_blocks = preg_split("/-+$boundary/", $input);
-		array_pop($a_blocks);
+  // loop data blocks
+  foreach ($a_blocks as $id => $block)
+  {
+    if (empty($block))
+      continue;
 
-		// loop data blocks
-		foreach ($a_blocks as $id => $block){
-			if (empty($block)) continue;
+    // you'll have to var_dump $block to understand this and maybe replace \n or \r with a visibile char
+
+    // parse uploaded files
+    if (strpos($block, 'application/octet-stream') !== FALSE)
+    {
+      // match "name", then everything after "stream" (optional) except for prepending newlines 
+      preg_match("/name=\"([^\"]*)\".*stream[\n|\r]+([^\n\r].*)?$/s", $block, $matches);
+    }
+    // parse all other fields
+    else
+    {
+      // match "name" and optional value in between newline sequences
+      preg_match('/name=\"([^\"]*)\"[\n|\r]+([^\n\r].*)?\r$/s', $block, $matches);
+    }
+    $a_data[$matches[1]] = isset($matches[2])?$matches[2]:'';
+  }        
 
 
-			// parse uploaded files
-			if (strpos($block, 'application/octet-stream') !== FALSE){
-				// match "name", then everything after "stream" (optional) except for prepending newlines 
-				preg_match("/name=\"([^\"]*)\".*stream[\n|\r]+([^\n\r].*)?$/s", $block, $matches);
-			}
-			// parse all other fields
-			else{
-				// match "name" and optional value in between newline sequences
-				preg_match('/name=\"([^\"]*)\"[\n|\r]+([^\n\r].*)?\r$/s', $block, $matches);
-			}
-			$a_data[$matches[1]] = isset($matches[2])?$matches[2]:'';
-		}        
-
-
-		return isset($a_data)?$a_data:[];
-	}
+  return isset($a_data)?$a_data:[];
+}
 
 
 	public function getRequest(){
@@ -189,6 +210,7 @@ class RouterClass{
 
 				$data = (file_get_contents("php://input"));
 					
+
 				if(strpos($CONTENT_TYPE, 'application/x-www-form-urlencoded')!== false){
 					parse_str($data,$get_array);
 				}else if(strpos($CONTENT_TYPE, 'application/json')!== false){
@@ -207,6 +229,7 @@ class RouterClass{
 			}
 		}else if( $return['method'] === 'post' ){
 
+
 			if(!empty($_POST)){
 
 				$return['request-post'] = $_POST;	
@@ -217,6 +240,7 @@ class RouterClass{
 				}
 
 			}else{	
+
 
 				
 				$data = (file_get_contents("php://input"));
@@ -240,7 +264,7 @@ class RouterClass{
 		}else if( $return['method'] === 'put' ){
 
 			$data = (file_get_contents("php://input"));
-		
+				
 			if(strpos($CONTENT_TYPE, 'application/x-www-form-urlencoded')!== false){
 				parse_str($data,$get_array);
 			}else if(strpos($CONTENT_TYPE, 'application/json')!== false){
@@ -285,12 +309,14 @@ class RouterClass{
 			}else{			
 				$get_array = $this->parse_raw_http_request($data);
 			}
-		
+			
+
 			if( is_array($get_array) && count($get_array)>0)
 			foreach ($get_array as $key => $value) {
 				$return['request'][$key] = $get_array[$key];							
 			}
 			
+
 
 		}
 
@@ -307,6 +333,8 @@ class RouterClass{
 		
 		if(method_exists($response, 'response'))
 		$response = $response->response();
+
+	
 
 		if( isset($response['finish']) && $response['finish'] === 1 ){
 			return false;
@@ -327,7 +355,7 @@ class RouterClass{
 		}else{
 			
 
-			$routeGet = $route;
+				$routeGet = $route;
 				
 			foreach ($parameters as $key => $value) {
 				$routeGet = str_replace('{'.$key.'}', $value, $routeGet);
@@ -335,8 +363,14 @@ class RouterClass{
 			
 
 			$routeGet = str_replace('/+', '', $routeGet);			
-			$routeGet = str_replace('/.', '', $routeGet);			
+			$routeGet = str_replace('/.', '', $routeGet);		
+
+			if( substr($routeGet, strlen($routeGet)-1)==='/' )
+			$routeGet = substr($routeGet, 0,strlen($routeGet)-1);
+
 			$routeTarget = str_replace($routeGet, '', $requestPath);
+			$routeTarget = str_replace('//', '/', $routeTarget);
+
 
 			$requestPar['url'] = $requestPath;
 			$requestPar['endpoint'] = $routeTarget;
@@ -345,6 +379,7 @@ class RouterClass{
 		
 			$response = $this->runResource($callback,$parameters,$methodMode,$annoArrayNew,$annotationMethod ,$listMiddles,$requestPar);
 
+			exit;
 			return $response;
 		}
 	
@@ -353,6 +388,9 @@ class RouterClass{
 
 	public function runResource($callback,$parameters,$methodMode,$annoArrayNew = array(),$annotationMethod = false,$listMiddles = [],$requestPar = []){
 		
+		
+
+		header('Server: onService/'.$this->version);
 
 			$parametersHandle = new QueryHttp($parameters);
 				$requestHandle = new RequestHttp($requestPar);
@@ -393,8 +431,9 @@ class RouterClass{
 			}
 
 
+						
 			$requestHandle->set('middle',$parametersNext);
-			
+
 
 			if($blockResponse === false){
 				
@@ -445,21 +484,29 @@ class RouterClass{
 			$contentype = isset($response['type'])?$response['type']:'text/html';
 			$header = isset($response['header'])?$response['header']:null;
 
+		
 			header($protocol.' '.$code.' '.$message);
+			
 			
 			if(gettype($body) !== 'string')$body = print_r($body,true);
 
 			$bodyLength = strlen($body);
 			header('Content-Length: '.$bodyLength);
 			header('Content-Type:'.$contentype);
+
 			
-			if(is_array($header) && count($header)>0){				
+
+			if(is_array($header) && count($header)>0){		
 				foreach ($header as $key => $value) {
+					
 					header($key.':'.$value);
 				}
 			}
 
+
+
 			if($body) echo $body;
+	
 			return true;
 	}
 
