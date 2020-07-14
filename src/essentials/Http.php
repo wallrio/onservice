@@ -42,16 +42,16 @@ class Http{
             foreach ($header as $key => $value) {
                 $headerSend[] = $key.':'.$value;
             }     
-            curl_setopt($curl, CURLOPT_HTTPHEADER, $headerSend);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headerSend);
         }
 
-        if($data !== null){
-            if( gettype($data) !== 'array' ){
-                $data = array($method=>$data);
-            }
-        }
-        if(is_array($data) && count($data)>0){
-            $fields_string = http_build_query($data);            
+
+        if(is_array($data) || is_object($data) ){
+        
+
+            $fields_string = http_build_query($data); 
+            
+
             curl_setopt($ch,CURLOPT_POST, 1);
             curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);                    
         }
