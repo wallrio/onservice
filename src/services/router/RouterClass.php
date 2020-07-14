@@ -7,8 +7,8 @@ require __DIR__.DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPA
 use onservice\CreateServer as CreateServer;
 use onservice\essentials\Http as Http;
 
-use onservice\services\router\QueryHttp as QueryHttp;
-use onservice\services\router\RequestHttp as RequestHttp;
+use onservice\services\router\QueryFilterAccess as QueryFilterAccess;
+use onservice\services\router\RequestFilterAccess as RequestFilterAccess;
 
 
 
@@ -28,12 +28,6 @@ class RouterClass{
 		header("Access-Control-Allow-Headers: *");
 	}
 
-	
-	public function request($url,$parameters = array(),&$header = null){
-		$data = $parameters;
-		$data['url'] = $url;		
-		return Http::request($data,$header,$this);
-	}
 
 	public function checkRequest($route,&$args,&$requestPath,$annotationMethod = false){
 		
@@ -392,8 +386,8 @@ class RouterClass{
 
 		header('Server: onService/'.$this->version);
 
-			$parametersHandle = new QueryHttp($parameters);
-				$requestHandle = new RequestHttp($requestPar);
+			$parametersHandle = new QueryFilterAccess($parameters);
+				$requestHandle = new RequestFilterAccess($requestPar);
 
 	
 
@@ -437,8 +431,8 @@ class RouterClass{
 
 			if($blockResponse === false){
 				
-				$parametersHandle = new QueryHttp($parameters);
-				$requestHandle = new RequestHttp($requestPar);
+				$parametersHandle = new QueryFilterAccess($parameters);
+				$requestHandle = new RequestFilterAccess($requestPar);
 
 				if( $methodMode !== false && $methodMode !== null ){				
 					if(method_exists($callback, $methodMode))
@@ -460,8 +454,8 @@ class RouterClass{
 				$methodMode = 'index';
 				if(method_exists($response, $methodMode)){
 
-					$parametersHandle = new QueryHttp($parameters);
-					$requestHandle = new RequestHttp($requestPar);
+					$parametersHandle = new QueryFilterAccess($parameters);
+					$requestHandle = new RequestFilterAccess($requestPar);
 
 					$response = $response->$methodMode($parametersHandle,$requestHandle,$parametersNext);
 					if(isset($response))

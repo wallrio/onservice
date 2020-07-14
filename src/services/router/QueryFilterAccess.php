@@ -2,7 +2,7 @@
 
 namespace onservice\services\router;
 
-class QueryHttp{
+class QueryFilterAccess{
 
 	private $parameters;
 

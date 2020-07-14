@@ -2,7 +2,7 @@
 
 namespace onservice\services\router;
 
-class RequestHttp{
+class RequestFilterAccess{
 
 	private $parameters;
 
