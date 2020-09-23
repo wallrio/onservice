@@ -66,8 +66,6 @@ class Http{
 
             $fields_string = http_build_query($data); 
             
-            print_r($fields_string);
-            exit;
             curl_setopt($ch,CURLOPT_POST, 1);
             curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);                    
         }
