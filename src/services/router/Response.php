@@ -31,7 +31,7 @@ class Response{
 	}
 
 	public function message($message = 'Ok'){
-		$this->listResponse['message'] = $message;
+		$this->listResponse['message'] = $message;		
 		return $this;
 	}
 
@@ -60,12 +60,20 @@ class Response{
 		
 		$responseArray = [];
 
+		 
+
 		if($this->listResponse['body'] != '') $responseArray['body'] = $this->listResponse['body'];
 		if($this->listResponse['code'] != '') $responseArray['code'] = $this->listResponse['code'];
+		
 		if($this->listResponse['message'] != '') $responseArray['message'] = $this->listResponse['message'];
+
 		if($this->listResponse['type'] != '') $responseArray['type'] = $this->listResponse['type'];
 		if($this->listResponse['header'] != '') $responseArray['header'] = $this->listResponse['header'];
 		 $responseArray['finish'] = $this->listResponse['finish'];
+
+		 if($responseArray['code'] === 404 && $this->listResponse['message'] === 'Ok'){
+		 	$responseArray['message'] = 'Not Found';
+		 }
 
 		return $responseArray;
 	}
