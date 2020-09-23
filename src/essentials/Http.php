@@ -34,6 +34,21 @@ class Http{
             CURLOPT_CUSTOMREQUEST => strtoupper($method) 
         );
 
+         if( strtolower($method) === 'get'){
+            if(is_array($data) || is_object($data) ){
+                $fields_string = http_build_query($data); 
+
+                $urlArray = explode('?', $url);
+                $queryAjust = '';
+                if(count($urlArray)>1){
+                    $url = $urlArray[0];
+                    $queryAjust = $urlArray[1].'&';
+                }
+
+                $url = $url . '?'.$queryAjust.$fields_string;
+            }
+         }
+
         $ch      = curl_init( $url );
         curl_setopt_array( $ch, $options );
 
@@ -45,13 +60,14 @@ class Http{
             curl_setopt($ch, CURLOPT_HTTPHEADER, $headerSend);
         }
 
-
+        if( strtolower($method) !== 'get')
         if(is_array($data) || is_object($data) ){
-        
+            
 
             $fields_string = http_build_query($data); 
             
-
+            print_r($fields_string);
+            exit;
             curl_setopt($ch,CURLOPT_POST, 1);
             curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);                    
         }
