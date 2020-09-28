@@ -55,16 +55,19 @@ class ODM{
 
 		$classModel = [];
 		$classString = '';
-		$index = 0;
+		$index = 1;
 		if( is_array($result) && count($result)>0)
 		foreach ($result as $key => $value) {	
 
 			$microtime = preg_replace('/[^A-Za-z0-9\-]/', '', microtime());	
 			$key = preg_replace('/[^A-Za-z0-9\-]/', '', $key);	
-			$key .= '_'.$microtime;
+			$key .= '_'.$microtime.$index;
+
+			$tableIndex = $table.'_s000s_'.$microtime;
+
 
 			$classString .= 'namespace '.$basename.'\_'.$key.';'."\n";	
-			$classString .= 'class '.$table.' {';	
+			$classString .= 'class '.$tableIndex.' {';	
 
 			if(!isset($GLOBALS['onservice'])) $GLOBALS['onservice'] = array();
 			if(!isset($GLOBALS['onservice']["Database"])) $GLOBALS['onservice']["Database"] = array();
@@ -81,10 +84,15 @@ class ODM{
 				$tableName = get_class($class);
 				$tableName = explode("\\\", $tableName);
 				
+
 				$id = $tableName[1];
 				$id = substr($id, 1);
 
 				$tableName = end($tableName);
+
+				$tableName = explode("_s000s_", $tableName);
+				$tableName = $tableName[0];
+
 
 				$parameters = $GLOBALS["onservice"]["Database"]["mapper"];
 
@@ -134,13 +142,13 @@ class ODM{
 			}';
 
 			$classString .= '};';
-			$classString .= ' $classModel[] = new '.$table.';';
+			$classString .= ' $classModel[] = new '.$tableIndex.';';
 
 			$index++;
 		}
 
 		eval($classString);
-			
+	
 
 
 		$index = 0;
@@ -197,6 +205,8 @@ class ODM{
 		$table = str_replace('-', '_', $table);
 		$table = str_replace('.', '_', $table);
 
+
+
 		$basename = str_replace('/', '\\', $basename);
 		$basenameArray = explode('\\', $basename);
 		foreach ($basenameArray as $key => $value) {
@@ -217,6 +227,12 @@ class ODM{
 			array_push($columns, $key);
 		}
 
+
+		$microtime = preg_replace('/[^A-Za-z0-9\-]/', '', microtime());	
+	
+		$table = $table.'_s000s_'.$microtime;
+	
+
 		$classString = 'namespace '.$basename.';'."\n";	
 
 		$classString .= 'class '.$table.' {';		
@@ -234,8 +250,13 @@ class ODM{
 			$class = $this;			
 			
 			$tableName = get_class($class);
-			$tableName = explode("\\\", $tableName);
+			$tableName = explode("\\\", $tableName);			
 			$tableName = end($tableName);
+
+			$tableName = explode("_s000s_", $tableName);
+			$tableName = $tableName[0];
+			
+
 	
 			$class = (array) $class;
 
@@ -259,7 +280,6 @@ class ODM{
 
 		$classString .= '}; $classModel = new \\'.$basename.'\\'.$table.';';
 
-		// echo($classString);
 		eval($classString);
 		
 		return $classModel;
