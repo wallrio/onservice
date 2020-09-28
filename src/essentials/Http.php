@@ -88,6 +88,7 @@ class Http{
         $headers = self::headerToArray($headers);
         $http_code =(int) $headers['Request']['code'];
         $headers['Request']['url'] = $url;
+        $headers['Request']['method'] = $method;
 
 
         if($onlyheader === true)
