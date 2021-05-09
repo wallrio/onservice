@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace onservice\services\router;
 
@@ -25,19 +25,23 @@ class RequestFilterAccess{
 		$join = '';
 		$index = 0;
 		foreach ($keyArray as $key => $value) {
-			$join .= $value.'->';
+
+			if($index === 0)
+				$join .= $value.'->';
+			else
+				$join .= '{"'.$value.'"}->';
 
 			$joinAdjust = substr($join, 0,strlen($join)-2);
 
 			eval(' if(!isset($this->parameters->'.$joinAdjust.')) $this->parameters->'.$joinAdjust.' = new \StdClass ;');
 
-			$index++;
-		}
+						$index++;
+					}
 		$joinAdjust = substr($join, 0,strlen($join)-2);
 		
 		eval('$this->parameters->'.$joinAdjust.' = $content ;');
 
-	}
+			}
 
 	
 	public function get($key = null){
@@ -47,8 +51,15 @@ class RequestFilterAccess{
 		$keyArray = explode('/', $key);
 
 		$join = '';
+		$index = 0;
 		foreach ($keyArray as $key => $value) {
-			$join .= '->'.$value;
+			
+			if($index === 0)
+				$join .= '->'.$value.'';
+			else
+				$join .= '->{"'.$value.'"}';
+
+			$index++;
 		}
 		$join = substr($join, 2);
 		
