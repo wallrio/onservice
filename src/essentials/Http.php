@@ -22,7 +22,7 @@ class Http{
          $options = array(
             CURLOPT_RETURNTRANSFER => true,     // return web page
             CURLOPT_HEADER         => true,    // don't return headers
-            CURLOPT_FOLLOWLOCATION => $follow,     // follow redirects
+            CURLOPT_FOLLOWLOCATION => false,     // follow redirects
             CURLOPT_ENCODING       => "",       // handle all encodings
             CURLOPT_USERAGENT      => "spider", // who am i
             CURLOPT_AUTOREFERER    => true,     // set referer on redirect
@@ -90,6 +90,17 @@ class Http{
         $headers['Request']['url'] = $url;
         $headers['Request']['method'] = $method;
 
+        $location = isset($headers['Location'])?$headers['Location']:null;
+        $code = $headers['Request']['code'];
+
+        if($follow === true)
+        if($code === '301' || $code === '302'){
+            $parameters['url'] = $location;
+            
+            $body = self::request($parameters,$headers_redirect);
+            $headers = $headers_redirect;
+            return $body;
+        }
 
         if($onlyheader === true)
             return $headers;

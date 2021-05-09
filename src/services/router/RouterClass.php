@@ -22,10 +22,6 @@ class RouterClass{
 	
 
 	public function __construct(){
-		// set CORS to open 
-		header('Access-Control-Allow-Origin: *');
-		header('Access-Control-Allow-Methods: *');
-		header("Access-Control-Allow-Headers: *");
 	}
 
 
@@ -77,6 +73,7 @@ class RouterClass{
 		$shower = true;
 		$index = 0;
 		$parameters = array();
+
 
 
 		$found = false;
@@ -139,9 +136,10 @@ class RouterClass{
 
 	public function parse_raw_http_request($input)
 {
+	$CONTENT_TYPE = isset($_SERVER['CONTENT_TYPE'])?$_SERVER['CONTENT_TYPE']:null;
 
   // grab multipart boundary from content type header
-  preg_match('/boundary=(.*)$/', $_SERVER['CONTENT_TYPE'], $matches);
+  preg_match('/boundary=(.*)$/', $CONTENT_TYPE, $matches);
   $boundary = isset($matches[1])?$matches[1]:null;
 
   if($boundary === null) return false;
@@ -434,7 +432,10 @@ class RouterClass{
 				$parametersHandle = new QueryFilterAccess($parameters);
 				$requestHandle = new RequestFilterAccess($requestPar);
 
-				if( $methodMode !== false && $methodMode !== null ){				
+				if( $methodMode !== false && $methodMode !== null ){		
+
+					
+
 					if(method_exists($callback, $methodMode))
 					$response = $callback->$methodMode($parametersHandle,$requestHandle,$parametersNext);
 				}else{				
@@ -448,6 +449,11 @@ class RouterClass{
 				if(method_exists($response, 'response'))
 				$response = $response->response();
 
+
+			}
+
+			if( !isset($response) ){
+				return false;
 			}
 			
 			if(gettype($response) === 'object'){

@@ -16,6 +16,13 @@ class Router{
 		$this->routerclass = new RouterClass();
 	}
 
+	public function corsAllowAll(){
+		// set CORS to open 
+		header('Access-Control-Allow-Origin: *');
+		header('Access-Control-Allow-Methods: *');
+		header("Access-Control-Allow-Headers: *");
+	}
+
 	public function addMiddle($class){
 		$this->listMiddles[] = $class;
 		return $this;
