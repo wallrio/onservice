@@ -96,7 +96,7 @@ class Http{
         $code = $headers['Request']['code'];
 
         if($follow === true)
-        if($code === '301' || $code === '302'){
+        if($code === '301' || $code === '302' || $code === '307'){
             $parameters['url'] = $location;
             
             $body = self::request($parameters,$headers_redirect);
