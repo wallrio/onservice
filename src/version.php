@@ -1,3 +1,3 @@
 <?php 
 
-define('OnServiceVersion','3.0.7');
+define('OnServiceVersion','3.0.8');

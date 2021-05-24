@@ -34,17 +34,24 @@ class Http{
             CURLOPT_CUSTOMREQUEST => strtoupper($method) 
         );
 
+         if( strtolower($method) === 'get'){
+            if(is_array($data) || is_object($data) ){
+                $fields_string = http_build_query($data); 
 
-     
-     $urlArray = explode('?', $url);
-         $queryAjust = '';
-         if(count($urlArray)>1){
-             $url = $urlArray[0];
-             $queryAjust = '&'.$urlArray[1];
-     }
-       
+                $urlArray = explode('?', $url);
+                $queryAjust = '';
+                if(count($urlArray)>1){
+                    $url = $urlArray[0];
+                    $queryAjust = $urlArray[1].'&';
+                }
 
-       $ch      = curl_init( $url );
+                $url = $url . '?'.$queryAjust.$fields_string;
+            }
+         }
+
+         $url = str_replace(' ', '%20', $url);
+
+        $ch      = curl_init( $url );
         curl_setopt_array( $ch, $options );
 
         if($header !== null){       
@@ -55,14 +62,12 @@ class Http{
             curl_setopt($ch, CURLOPT_HTTPHEADER, $headerSend);
         }
 
+        if( strtolower($method) !== 'get')
         if(is_array($data) || is_object($data) ){
             
 
             $fields_string = http_build_query($data); 
-        
-        $fields_string = $fields_string.$queryAjust;
-        
-
+            
             curl_setopt($ch,CURLOPT_POST, 1);
             curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);                    
         }
@@ -91,8 +96,8 @@ class Http{
         $code = $headers['Request']['code'];
 
         if($follow === true)
-        if($code === '301' || $code === '302' || $code === '307'){
-            $parameters['url'] = $location.'?'.$queryAjust;
+        if($code === '301' || $code === '302'){
+            $parameters['url'] = $location;
             
             $body = self::request($parameters,$headers_redirect);
             $headers = $headers_redirect;
