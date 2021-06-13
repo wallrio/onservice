@@ -65,9 +65,6 @@ class RequestFilterAccess{
 		
 		eval('$ret = isset($this->parameters->'.$join.')?$this->parameters->'.$join.':null;');
 
-		$ret = json_encode($ret);
-		$ret = urldecode($ret);
-		$ret = json_decode($ret);
 
 		return $ret;
 	}
