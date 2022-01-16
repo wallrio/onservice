@@ -147,6 +147,11 @@ class OJM{
 				$tableName = explode("\\\", $tableName);
 				$id = $tableName[1];
 				$id = substr($id, 1);
+				$id = explode("_", $id);
+				$id = $id[0];
+
+			
+
 				$tableName = end($tableName);
 
 				$parameters = $GLOBALS["onservice"]["Database"]["mapper"];

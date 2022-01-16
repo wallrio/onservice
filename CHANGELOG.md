@@ -9,3 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - alteração de conceito
+
+## [3.0.11]
+
+### Changed
+- fix OJM
