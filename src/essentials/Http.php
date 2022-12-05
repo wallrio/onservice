@@ -16,6 +16,7 @@ class Http{
         $fallback = isset($parameters['fallback'])?$parameters['fallback']:null;
         $timeout = isset($parameters['timeout'])?$parameters['timeout']:7;
         $onlyheader = isset($parameters['onlyheader'])?$parameters['onlyheader']:false;
+        $includeheader = isset($parameters['includeheader'])?$parameters['includeheader']:false;
 
 
 
@@ -106,6 +107,9 @@ class Http{
 
         if($onlyheader === true)
             return $headers;
+
+        if($includeheader)
+            return ['header'=>$headers,'body'=>$body];
 
         return $body;
     }
