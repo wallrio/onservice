@@ -17,6 +17,7 @@ class Http{
         $timeout = isset($parameters['timeout'])?$parameters['timeout']:7;
         $onlyheader = isset($parameters['onlyheader'])?$parameters['onlyheader']:false;
         $includeheader = isset($parameters['includeheader'])?$parameters['includeheader']:false;
+        $proxy = isset($parameters['proxy'])?$parameters['proxy']:null;
 
 
 
@@ -25,15 +26,24 @@ class Http{
             CURLOPT_HEADER         => true,    // don't return headers
             CURLOPT_FOLLOWLOCATION => false,     // follow redirects
             CURLOPT_ENCODING       => "",       // handle all encodings
-            CURLOPT_USERAGENT      => "spider", // who am i
+            // CURLOPT_USERAGENT      => "spider", // who am i
             CURLOPT_AUTOREFERER    => true,     // set referer on redirect
             CURLOPT_CONNECTTIMEOUT => 120,      // timeout on connect
             CURLOPT_TIMEOUT        => 120,      // timeout on response
             CURLOPT_MAXREDIRS      => 10,       // stop after 10 redirects
             CURLOPT_SSL_VERIFYPEER => false,     // Disabled SSL Cert checks
             CURLOPT_SSL_VERIFYHOST => 2,
-            CURLOPT_CUSTOMREQUEST => strtoupper($method) 
+            CURLOPT_CUSTOMREQUEST => strtoupper($method) ,
+            
+            // CURLOPT_HTTPPROXYTUNNEL => 0,
+            // CURLOPT_FOLLOWLOCATION => 1,
+            // CURLOPT_RETURNTRANSFER => 0,
+            // CURLOPT_PROXY => $proxy,
+            
         );
+
+         if($proxy !== null)
+            $options[CURLOPT_PROXY] = $proxy;
 
          if( strtolower($method) === 'get'){
             if(is_array($data) || is_object($data) ){
