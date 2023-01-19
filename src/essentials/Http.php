@@ -28,8 +28,8 @@ class Http{
             CURLOPT_ENCODING       => "",       // handle all encodings
             // CURLOPT_USERAGENT      => "spider", // who am i
             CURLOPT_AUTOREFERER    => true,     // set referer on redirect
-            CURLOPT_CONNECTTIMEOUT => 120,      // timeout on connect
-            CURLOPT_TIMEOUT        => 120,      // timeout on response
+            CURLOPT_CONNECTTIMEOUT => $timeout,      // timeout on connect
+            CURLOPT_TIMEOUT        => $timeout,      // timeout on response
             CURLOPT_MAXREDIRS      => 10,       // stop after 10 redirects
             CURLOPT_SSL_VERIFYPEER => false,     // Disabled SSL Cert checks
             CURLOPT_SSL_VERIFYHOST => 2,
