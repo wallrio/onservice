@@ -73,14 +73,22 @@ class Http{
             curl_setopt($ch, CURLOPT_HTTPHEADER, $headerSend);
         }
 
-        if( strtolower($method) !== 'get')
-        if(is_array($data) || is_object($data) ){
+        if( strtolower($method) !== 'get'){ 
             
+            if(is_array($data) || is_object($data) ){
+                
 
-            $fields_string = http_build_query($data); 
-            
-            curl_setopt($ch,CURLOPT_POST, 1);
-            curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);                    
+                
+                $fields_string = http_build_query($data); 
+                
+
+                curl_setopt($ch,CURLOPT_POST, 1);
+                curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);                    
+            }else{
+                
+                curl_setopt($ch,CURLOPT_POST, 1);
+                curl_setopt($ch,CURLOPT_POSTFIELDS, $data);                    
+            }
         }
 
         $response = curl_exec( $ch );
