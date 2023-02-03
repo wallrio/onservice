@@ -258,7 +258,9 @@ class CreateUser{
 
 	public function index($uri,$http,&$container){
 
-		if( $responseRequired = FieldsRequireds::check( $http->get('request') ,['title']) )
+		$codeHttp = 404;
+		$messageHttp = 'missing fields';
+		if( $responseRequired = FieldsRequireds::check( $http->get('request') ,['title'],$codeHttp,$messageHttp) )
 			return $responseRequired;
 
 	}

@@ -8,7 +8,7 @@ class FieldsRequireds {
 	
 	public function __construct(){}
 	
-	static public function check($innerRequest,$fieldsRequireds){		
+	static public function check($innerRequest,$fieldsRequireds,$codeHttp = 404,$messageHttp = null){		
 
 		if(!is_array($innerRequest) && !is_object($innerRequest)) $innerRequest = [];
 
@@ -24,10 +24,15 @@ class FieldsRequireds {
 			return false;
 
 
-		return (new Response)
-				->body(array('status'=>'missing-parameters','msg'=>$fields))
-				->code(404)
-				->type('application/json')			
-				->format('json');
+		$response = (new Response);
+
+
+		$response->body(array('status'=>'missing-parameters','msg'=>$fields));
+		$response->code($codeHttp);
+		if($messageHttp !== null)$response->message($messageHttp);	
+		$response->type('application/json');		
+		$response->format('json');
+
+		return $response;
 	}
 }
