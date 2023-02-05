@@ -14,7 +14,7 @@ class FieldsRequireds {
 
 		$fields = [];
 		foreach ($fieldsRequireds as $key => $value) {				
-			if( !array_key_exists( $value , $innerRequest) || empty($innerRequest->{$value}) ){
+			if( !property_exists( $innerRequest, $value) || empty($innerRequest->{$value}) ){
 				$fields[] = $value;				
 			}
 			
