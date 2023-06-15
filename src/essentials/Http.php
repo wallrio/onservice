@@ -135,36 +135,30 @@ class Http{
 
     public static function headerToArray($message){
  
-        $messageArray = explode("\n", $message);
-        $method = $messageArray[0];
-        $newArray = array();
-        $newArray['Request'] = trim($method);
-
-        
-
-        $RequestArray = explode(' ', $newArray['Request']);
-
-        $newArray['Request'] = array(
-          'protocol'=>$RequestArray[0],
-          'code'=>isset($RequestArray[1])?$RequestArray[1]:null,
-          'message'=>isset($RequestArray[2])?$RequestArray[2]:null,
-          
-        );
-        
-
-        unset($messageArray[0]);
+        $messageArray = explode("\n", $message);      
         array_values($messageArray);
      
         foreach ($messageArray as $key => $value) {
+
+            if( strpos( strtolower($value), 'http/') !== false ){            
+                $newArray = array();
+                $newArray['Request'] = trim($value);
+                $RequestArray = explode(' ', $newArray['Request']);
+                $newArray['Request'] = array(
+                  'protocol'=>$RequestArray[0],
+                  'code'=>isset($RequestArray[1])?$RequestArray[1]:null,
+                  'message'=>isset($RequestArray[2])?$RequestArray[2]:null,
+                  
+                );             
+            }
+            
             $array = explode(':', $value,2);
             $val = isset($array[1])?$array[1]:'';
             $newArray[$array[0]] = trim($val);
         }
 
-      
         $newArray = array_filter($newArray);
-        return $newArray;
-       
+        return $newArray;       
     }
 
 }
